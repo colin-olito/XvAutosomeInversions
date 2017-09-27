@@ -7,21 +7,22 @@
 #' 
 #' @title Simulations to validate weak selection/migration approximations for haploid two-locus model
 #' @param m Migration rate
+#' @param m Recombination rate
 #' @param generations Timescale for the simulations
 #' @param initFreqs Initial genotypic frequencies - must be a numeric vector of length 4 that sums to 1
-#' @param makePlots Switch - should simulation automatically make summary plots?
-#' @return Returns a data frame with columns sapprox.a
+#' @return Returns a data frame with columns: "m", "r", "s", "approx.a", "freq.a", "freq.b", "LD"
 #' @seealso 
 #' @export
 #' @author Colin Olito & Tim Connallon
 #'
-hapApproxCompare  <-  function(m = 0.01, generations = 10000, initFreqs = rep(0.25,4)) {
+hapApproxCompare  <-  function(m = 0.01, r = 0.5, generations = 10000, initFreqs = rep(0.25,4)) {
 
   # Parameters
   sels  <-  seq(from = 0.01, to = 0.2, by = 0.005)
   
   # Data frame for results
   res  <-  data.frame("m" = rep(m,times=length(sels)), 
+                      "r" = rep(r,times=length(sels)), 
                       "s" = sels, 
                       "approx.a" = rep(0, times=length(sels)), 
                       "freq.a" = rep(0, times=length(sels)), 
@@ -41,13 +42,14 @@ hapApproxCompare  <-  function(m = 0.01, generations = 10000, initFreqs = rep(0.
     x4 = 0.25
   
     for(i in 1:generations){
+      # Tim's recursions
       W = x1 + x2*(1 + s) + x3*(1 + s) + x4*(1 + s)^2
       D.adults = ((1 - m)*(1 + s)^2)*((x1*x4 - x2*x3)*(1 - m)/W + m*x4)/W
       #frequency next generation
-      y1 = x1*(1 - m)/W + m - D.adults/2
-      y2 = x2*(1 + s)*(1 - m)/W + D.adults/2
-      y3 = x3*(1 + s)*(1 - m)/W + D.adults/2
-      y4 = x4*((1 - m)*(1 + s)^2)/W - D.adults/2
+      y1 = x1*(1 - m)/W + m - r*D.adults
+      y2 = x2*(1 + s)*(1 - m)/W + r*D.adults
+      y3 = x3*(1 + s)*(1 - m)/W + r*D.adults
+      y4 = x4*((1 - m)*(1 + s)^2)/W - r*D.adults
       x1 = y1
       x2 = y2
       x3 = y3
@@ -85,6 +87,7 @@ hapApproxComparePlots  <-  function(data=res) {
 
     # Recover parameters
     m     <-  res$m[1]
+    r     <-  res$r[1]
     sels  <-  res$s
 
     # Plot Layout
@@ -103,10 +106,29 @@ hapApproxComparePlots  <-  function(data=res) {
       # axes
       axis(1, las=1)
       axis(2, las=1)
-        proportionalLabel(0.45, 1.1, expression(paste(italic(m)," =")), cex=1.5, adj=c(0.5, 0.5), xpd=NA)
-        proportionalLabel(0.62, 1.11, substitute(m,list(m=rounded(m,precision=2))), cex=1.5, adj=c(0.5, 0.5), xpd=NA)
+        proportionalLabel(0.24, 1.1, expression(paste(italic(m)," =")), cex=1.5, adj=c(0.5, 0.5), xpd=NA)
+        proportionalLabel(0.425, 1.11, substitute(m,list(m=rounded(m,precision=2))), cex=1.5, adj=c(0.5, 0.5), xpd=NA)
+        proportionalLabel(0.67, 1.1, expression(paste(italic(r)," =")), cex=1.5, adj=c(0.5, 0.5), xpd=NA)
+        proportionalLabel(0.825, 1.11, substitute(r,list(r=rounded(r,precision=2))), cex=1.5, adj=c(0.5, 0.5), xpd=NA)
       proportionalLabel(0.5, -0.25, expression(paste(italic(s))), cex=1.25, adj=c(0.5, 0.5), xpd=NA)
       proportionalLabel(-0.25, 0.5, expression(paste("Allele Frequency")), cex=1.25, adj=c(0.5, 0.5), xpd=NA, srt=90)
+        legend(
+            x       =  usr[2]*0.99,
+            y       =  usr[4],
+            legend  =  c(
+                        expression(paste(hat(italic(p))," approx.")),
+                        expression(paste("Exact"))),
+            lty     =  c(1, NA),
+            lwd     =  c(2,1),
+            pch     =  c(NA, 21),
+            pt.bg   =  c(NA, 'dodgerblue'),
+            col     =  c('black','dodgerblue4'),
+            cex     =  0.75,
+            xjust   =  1,
+            yjust   =  1,
+            bty     =  'n',
+            border  =  NA)
+
 
       # Plot of LD
       plot(NA, axes=FALSE, type='n', main='',xlim = c(0,max(sels)), ylim = c(0,max(res$LD)*1.05), ylab='', xlab='', cex.lab=1.2)
@@ -119,8 +141,10 @@ hapApproxComparePlots  <-  function(data=res) {
       # axes
       axis(1, las=1)
       axis(2, las=1)
-        proportionalLabel(0.45, 1.1, expression(paste(italic(m)," =")), cex=1.5, adj=c(0.5, 0.5), xpd=NA)
-        proportionalLabel(0.62, 1.11, substitute(m,list(m=rounded(m,precision=2))), cex=1.5, adj=c(0.5, 0.5), xpd=NA)
+        proportionalLabel(0.24, 1.1, expression(paste(italic(m)," =")), cex=1.5, adj=c(0.5, 0.5), xpd=NA)
+        proportionalLabel(0.425, 1.11, substitute(m,list(m=rounded(m,precision=2))), cex=1.5, adj=c(0.5, 0.5), xpd=NA)
+        proportionalLabel(0.67, 1.1, expression(paste(italic(r)," =")), cex=1.5, adj=c(0.5, 0.5), xpd=NA)
+        proportionalLabel(0.825, 1.11, substitute(r,list(r=rounded(r,precision=2))), cex=1.5, adj=c(0.5, 0.5), xpd=NA)
       proportionalLabel(0.5, -0.25, expression(paste(italic(s))), cex=1.25, adj=c(0.5, 0.5), xpd=NA)
       proportionalLabel(-0.3, 0.5, expression(paste(italic(LD))), cex=1.25, adj=c(0.5, 0.5), xpd=NA, srt=90)
 }

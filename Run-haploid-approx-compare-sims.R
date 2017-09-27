@@ -10,7 +10,7 @@ source('./R/functions-plots.R')
 source('./R/functions-haploid-exact-eq-sims.R')
 
 ##  Run the simulations and display summary plots
-res  <-  hapApproxCompare(m=0.01)
+res  <-  hapApproxCompare(m=0.05, r=0.5)
 
 ##  Make summary plots of [A] and LD
 hapApproxComparePlots(data = res)
