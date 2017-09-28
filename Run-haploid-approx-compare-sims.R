@@ -1,7 +1,15 @@
 ##  Code to run exact simulations for the haploid 2-locus 
 ##  model of migration-selection balance, and compare
 ##  the exact genotypic frequencies and LD against the 
-##  approximations made in Kirkpatrick & Barton (2006) 
+##  approximation for the single-locus equilibrium 
+##  frequency (as in Kirkpatrick & Barton 2006) 
+
+##  NOTE: To explore the consequences of varying migration rate,
+##        r, and recombination rate, r, run this script 
+##        interactively, and modify these parameters in the 
+##        hapApproxCompare() function. To make a nice pdf of the 
+##        resulting figure, run the last couple lines. 
+ 
 
 rm(list=ls())
 

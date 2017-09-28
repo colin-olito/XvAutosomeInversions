@@ -14,7 +14,6 @@
 #' @seealso 
 #' @export
 #' @author Colin Olito & Tim Connallon
-#'
 hapApproxCompare  <-  function(m = 0.01, r = 0.5, generations = 10000, initFreqs = rep(0.25,4)) {
 
   # Parameters
@@ -42,9 +41,11 @@ hapApproxCompare  <-  function(m = 0.01, r = 0.5, generations = 10000, initFreqs
     x4 = 0.25
   
     for(i in 1:generations){
-      # Tim's recursions
+      
+      # Recursions
       W = x1 + x2*(1 + s) + x3*(1 + s) + x4*(1 + s)^2
       D.adults = ((1 - m)*(1 + s)^2)*((x1*x4 - x2*x3)*(1 - m)/W + m*x4)/W
+      
       #frequency next generation
       y1 = x1*(1 - m)/W + m - r*D.adults
       y2 = x2*(1 + s)*(1 - m)/W + r*D.adults
