@@ -14,7 +14,7 @@
 rm(list=ls())
 
 ## Dependencies
-source('./R/functions-plots.R')
+source('./R/functions-figures.R')
 source('./R/functions-haploid-exact-eq-sims.R')
 
 ##  Run the simulations and display summary plots
