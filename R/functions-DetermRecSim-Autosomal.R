@@ -103,7 +103,7 @@ recursionFwdSim  <-  function(par.list, xi.init, threshold = 1e-6, silent = FALS
 
 	try({
 		 if(par.list$m  >=  par.list$s)
-			stop('Warning: migration rate is larger than the seleciton coefficient,
+			stop('Warning: migration rate is larger than the selection coefficient,
 				  adaptive alleles will be swamped by maladaptive migrants')
 	}, silent=silent)
 
@@ -166,15 +166,12 @@ recursionFwdSim  <-  function(par.list, xi.init, threshold = 1e-6, silent = FALS
 #' of haplotype recursions for different parameter values 
 #' 
 #' @title Forward deterministic simulation of genotypic recursions.
-#' @param gen Maximum number of generations for each simulation (as in par.list).
-#' @param s   Selection coefficient (for use in par.list).
-#' @param h   Dominance coefficient (for use in par.list). Character  
-#' @param resolution 'by' arg for sequence of selection coefficient values. 
-#'                    Determines length of innermost loop of simulation. 
-#'                    Recommend 0.01 for exploratory analyses, 0.005 for plotting.
-#' @param m.vals Values of migration rate to explore. Determines length of second simulation loop.
-#' @param r.vals Values of recombination rate to explore(as in par.list). Determines length of outermost simulation loop.
-#' @param threshold Threshold difference between genotypic frequencies before simulation cuts off.
+#' @param gen        Maximum number of generations for each simulation (as in par.list).
+#' @param s.vals     Selection coefficient (for use in par.list).
+#' @param h          Dominance coefficient (for use in par.list). Character  
+#' @param m.vals     Values of migration rate to explore. Determines length of second simulation loop.
+#' @param r.vals     Values of recombination rate to explore(as in par.list). Determines length of outermost simulation loop.
+#' @param threshold  Threshold difference between genotypic frequencies before simulation cuts off.
 #' @return Returns a data frame with parameter values, final frequencies of the inversion,
 #'         a variable describing whether the final state of the simulation was polymorphic, 
 #'         whether evaluating the eigenvalues predicts polymorphism, and whether these two 
@@ -183,10 +180,10 @@ recursionFwdSim  <-  function(par.list, xi.init, threshold = 1e-6, silent = FALS
 #' @export
 #' @author Colin Olito.
 #' @examples
-#' recursionFwdSimLoop(n = 5000, gen = 5000, sRange = c(0,1), C = 0, delta = 0, 
-#'                     hf = 0.5, hm = 0.5, r.vals = c(0.0, 0.01, 0.02, 0.1, 0.2, 0.5), 
-#'                     seed = 3497016, threshold = 1e-7)
-recursionFwdSimLoop  <-  function(gen = 25000, h = 0.5, resolution = 0.005,
+#' recursionFwdSimLoop  <-  function(gen = 25000, h = 0.5, resolution = 0.005,
+#'	                              m.vals = c(0.01, 0.05), r.vals = c(0.0, 0.01, 0.1), 
+#'	                              threshold = 1e-7) {
+recursionFwdSimLoop  <-  function(gen = 25000, h = 0.5, s.vals = c(0.01, 0.05),
 	                              m.vals = c(0.01, 0.05), r.vals = c(0.0, 0.01, 0.1), 
 	                              threshold = 1e-7) {
 
@@ -199,12 +196,9 @@ recursionFwdSimLoop  <-  function(gen = 25000, h = 0.5, resolution = 0.005,
 			  as it will affect how many generations are required to reach
 			  convergence, and thus how long the simulations take')
 
-	# Selection coefficients 
-	Ss  <-  seq(resolution, 0.2, by = resolution)
-
 	# initialize storage structures
-	eqFreqs  <-  matrix(0, nrow=length(r.vals)*length(m.vals)*length(Ss), ncol=5)
-	LD       <-  rep(0, length(r.vals)*length(m.vals)*length(Ss))
+	eqFreqs  <-  matrix(0, nrow=length(r.vals)*length(m.vals)*length(s.vals), ncol=5)
+	LD       <-  rep(0, length(r.vals)*length(m.vals)*length(s.vals))
 	
 	##  Simulation Loop over values of r, m, s 
 	print('Running Deterministic Recursion Simulations')
@@ -213,12 +207,12 @@ recursionFwdSimLoop  <-  function(gen = 25000, h = 0.5, resolution = 0.005,
 
 	for (i in 1:length(r.vals)) {
 		for (j in 1:length(m.vals)) {
-			for (k in 1:length(Ss)) {
+			for (k in 1:length(s.vals)) {
 				
                 par.list  <-  list(
                 				   gen  =  gen,
                 				   m    =  m.vals[j],
-                				   s    =  Ss[k],
+                				   s    =  s.vals[k],
                 				   h    =  h,
                 				   r    =  r.vals[i]
                 				   )
@@ -234,8 +228,8 @@ recursionFwdSimLoop  <-  function(gen = 25000, h = 0.5, resolution = 0.005,
 #if(m==3) browser()
 
 				# Store equilibrium frequencies
-				eqFreqs[((i-1)*length(m.vals)*length(Ss)) + ((j-1)*length(Ss)) + k,]  <-  res$EQ.freq
-				LD[((i-1)*length(m.vals)*length(Ss))    + ((j-1)*length(Ss)) + k]     <-  res$LD
+				eqFreqs[((i-1)*length(m.vals)*length(s.vals)) + ((j-1)*length(s.vals)) + k,]  <-  res$EQ.freq
+				LD[((i-1)*length(m.vals)*length(s.vals))    + ((j-1)*length(s.vals)) + k]     <-  res$LD
 			}
 		setTxtProgressBar(pb, ((i-1)*length(m.vals) + j))
 		}
@@ -246,23 +240,23 @@ recursionFwdSimLoop  <-  function(gen = 25000, h = 0.5, resolution = 0.005,
 	rs  <-  c()
 	ms  <-  c()
 	for(i in 1:length(r.vals)) {
-		rs  <-  c(rs, rep(r.vals[i], length(m.vals)*length(Ss)))
+		rs  <-  c(rs, rep(r.vals[i], length(m.vals)*length(s.vals)))
 	}
 	for(i in 1:length(r.vals)) {
 		for(j in 1:length(m.vals)) {
-			ms  <-  c(ms, rep(m.vals[j], length(Ss)))
+			ms  <-  c(ms, rep(m.vals[j], length(s.vals)))
 		}
 	}
-	results.df  <-  data.frame("h"  =  rep(h, length(r.vals)*length(m.vals)*length(Ss)),
-							   "s"  =  rep(Ss, length(r.vals)*length(m.vals)),
+	results.df  <-  data.frame("h"  =  rep(h, length(r.vals)*length(m.vals)*length(s.vals)),
+							   "s"  =  rep(s.vals, length(r.vals)*length(m.vals)),
 							   "r"  =  rs,
-							   "k"  =  ms
+							   "m"  =  ms
 							   )
 	results.df  <-  cbind(results.df, eqFreqs, LD)
 	colnames(results.df)  <-  c('h','s','r','m', 'x1', 'x2', 'x3', 'x4', 'x5', 'LD')
 	
 	#  Write results.df to .txt file
-	filename  <-  paste("./output/data/simResults/recSimAutosomal", "_h", h, ".csv", sep="")
+	filename  <-  paste("./output/data/simResults/determRecSim-Autosomal", "_h", h, ".csv", sep="")
 	write.csv(results.df, file=filename, row.names = FALSE)
 
 	#  Return results.df in case user wants it

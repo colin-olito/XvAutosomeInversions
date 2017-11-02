@@ -17,28 +17,66 @@ rm(list=ls())
 ##  Dependencies
 
 source('R/functions-figures.R')
-source('R/functions-RecSim-Autosomal.R')
+source('R/functions-DetermRecSim-Autosomal.R')
 
 
+######################
+##  Run Simulations
 
 # Locally adaptive allele completely recessive (h = 0)
-test  <-  recursionFwdSimLoop(gen = 25000, h = 0, resolution = 0.05,
+test  <-  recursionFwdSimLoop(gen = 25000, h = 0, s.vals = c(0.05, 0.1, 0.2),
                     m.vals = c(0.01, 0.05), r.vals = c(0.0, 0.01), 
                     threshold = 1e-7)
 
 # Additive fitness effects (h = 1/2)
-test  <-  recursionFwdSimLoop(gen = 25000, h = 0.5, resolution = 0.05,
+test  <-  recursionFwdSimLoop(gen = 25000, h = 0.5, s.vals = c(0.05, 0.1, 0.2),
                     m.vals = c(0.01, 0.05), r.vals = c(0.0, 0.01), 
                     threshold = 1e-7)
 
 # Locally adaptive allele completely dominant (h = 1)
-test  <-  recursionFwdSimLoop(gen = 25000, h = 1, resolution = 0.05,
+test  <-  recursionFwdSimLoop(gen = 25000, h = 1, s.vals = c(0.05, 0.1, 0.2),
                     m.vals = c(0.01, 0.05), r.vals = c(0.0, 0.01), 
                     threshold = 1e-7)
 
 
+########################################################
+##  Some exploratory code to play with results/plotting
 
-# Some exploratory code to play with the recursionFwdSim function
+head(test)
+unique(test$s)
+rs  <-  unique(test$r)
+ms  <-  unique(test$m)
+
+ plot(NA, axes=FALSE, type='n', main='',xlim = c(0,max(test$s)), ylim = c(0,1), ylab='', xlab='', cex.lab=1.2)
+        usr  <-  par('usr')
+        rect(usr[1], usr[3], usr[2], usr[4], col='white', border=NA)
+        plotGrid(lineCol='grey80')
+        box()
+       	lines(test$x5[test$r==rs[1] & test$m==ms[1]] ~ test$s[test$r==rs[1] & test$m==ms[1]], col=1, lwd=3, lty=1)
+       	lines(test$x5[test$r==rs[1] & test$m==ms[2]] ~ test$s[test$r==rs[1] & test$m==ms[2]], col=1, lwd=3, lty=1)
+       	lines(test$x5[test$r==rs[2] & test$m==ms[1]] ~ test$s[test$r==rs[2] & test$m==ms[1]], col=2, lwd=3, lty=2)
+       	lines(test$x5[test$r==rs[2] & test$m==ms[2]] ~ test$s[test$r==rs[2] & test$m==ms[2]], col=2, lwd=3, lty=2)
+ # axes
+        axis(1, las=1)
+        axis(2, las=1)
+
+
+ plot(NA, axes=FALSE, type='n', main='',xlim = c(0,max(test$s)), ylim = c(0,max(test$LD)), ylab='', xlab='', cex.lab=1.2)
+        usr  <-  par('usr')
+        rect(usr[1], usr[3], usr[2], usr[4], col='white', border=NA)
+        plotGrid(lineCol='grey80')
+        box()
+        lines(test$LD[test$r==rs[1] & test$m==ms[1]] ~ test$s[test$r==rs[1] & test$m==ms[1]], col=1, lwd=3, lty=1)
+        lines(test$LD[test$r==rs[1] & test$m==ms[2]] ~ test$s[test$r==rs[1] & test$m==ms[2]], col=2, lwd=3, lty=1)
+        lines(test$LD[test$r==rs[2] & test$m==ms[1]] ~ test$s[test$r==rs[2] & test$m==ms[1]], col=1, lwd=3, lty=2)
+        lines(test$LD[test$r==rs[2] & test$m==ms[2]] ~ test$s[test$r==rs[2] & test$m==ms[2]], col=2, lwd=3, lty=2)
+ # axes
+        axis(1, las=1)
+        axis(2, las=1)
+
+
+########################################################
+##  Some exploratory code to play with results/plotting
 #
 # par.list  <-  list(
 # 					gen  =  25000,
