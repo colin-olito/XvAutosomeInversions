@@ -27,22 +27,22 @@ source('R/functions-DetermRecSim-X-linked.R')
 ##  Run Simulations
 
 # Locally adaptive allele completely recessive (hf = hm = 0)
-test  <-  recursionFwdSimLoop(gen = 25000, h = 0, threshold = 1e-7,
+test  <-  recursionFwdSimLoop(gen = 50000, r = 0, threshold = 1e-7,
 					sf.vals = c(0.05, 0.1, 0.2), sm.vals = c(0.05, 0.1, 0.2),
 					mf.vals = c(0.01, 0.05), mm.vals = c(0.01, 0.05),
-					r.vals = c(0.0, 0.01, 0.1))
+					h.vals = c(0, 0.5, 1))
 
 # Additive fitness effects  hf = hm = 1/2)
-test  <-  recursionFwdSimLoop(gen = 25000, h = 0.5, threshold = 1e-7,
+test  <-  recursionFwdSimLoop(gen = 50000, r = 0.005, threshold = 1e-7,
 					sf.vals = c(0.05, 0.15, 0.2), sm.vals = c(0.05, 0.1, 0.2),
 					mf.vals = c(0.01, 0.05), mm.vals = c(0.01, 0.05),
-					r.vals = c(0.0, 0.01, 0.1))
+					h.vals = c(0, 0.5, 1))
 
 # Locally adaptive allele completely dominant (hf = hm = 1)
-test  <-  recursionFwdSimLoop(gen = 25000, h = 1, threshold = 1e-7,
+test  <-  recursionFwdSimLoop(gen = 50000, r = 0.1, threshold = 1e-7,
 					sf.vals = c(0.01, 0.05, 0.1, 0.2), sm.vals = c(0.01, 0.05, 0.1, 0.2),
 					mf.vals = c(0.01, 0.05), mm.vals = c(0.01, 0.05),
-					r.vals = c(0.0, 0.01, 0.1))
+					h.vals = c(0, 0.5, 1))
 
 
 
@@ -50,8 +50,9 @@ test  <-  recursionFwdSimLoop(gen = 25000, h = 1, threshold = 1e-7,
 ##  Some exploratory code to play with results/plotting
 head(test)
 
+
 unique(test$sf)
-rs       <-  unique(test$r)
+hs       <-  unique(test$h)
 mfs      <-  unique(test$mf)
 EQ.freq  <-  (2*test[,8:12] + test[,13:17])/2
 
@@ -60,14 +61,19 @@ EQ.freq  <-  (2*test[,8:12] + test[,13:17])/2
         rect(usr[1], usr[3], usr[2], usr[4], col='white', border=NA)
         plotGrid(lineCol='grey80')
         box()
-       	lines(test$x5[test$r==rs[1] & test$mf==mfs[1]] ~ test$sf[test$r==rs[1] & test$mf==mfs[1]], col=1, lwd=3, lty=1)
-       	lines(test$x5[test$r==rs[1] & test$mf==mfs[2]] ~ test$sf[test$r==rs[1] & test$mf==mfs[2]], col=1, lwd=3, lty=1)
-       	lines(test$x5[test$r==rs[2] & test$mf==mfs[1]] ~ test$sf[test$r==rs[2] & test$mf==mfs[1]], col=1, lwd=3, lty=1)
-       	lines(test$x5[test$r==rs[2] & test$mf==mfs[2]] ~ test$sf[test$r==rs[2] & test$mf==mfs[2]], col=1, lwd=3, lty=1)
-       	lines(test$y5[test$r==rs[1] & test$mf==mfs[1]] ~ test$sf[test$r==rs[1] & test$mf==mfs[1]], col=2, lwd=3, lty=2)
-       	lines(test$y5[test$r==rs[1] & test$mf==mfs[2]] ~ test$sf[test$r==rs[1] & test$mf==mfs[2]], col=2, lwd=3, lty=2)
-       	lines(test$y5[test$r==rs[2] & test$mf==mfs[1]] ~ test$sf[test$r==rs[2] & test$mf==mfs[1]], col=2, lwd=3, lty=2)
-       	lines(test$y5[test$r==rs[2] & test$mf==mfs[2]] ~ test$sf[test$r==rs[2] & test$mf==mfs[2]], col=2, lwd=3, lty=2)
+       	lines(test$x5[test$h==hs[1] & test$mf==mfs[1]] ~ test$sf[test$h==hs[1] & test$mf==mfs[1]], col=1, lwd=3, lty=1)
+       	lines(test$x5[test$h==hs[1] & test$mf==mfs[2]] ~ test$sf[test$h==hs[1] & test$mf==mfs[2]], col=1, lwd=3, lty=1)
+       	lines(test$x5[test$h==hs[2] & test$mf==mfs[1]] ~ test$sf[test$h==hs[2] & test$mf==mfs[1]], col=3, lwd=3, lty=1)
+       	lines(test$x5[test$h==hs[2] & test$mf==mfs[2]] ~ test$sf[test$h==hs[2] & test$mf==mfs[2]], col=3, lwd=3, lty=1)
+       	lines(test$x5[test$h==hs[3] & test$mf==mfs[1]] ~ test$sf[test$h==hs[3] & test$mf==mfs[1]], col=4, lwd=3, lty=1)
+       	lines(test$x5[test$h==hs[3] & test$mf==mfs[2]] ~ test$sf[test$h==hs[3] & test$mf==mfs[2]], col=4, lwd=3, lty=1)
+
+       	lines(test$y5[test$h==hs[1] & test$mf==mfs[1]] ~ test$sf[test$h==hs[1] & test$mf==mfs[1]], col=1, lwd=3, lty=2)
+       	lines(test$y5[test$h==hs[1] & test$mf==mfs[2]] ~ test$sf[test$h==hs[1] & test$mf==mfs[2]], col=1, lwd=3, lty=2)
+       	lines(test$y5[test$h==hs[2] & test$mf==mfs[1]] ~ test$sf[test$h==hs[2] & test$mf==mfs[1]], col=3, lwd=3, lty=2)
+       	lines(test$y5[test$h==hs[2] & test$mf==mfs[2]] ~ test$sf[test$h==hs[2] & test$mf==mfs[2]], col=3, lwd=3, lty=2)
+       	lines(test$y5[test$h==hs[3] & test$mf==mfs[1]] ~ test$sf[test$h==hs[3] & test$mf==mfs[1]], col=4, lwd=3, lty=2)
+       	lines(test$y5[test$h==hs[3] & test$mf==mfs[2]] ~ test$sf[test$h==hs[3] & test$mf==mfs[2]], col=4, lwd=3, lty=2)
  # axes
         axis(1, las=1)
         axis(2, las=1)
@@ -77,14 +83,19 @@ EQ.freq  <-  (2*test[,8:12] + test[,13:17])/2
         rect(usr[1], usr[3], usr[2], usr[4], col='white', border=NA)
         plotGrid(lineCol='grey80')
         box()
-       	lines(test$LDx[test$r==rs[1] & test$mf==mfs[1]] ~ test$sf[test$r==rs[1] & test$mf==mfs[1]], col=1, lwd=3, lty=1)
-       	lines(test$LDx[test$r==rs[1] & test$mf==mfs[2]] ~ test$sf[test$r==rs[1] & test$mf==mfs[2]], col=1, lwd=3, lty=1)
-       	lines(test$LDx[test$r==rs[2] & test$mf==mfs[1]] ~ test$sf[test$r==rs[2] & test$mf==mfs[1]], col=1, lwd=3, lty=1)
-       	lines(test$LDx[test$r==rs[2] & test$mf==mfs[2]] ~ test$sf[test$r==rs[2] & test$mf==mfs[2]], col=1, lwd=3, lty=1)
-       	lines(test$LDy[test$r==rs[1] & test$mf==mfs[1]] ~ test$sf[test$r==rs[1] & test$mf==mfs[1]], col=2, lwd=3, lty=2)
-       	lines(test$LDy[test$r==rs[1] & test$mf==mfs[2]] ~ test$sf[test$r==rs[1] & test$mf==mfs[2]], col=2, lwd=3, lty=2)
-       	lines(test$LDy[test$r==rs[2] & test$mf==mfs[1]] ~ test$sf[test$r==rs[2] & test$mf==mfs[1]], col=2, lwd=3, lty=2)
-       	lines(test$LDy[test$r==rs[2] & test$mf==mfs[2]] ~ test$sf[test$r==rs[2] & test$mf==mfs[2]], col=2, lwd=3, lty=2)
+       	lines(test$LDx[test$h==hs[1] & test$mf==mfs[1]] ~ test$sf[test$h==hs[1] & test$mf==mfs[1]], col=1, lwd=3, lty=1)
+       	lines(test$LDx[test$h==hs[1] & test$mf==mfs[2]] ~ test$sf[test$h==hs[1] & test$mf==mfs[2]], col=1, lwd=3, lty=1)
+       	lines(test$LDx[test$h==hs[2] & test$mf==mfs[1]] ~ test$sf[test$h==hs[2] & test$mf==mfs[1]], col=3, lwd=3, lty=1)
+       	lines(test$LDx[test$h==hs[2] & test$mf==mfs[2]] ~ test$sf[test$h==hs[2] & test$mf==mfs[2]], col=3, lwd=3, lty=1)
+       	lines(test$LDx[test$h==hs[3] & test$mf==mfs[1]] ~ test$sf[test$h==hs[3] & test$mf==mfs[1]], col=4, lwd=3, lty=1)
+       	lines(test$LDx[test$h==hs[3] & test$mf==mfs[2]] ~ test$sf[test$h==hs[3] & test$mf==mfs[2]], col=4, lwd=3, lty=1)
+
+       	lines(test$LDy[test$h==hs[1] & test$mf==mfs[1]] ~ test$sf[test$h==hs[1] & test$mf==mfs[1]], col=1, lwd=3, lty=2)
+       	lines(test$LDy[test$h==hs[1] & test$mf==mfs[2]] ~ test$sf[test$h==hs[1] & test$mf==mfs[2]], col=1, lwd=3, lty=2)
+       	lines(test$LDy[test$h==hs[2] & test$mf==mfs[1]] ~ test$sf[test$h==hs[2] & test$mf==mfs[1]], col=3, lwd=3, lty=2)
+       	lines(test$LDy[test$h==hs[2] & test$mf==mfs[2]] ~ test$sf[test$h==hs[2] & test$mf==mfs[2]], col=3, lwd=3, lty=2)
+		lines(test$LDy[test$h==hs[3] & test$mf==mfs[1]] ~ test$sf[test$h==hs[3] & test$mf==mfs[1]], col=4, lwd=3, lty=2)
+		lines(test$LDy[test$h==hs[3] & test$mf==mfs[2]] ~ test$sf[test$h==hs[3] & test$mf==mfs[2]], col=4, lwd=3, lty=2)
  # axes
         axis(1, las=1)
         axis(2, las=1)

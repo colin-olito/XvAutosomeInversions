@@ -170,7 +170,7 @@ recursionFwdSim  <-  function(par.list, xi.init, threshold = 1e-6, silent = FALS
 #' @param s.vals     Selection coefficient (for use in par.list).
 #' @param h          Dominance coefficient (for use in par.list). Character  
 #' @param m.vals     Values of migration rate to explore. Determines length of second simulation loop.
-#' @param r.vals     Values of recombination rate to explore(as in par.list). Determines length of outermost simulation loop.
+#' @param h.vals     Values of recombination rate to explore(as in par.list). Determines length of outermost simulation loop.
 #' @param threshold  Threshold difference between genotypic frequencies before simulation cuts off.
 #' @return Returns a data frame with parameter values, final frequencies of the inversion,
 #'         a variable describing whether the final state of the simulation was polymorphic, 
@@ -180,15 +180,15 @@ recursionFwdSim  <-  function(par.list, xi.init, threshold = 1e-6, silent = FALS
 #' @export
 #' @author Colin Olito.
 #' @examples
-#' recursionFwdSimLoop  <-  function(gen = 25000, h = 0.5, resolution = 0.005,
-#'	                              m.vals = c(0.01, 0.05), r.vals = c(0.0, 0.01, 0.1), 
+#' recursionFwdSimLoop  <-  function(gen = 25000, r = 0.5, resolution = 0.005,
+#'	                              m.vals = c(0.01, 0.05), h.vals = c(0.0, 0.01, 0.1), 
 #'	                              threshold = 1e-7) {
-recursionFwdSimLoop  <-  function(gen = 25000, h = 0.5, s.vals = c(0.01, 0.05),
-	                              m.vals = c(0.01, 0.05), r.vals = c(0.0, 0.01, 0.1), 
+recursionFwdSimLoop  <-  function(gen = 25000, r = 0.5, s.vals = c(0.01, 0.05),
+	                              m.vals = c(0.01, 0.05), h.vals = c(0, 0.5, 1), 
 	                              threshold = 1e-7) {
 
 	## Warnings
-	if(any(c(gen,h,m.vals,r.vals) < 0) | any(c(h) > 1) | any(r.vals > 0.5) | any(m.vals >= 0.2))
+	if(any(c(gen,h.vals,m.vals,r) < 0) | any(h.vals > 1) | r > 0.5 | any(m.vals >= 0.2))
 		stop('At least one of the chosen parameter values fall outside of the reasonable bounds')
 
 	if(threshold > 1e-6)
@@ -197,15 +197,15 @@ recursionFwdSimLoop  <-  function(gen = 25000, h = 0.5, s.vals = c(0.01, 0.05),
 			  convergence, and thus how long the simulations take')
 
 	# initialize storage structures
-	eqFreqs  <-  matrix(0, nrow=length(r.vals)*length(m.vals)*length(s.vals), ncol=5)
-	LD       <-  rep(0, length(r.vals)*length(m.vals)*length(s.vals))
+	eqFreqs  <-  matrix(0, nrow=length(h.vals)*length(m.vals)*length(s.vals), ncol=5)
+	LD       <-  rep(0, length(h.vals)*length(m.vals)*length(s.vals))
 	
 	##  Simulation Loop over values of r, m, s 
 	print('Running Deterministic Recursion Simulations')
-	pb   <-  txtProgressBar(min=0, max=length(r.vals)*length(m.vals), style=3)
+	pb   <-  txtProgressBar(min=0, max=length(h.vals)*length(m.vals), style=3)
 	setTxtProgressBar(pb, 0)
 
-	for (i in 1:length(r.vals)) {
+	for (i in 1:length(h.vals)) {
 		for (j in 1:length(m.vals)) {
 			for (k in 1:length(s.vals)) {
 				
@@ -213,19 +213,24 @@ recursionFwdSimLoop  <-  function(gen = 25000, h = 0.5, s.vals = c(0.01, 0.05),
                 				   gen  =  gen,
                 				   m    =  m.vals[j],
                 				   s    =  s.vals[k],
-                				   h    =  h,
-                				   r    =  r.vals[i]
+                				   h    =  h.vals[i],
+                				   r    =  r
                 				   )
 
 				##  Calculate equilibrium frequencies prior to invasion of the inversion
 				xi.init     <-  recursionFwdSim(par.list, xi.init = c(0.25,0.25,0.25,0.25,0), threshold = threshold, silent=TRUE)
 				xi.init     <-  xi.init[[3]]
-				xi.init[xi.init == max(xi.init)]  <-  xi.init[xi.init == max(xi.init)] - 0.01
-				xi.init[5]  <-  0.01
+				if (par.list$h > 0.1) {
+					xi.init[xi.init == max(xi.init)]  <-  xi.init[xi.init == max(xi.init)] - 0.01
+					xi.init[5]  <-  0.01
+				}
+				if(par.list$h < 0.1) {
+					xi.init[xi.init == max(xi.init)]  <-  xi.init[xi.init == max(xi.init)] - 0.05
+					xi.init[5]  <-  0.05
+				}
 
 		 		# Run simulation for given parameter values
 				res  <-  recursionFwdSim(par.list = par.list, xi.init = xi.init, threshold = threshold, silent=TRUE)
-#if(m==3) browser()
 
 				# Store equilibrium frequencies
 				eqFreqs[((i-1)*length(m.vals)*length(s.vals)) + ((j-1)*length(s.vals)) + k,]  <-  res$EQ.freq
@@ -234,29 +239,29 @@ recursionFwdSimLoop  <-  function(gen = 25000, h = 0.5, s.vals = c(0.01, 0.05),
 		setTxtProgressBar(pb, ((i-1)*length(m.vals) + j))
 		}
 	}
-	setTxtProgressBar(pb, length(r.vals)*length(m.vals))
+	setTxtProgressBar(pb, length(h.vals)*length(m.vals))
 
 	#  Compile results as data.frame
-	rs  <-  c()
+	hs  <-  c()
 	ms  <-  c()
-	for(i in 1:length(r.vals)) {
-		rs  <-  c(rs, rep(r.vals[i], length(m.vals)*length(s.vals)))
+	for(i in 1:length(h.vals)) {
+		hs  <-  c(hs, rep(h.vals[i], length(m.vals)*length(s.vals)))
 	}
-	for(i in 1:length(r.vals)) {
+	for(i in 1:length(h.vals)) {
 		for(j in 1:length(m.vals)) {
 			ms  <-  c(ms, rep(m.vals[j], length(s.vals)))
 		}
 	}
-	results.df  <-  data.frame("h"  =  rep(h, length(r.vals)*length(m.vals)*length(s.vals)),
-							   "s"  =  rep(s.vals, length(r.vals)*length(m.vals)),
-							   "r"  =  rs,
+	results.df  <-  data.frame("r"  =  rep(r, length(h.vals)*length(m.vals)*length(s.vals)),
+							   "s"  =  rep(s.vals, length(h.vals)*length(m.vals)),
+							   "h"  =  hs,
 							   "m"  =  ms
 							   )
 	results.df  <-  cbind(results.df, eqFreqs, LD)
-	colnames(results.df)  <-  c('h','s','r','m', 'x1', 'x2', 'x3', 'x4', 'x5', 'LD')
+	colnames(results.df)  <-  c('r','s','h','m', 'x1', 'x2', 'x3', 'x4', 'x5', 'LD')
 	
 	#  Write results.df to .txt file
-	filename  <-  paste("./output/data/simResults/determRecSim-Autosomal", "_h", h, ".csv", sep="")
+	filename  <-  paste("./output/data/simResults/determRecSim-Autosomal", "_r", r, ".csv", sep="")
 	write.csv(results.df, file=filename, row.names = FALSE)
 
 	#  Return results.df in case user wants it
