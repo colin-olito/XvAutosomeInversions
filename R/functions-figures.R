@@ -139,8 +139,8 @@ transparentColor <- function(col, opacity=0.5) {
 autoVsXEqFreqs  <-  function() {
     
     # Import data for plotting
-    auto  <-  read.csv("./output/data/simResults/determRecSim-Autosomal_r0.1.csv", header=TRUE)
-    xchr  <-  read.csv("./output/data/simResults/determRecSim-X-linked_r0.1.csv", header=TRUE)
+    auto  <-  read.csv("./output/data/simResults/determRecSim-Autosomal_r0.01.csv", header=TRUE)
+    xchr  <-  read.csv("./output/data/simResults/determRecSim-X-linked_r0.01.csv", header=TRUE)
 
     # Calculate equilibrium frequencies for X-linked model 
     xEQ.freqs  <-  (2*xchr[,7:11] + xchr[,12:16])/3

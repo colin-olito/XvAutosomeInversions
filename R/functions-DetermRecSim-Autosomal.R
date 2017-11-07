@@ -145,6 +145,7 @@ recursionFwdSim  <-  function(par.list, xi.init, threshold = 1e-6, silent = FALS
 	}
 	if(i == par.list$gen) {
 		print('Warning: maximum runtime reached. Results may not represent equilibrium frequencies')
+		print(par.list)
 	}
 
 	##  Output

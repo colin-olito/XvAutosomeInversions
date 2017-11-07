@@ -59,4 +59,7 @@ source('R/functions-figures.R')
 # Exploratory Figures
 ######################
 
+source('R/functions-figures.R')
+toPdf(autoVsXEqFreqs(), figPath(name='XvAuto-EqFreqs.pdf'), width=7, height=7)
+embed_fonts(figPath(name='XvAuto-EqFreqs.pdf'))
 
