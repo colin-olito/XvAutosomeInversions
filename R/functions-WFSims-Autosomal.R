@@ -3,9 +3,9 @@
 ###############
 
 
-####################
-# Functions for 
-####################
+######################
+# Necessary functions  
+######################
 
 #' Sample approximate stationary distribution for deleterious
 #' mutations at n autosomal loci  
