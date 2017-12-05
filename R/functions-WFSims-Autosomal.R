@@ -401,7 +401,8 @@ runReplicateAutoInvSims  <-  function(nReps = 1000, N = 500, m = 0.01, s = 0.1, 
 	Fii.init  <-  findEqFreqs(W=W.init, m=m, r=r, threshold=1e-7)
 
 	# Use deterministic equilibrium frequencies of non-inversion genotypes
-	# as initial conditions when introducing the inversion via genotype abba* 
+	# as initial conditions when introducing the inversion via a single
+	# copy of the abba* genotype 
 	Fii.init[19]  <-  Fii.init[19] - 1/N
 	Fii.init[20]  <-  1/N
 	
@@ -571,6 +572,9 @@ makeReplicateAutoInvSimsData  <-  function(nReps = 1000, N.vals = c(500, 1000), 
 	us      <-  rep(u, times=nrow(data))
 	h.dels  <-  rep(h.del, times=nrow(data))
 	data    <-  cbind(data, ss, hs, rs, us, h.dels)
+	colnames(data)  <-  c("finalInvFreq","finalE.InvFreq","finalW.mean",
+						  "nGen","invEst","invEstTime","nDels","N","m",
+						  "s.dels","s","h","r","u","h.del")
 
 	# create file name
 	filename  <-  paste("./output/data/simResults/auto-InvSimsData", "_s", s, "_h", h, "_r", r, "_n", n, "_u", u, ".csv", sep="")

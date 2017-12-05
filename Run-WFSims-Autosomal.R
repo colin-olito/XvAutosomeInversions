@@ -5,9 +5,6 @@
 #
 #  R code for W-F forward simulations. Generates output data
 #  as .csv files saved to ./output/data/simResults.
-#  haplotype frequency recursions for the model of 
-#  autosomal inversions. Simplest case to find equilibrium
-#  frequencies of the inversions.
 #
 #
 #  Author: Colin Olito
