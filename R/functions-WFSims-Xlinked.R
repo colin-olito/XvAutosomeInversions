@@ -1,7 +1,7 @@
 ###############
 # DEPENDENCIES
 ###############
-
+#xxxxxxxxxxxxddddd
 
 ######################
 # Necessary functions  
@@ -74,6 +74,7 @@ rejectionSamplerX  <-  function(n=100, Ne=100, u=1e-6, h=0, sf=0.01, sm=0.01) {
 # should start writing their functions here (using the code provided in 
 # './R/functions-WFSims-Autosomal.R' as a template)...
 #
+# Make some changes here...###HOMA
 # just clone into the github repository, then run 
 #
 # git checkout -b 'homa' OR git checkout -b 'ludo'
