@@ -249,7 +249,7 @@ autoInvFwdSim  <-  function(Fii.init = Fii.init, N = N, W = W, m = m, r = r,
 			# 4) Expected frequencies
 			E.Fii  <-  O*W/Wbar
 			# 5) Draw random frequencies in adults
-			Fii    <-  as.vector(rmultinom(1, N/2, E.Fii)/(N/2))
+			Fii    <-  as.vector(rmultinom(1, N, E.Fii)/(N))
 	
 			# Realized frequencies
 			InvFreq[gen+1]    <-  sum(Fii[c(5,10,15,20:24)]/2, Fii[25])
@@ -306,7 +306,7 @@ autoInvFwdSim  <-  function(Fii.init = Fii.init, N = N, W = W, m = m, r = r,
 			# 4) Expected frequencies
 			E.Fii  <-  O*W/Wbar
 			# 5) Draw random frequencies in adults
-			Fii    <-  as.vector(rmultinom(1, N/2, E.Fii)/(N/2))
+			Fii    <-  as.vector(rmultinom(1, N, E.Fii)/(N))
 	
 			# Realized frequencies
 			InvFreq    <-  sum(Fii[c(5,10,15,20:24)]/2, Fii[25])
