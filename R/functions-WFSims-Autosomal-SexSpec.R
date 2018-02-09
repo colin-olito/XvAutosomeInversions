@@ -8,7 +8,7 @@
 ######################
 
 #' Sample approximate stationary distribution for deleterious
-#' mutations at n autosomal loci  
+#' mutations at n autosomal loci   
 #'
 #' @title Rejection Sampler for autosomal loci
 #' @param n  Number of loci to sample.
