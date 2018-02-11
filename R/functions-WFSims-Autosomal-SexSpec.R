@@ -138,3 +138,109 @@ y.5  <-  function(Fii=Fiiy, m=m, r=r) {
 	((2*Fiiy[25] + (Fiiy[5] + Fiiy[21]) + (Fiiy[10] + Fiiy[22]) + (Fiiy[15] + Fiiy[23]) + (Fiiy[20] + Fiiy[24])) / 2)*(1 - m)
 }
 
+
+#' Offspring frequencies after random mating
+#'
+#' @title Offspring frequencies after random mating, ( males and females have the same allele frequencies)
+#' @param xi Vector of haplotype frequencies among female gametes (of length = 5)
+#' @param yi Vector of haplotype frequencies among male gametes (of length = 5)
+
+#' @export
+offFreq  <-  function(xi,yi) {
+	O  <-  c(xi[1] *yi[1], (xi[1]*yi[2]), (xi[1]*yi[3]), (xi[1]*yi[4]), (xi[1]*yi[5]),
+			 (xi[2]*yi[1]), xi[2]*yi[2], (xi[2]*yi[3]), (xi[2]*yi[4]), (xi[2]*yi[5]),
+			 (xi[3]*yi[1]), (xi[3]*yi[2]), xi[3]*yi[3], (xi[3]*yi[4]), (xi[3]*yi[5]),
+			 (xi[4]*yi[1]), (xi[4]*yi[2]), (xi[4]*yi[3]), xi[4]*yi[4], (xi[4]*yi[5]),
+			 (xi[5]*yi[1]), (xi[5]*yi[2]), (xi[5]*yi[3]), (xi[5]*yi[4]), xi[5]*yi[4]
+			 )
+	O
+}
+
+
+#' Calculate deterministic equilibrium genotype frequencies 
+#' in the absence of the inversion 
+#'
+#' Genotypes are organized as numeric vectors of length = 25. For consistency
+#' they are always ordered as follows:
+#.Females
+#'		c(ABAB,  ABAb,  ABaB,  ABab,  ABba*,	c(x1x1, x1x2, x1x3, x1x4, x1x5, 
+#'		  AbAB,  AbAb,  AbaB,  Abab,  Abba*,	  x2x1, x2x2, x2x3, x2x4, x2x5, 
+#'		  aBAB,  aBAb,  aBaB,  aBab,  aBba*,	  x3x1, x3x2, x3x3, x3x4, x3x5, 
+#'		  abAB,  abAb,  abaB,  abab,  abba*,	  x4x1, x4x2, x4x3, x4x4, x4x5, 
+#'		  baAB*, baAb*, baaB*, baab*, baba*)	  x5x1, x5x2, x5x3, x5x4, x5x5)
+#.<ales
+#'		c(ABAB,  ABAb,  ABaB,  ABab,  ABba*,	c(y1y1, y1y2, y1y3, y1y4, y1y5, 
+#'		  AbAB,  AbAb,  AbaB,  Abab,  Abba*,	  y2y1, y2y2, y2y3, y2y4, y2y5, 
+#'		  aBAB,  aBAb,  aBaB,  aBab,  aBba*,	  y3y1, y3y2, y3y3, y3y4, y3y5, 
+#'		  abAB,  abAb,  abaB,  abab,  abba*,	  y4y1, y4y2, y4y3, y4y4, y4y5, 
+#'		  baAB*, baAb*, baaB*, baab*, baba*)	  y5y1, y5y2, y5y3, y5y4, y5y5)
+#' @title Find the deterministic equilibeium genotype frequencies prior to introducing the inversion
+#' @param Wx     Vector of fitness expressions for all 25 genotypes in females
+#' @param Wy     Vector of fitness expressions for all 25 genotypes in males
+#' @param m      Migration rate for locally maladaptive alleles (m =  0.01)
+#' @param r      Recombination rate among the two loci involved in local adaptation (r = 0.1).
+#' @param threshold The threshold change in genotype frequency at which the simulation
+#'                  will accept the current state as having reached equilibrium. Values
+#'                  of 1e-6 or 1e-7 have worked pretty well in the past. 
+#' @export
+#' @seealso `offFreq`, `autoInvWrightFisherSim`
+#' @author Colin Olito
+findEqFreqs  <-  function(W, m, r, threshold = 1e-6) {
+	
+	Fii.init  <-  c(1/16, 1/16, 1/16, 1/16, 0, 
+					1/16, 1/16, 1/16, 1/16, 0, 
+					1/16, 1/16, 1/16, 1/16, 0, 
+					1/16, 1/16, 1/16, 1/16, 0, 
+					   0,    0,    0,    0, 0)
+	Fiix    <-  Fii.init
+	E.Fiix  <-  Fii.init
+
+	Fiiy    <-  Fii.init
+	E.Fiiy  <-  Fii.init
+
+	# Storage for female gamete frequencies
+	xi         <-  rep(0, times=5)
+	names(xi)  <-  c('x.1', 'x.2', 'x.3', 'x.4', 'x.5')
+
+	# Storage for female gamete frequencies
+	yi         <-  rep(0, times=5)
+	names(yi)  <-  c('y.1', 'y.2', 'y.3', 'y.4', 'y.5')
+	
+	xdelta  <-  rep(1, times=16) # change of allele frequencies in 1gen in males
+	ydelta  <-  rep(1, times=16)#  change of allele frequencies in 1gen in females
+	delta<-append(xdelta,ydelta) # just to be able to check if ANY allele is not stable
+	
+
+	while(any(delta > threshold)) {
+		for (j in 1:length(xi)) {
+			recFct  <-  get(names(xi)[j])
+			xi[j]   <-  round(recFct(Fii = E.Fiix, m = m, r = r), digits=3)
+			recFct  <-  get(names(yi)[j])
+			yi[j]   <-  round(recFct(Fii = E.Fiiy, m = m, r = r), digits=3)
+		}
+	
+	    # offspring genotype frequencies
+	    O  <-  offFreq(xi,yi)
+
+		# mean fitness 
+		Wxbar      <-  sum(O*Wx)
+		Wybar      <-  sum(O*Wy)
+
+	    # difference in expected frequency (has simulation reached equilibrium yet?)
+		xdelta   <-  E.Fiix[c(1:4,6:9,11:14,16:19)] - (O*Wx/Wxbar)[c(1:4,6:9,11:14,16:19)] # not the inversion freq which will not move
+		ydelta   <-  E.Fiiy[c(1:4,6:9,11:14,16:19)] - (O*Wy/Wybar)[c(1:4,6:9,11:14,16:19)]
+		delta<-append(xdelta,ydelta)
+
+		E.Fiix   <-  O*Wx/Wxbar
+		E.Fiiy   <-  O*Wy/Wybar
+
+	}
+
+	names(E.Fiix)  <-  NULL
+	names(E.Fiiy)  <-  NULL
+	return (rbind(E.Fiix,E.Fiiy) )
+}
+
+
+
+#BE CAREFUL WHEN YOU PICK EQUILIBRIUM FREQUENCIES, they are a data frame 

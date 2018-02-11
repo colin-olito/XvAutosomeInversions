@@ -1,5 +1,6 @@
 functions-WFSims-Autosomal-SexSpec 
 
-9/2/18  added Fiix and Fiiy
+9/2/18  added Fiix and Fiiy 
 immediate goals: need to understand the linkage function?
-And why is there migration beween x1 to x5 and y1 to y5?
+
+
