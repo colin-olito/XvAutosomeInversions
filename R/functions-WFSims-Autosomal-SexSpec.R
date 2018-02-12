@@ -86,9 +86,11 @@ rejectionSamplerX  <-  function(n=100, Ne=100, u=1e-6, h=0, sf=0.01, sm=0.01) {
 #' @param m   Migration rate
 #' @export
 
-!!!TOMODIFY Dstar  <-  function(Fii=Fii, m=m, ...) {
+Dstar  <-  function(Fii=Fii, m=m, ...) {
 	(((Fii[4] + Fii[16]) - (Fii[8] + Fii[12])) / 2)*(1 - m)
 }
+
+
 
 		# genotypes ordered:
 		#Females
@@ -105,37 +107,39 @@ rejectionSamplerX  <-  function(n=100, Ne=100, u=1e-6, h=0, sf=0.01, sm=0.01) {
 		#	  baAB*, baAb*, baaB*, baab*, baba*)	  y5y1, y5y2, y5y3, y5y4, y5y5)
 
 
-x.1  <-  function(Fii=Fiix, m=m, r=r) {
-	((2*Fiix[1] + (Fiix[2] + Fiix[6]) + (Fiix[3] + Fiix[11]) + (Fiix[4] + Fiix[16]) + (Fiix[5] + Fiix[21])) / 2)*(1 - m) - r*Dstar(Fii=Fii, m=m) + m
+#It takes Fiix or Fiiy as an argument
+
+x.1  <-  function(Fii=Fiix, m=m, r=r) { 
+	((2*Fii[1] + (Fii[2] + Fii[6]) + (Fii[3] + Fii[11]) + (Fii[4] + Fii[16]) + (Fii[5] + Fii[21])) / 2)*(1 - m) - r*Dstar(Fii=Fii, m=m) + m
 } 
 x.2  <-  function(Fii=Fiix, m=m, r=r) {
-	((2*Fiix[7] + (Fiix[2] + Fiix[6]) + (Fiix[8] + Fiix[12]) + (Fiix[9] + Fiix[17]) + (Fiix[10] + Fiix[22])) / 2)*(1 - m) + r*Dstar(Fii=Fii, m=m)
+	((2*Fii[7] + (Fii[2] + Fii[6]) + (Fii[8] + Fii[12]) + (Fii[9] + Fii[17]) + (Fii[10] + Fii[22])) / 2)*(1 - m) + r*Dstar(Fii=Fii, m=m)
 }
 x.3  <-  function(Fii=Fiix, m=m, r=r) {
-	((2*Fiix[13] + (Fiix[3] + Fiix[11]) + (Fiix[8] + Fiix[12]) + (Fiix[14] + Fiix[18]) + (Fiix[15] + Fiix[23])) / 2)*(1 - m) + r*Dstar(Fii=Fii, m=m)
+	((2*Fii[13] + (Fii[3] + Fii[11]) + (Fii[8] + Fii[12]) + (Fii[14] + Fii[18]) + (Fii[15] + Fii[23])) / 2)*(1 - m) + r*Dstar(Fii=Fii, m=m)
 }
 x.4  <-  function(Fii=Fiix, m=m, r=r) {
-	((2*Fiix[19] + (Fiix[4] + Fiix[16]) + (Fiix[9] + Fiix[17]) + (Fiix[14] + Fiix[18]) + (Fiix[20] + Fiix[24])) / 2)*(1 - m) - r*Dstar(Fii=Fii, m=m)
+	((2*Fii[19] + (Fii[4] + Fii[16]) + (Fii[9] + Fii[17]) + (Fii[14] + Fii[18]) + (Fii[20] + Fii[24])) / 2)*(1 - m) - r*Dstar(Fii=Fii, m=m)
 }
 x.5  <-  function(Fii=Fiix, m=m, r=r) {
-	((2*Fiix[25] + (Fiix[5] + Fiix[21]) + (Fiix[10] + Fiix[22]) + (Fiix[15] + Fiix[23]) + (Fiix[20] + Fiix[24])) / 2)*(1 - m)
+	((2*Fii[25] + (Fii[5] + Fii[21]) + (Fii[10] + Fii[22]) + (Fii[15] + Fii[23]) + (Fii[20] + Fii[24])) / 2)*(1 - m)
 }
 
 
 y.1  <-  function(Fii=Fiiy, m=m, r=r) {
-	((2*Fiiy[1] + (Fiiy[2] + Fiiy[6]) + (Fiiy[3] + Fiiy[11]) + (Fiiy[4] + Fiiy[16]) + (Fiiy[5] + Fiiy[21])) / 2)*(1 - m) - r*Dstar(Fii=Fii, m=m) + m
+	((2*Fii[1] + (Fii[2] + Fii[6]) + (Fii[3] + Fii[11]) + (Fii[4] + Fii[16]) + (Fii[5] + Fii[21])) / 2)*(1 - m) - r*Dstar(Fii=Fii, m=m) + m
 } 
 y.2  <-  function(Fii=Fiiy, m=m, r=r) {
-	((2*Fiiy[7] + (Fiiy[2] + Fiiy[6]) + (Fiiy[8] + Fiiy[12]) + (Fiiy[9] + Fiiy[17]) + (Fiiy[10] + Fiiy[22])) / 2)*(1 - m) + r*Dstar(Fii=Fii, m=m)
+	((2*Fii[7] + (Fii[2] + Fii[6]) + (Fii[8] + Fii[12]) + (Fii[9] + Fii[17]) + (Fii[10] + Fii[22])) / 2)*(1 - m) + r*Dstar(Fii=Fii, m=m)
 }
 y.3  <-  function(Fii=Fiiy, m=m, r=r) {
-	((2*Fiiy[13] + (Fiiy[3] + Fiiy[11]) + (Fiiy[8] + Fiiy[12]) + (Fiiy[14] + Fiiy[18]) + (Fiiy[15] + Fiiy[23])) / 2)*(1 - m) + r*Dstar(Fii=Fii, m=m)
+	((2*Fii[13] + (Fii[3] + Fii[11]) + (Fii[8] + Fii[12]) + (Fii[14] + Fii[18]) + (Fii[15] + Fii[23])) / 2)*(1 - m) + r*Dstar(Fii=Fii, m=m)
 }
 y.4  <-  function(Fii=Fiiy, m=m, r=r) {
-	((2*Fiiy[19] + (Fiiy[4] + Fiiy[16]) + (Fiiy[9] + Fiiy[17]) + (Fiiy[14] + Fiiy[18]) + (Fiiy[20] + Fiiy[24])) / 2)*(1 - m) - r*Dstar(Fii=Fii, m=m)
+	((2*Fii[19] + (Fii[4] + Fii[16]) + (Fii[9] + Fii[17]) + (Fii[14] + Fii[18]) + (Fii[20] + Fii[24])) / 2)*(1 - m) - r*Dstar(Fii=Fii, m=m)
 }
 y.5  <-  function(Fii=Fiiy, m=m, r=r) {
-	((2*Fiiy[25] + (Fiiy[5] + Fiiy[21]) + (Fiiy[10] + Fiiy[22]) + (Fiiy[15] + Fiiy[23]) + (Fiiy[20] + Fiiy[24])) / 2)*(1 - m)
+	((2*Fii[25] + (Fii[5] + Fii[21]) + (Fii[10] + Fii[22]) + (Fii[15] + Fii[23]) + (Fii[20] + Fii[24])) / 2)*(1 - m)
 }
 
 
@@ -185,7 +189,11 @@ offFreq  <-  function(xi,yi) {
 #' @export
 #' @seealso `offFreq`, `autoInvWrightFisherSim`
 #' @author Colin Olito
-findEqFreqs  <-  function(W, m, r, threshold = 1e-6) {
+
+
+
+
+findEqFreqs  <-  function(Wx,Wy, m, r, threshold = 1e-6) {
 	
 	Fii.init  <-  c(1/16, 1/16, 1/16, 1/16, 0, 
 					1/16, 1/16, 1/16, 1/16, 0, 
@@ -210,15 +218,15 @@ findEqFreqs  <-  function(W, m, r, threshold = 1e-6) {
 	ydelta  <-  rep(1, times=16)#  change of allele frequencies in 1gen in females
 	delta<-append(xdelta,ydelta) # just to be able to check if ANY allele is not stable
 	
-
+	gen=0 # counter of generations
 	while(any(delta > threshold)) {
+		gen=gen+1
 		for (j in 1:length(xi)) {
 			recFct  <-  get(names(xi)[j])
 			xi[j]   <-  round(recFct(Fii = E.Fiix, m = m, r = r), digits=3)
 			recFct  <-  get(names(yi)[j])
 			yi[j]   <-  round(recFct(Fii = E.Fiiy, m = m, r = r), digits=3)
 		}
-	
 	    # offspring genotype frequencies
 	    O  <-  offFreq(xi,yi)
 
@@ -235,6 +243,7 @@ findEqFreqs  <-  function(W, m, r, threshold = 1e-6) {
 		E.Fiiy   <-  O*Wy/Wybar
 
 	}
+	print (c("reach equilibrium of initial frequencies at gen",gen))
 
 	names(E.Fiix)  <-  NULL
 	names(E.Fiiy)  <-  NULL
@@ -242,5 +251,13 @@ findEqFreqs  <-  function(W, m, r, threshold = 1e-6) {
 }
 
 
+##Test findEqFreqs 
+Wx<-rep(1,25)
+Wy<-rep(1,25)
+m=0
+r=1
+findEqFreqs(Wx,Wy, m, r, threshold = 1e-6)
 
-#BE CAREFUL WHEN YOU PICK EQUILIBRIUM FREQUENCIES, they are a data frame 
+
+
+
