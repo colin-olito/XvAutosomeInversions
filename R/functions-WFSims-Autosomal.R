@@ -342,6 +342,56 @@ return(res)
 }
 
 
+#' Introduce new mutant inverion genotype
+#'
+#' @title Introduce new mutant inverion genotype
+#' @param newMutant  Switch to choose whether to specify new mutant genotypes, or if they are 
+#' 					 chosen randomly, given initial genotypic frequencies (Fii.init). 
+#' 					 See params for runReplicateAutoInvSims().
+#' @param Fii.init   Initial genotypic frequencies, from which to calculate probability of new 
+#' 					 mutant inversion occurring
+#' @param N			 Population size
+introduceInversion  <-  function(newMutant, Fii.init, N) {
+
+	# Toggle
+	specifyNewMutant  <-  is.numeric(newMutant)
+
+	# Choose mutant genotype randomly
+	if(!specifyNewMutant) {
+
+		probNewMutant     <-  Fii.init[c(4,9,14,16:19)]/sum(Fii.init[c(4,9,14,16:19)])
+		newMut            <-  c(4,9,14,16:19)[as.vector(rmultinom(1,1,probNewMutant)) == 1]
+
+		# Subtract new mutant individual from frequency of old genotype
+		Fii.init[newMut]  <-  Fii.init[newMut] - 1/N
+	}
+
+	# Specify mutant genotype
+	if(specifyNewMutant) {
+		# Subtract new mutant individual from frequency of old genotype
+		newMut  <-  newMutant
+		Fii.init[newMutant]  <-  Fii.init[newMutant] - 1/N
+	}
+
+	# Add mutant individual to frequency of new inversion genotype
+	if(newMut == 4 | newMut == 9 | newMut == 14)
+		Fii.init[newMut + 1]  <-  1/N
+	if(newMut == 16 | newMut == 17 | newMut == 18)
+		Fii.init[newMut + 5]  <-  1/N
+
+	# if inversion occurs on abab genotype, choose randomly whether it occurs on
+	# the maternally or paternally inherited chromosome 
+	if(newMut == 19) {
+		if(runif(1) >= 1/2) {
+			Fii.init[newMut + 1]  <-  1/N
+		}
+		else Fii.init[newMut + 5]  <-  1/N
+	}
+
+	Fii.init
+}
+
+
 #' Wrapper function to run replicate forward simulations for invasion
 #' of autosomal inversions in a Wright-Fisher population 
 #'
@@ -362,6 +412,11 @@ return(res)
 #' 				 the locally adaptive alleles. Setting noDel = TRUE runs the W-F simulations as if
 #' 				 there were no delterious mutations segregating in the population that are linked
 #' 				 to the loci involved in local adaptation. 
+#' @param newMutant  Switch to choose whether to specify new mutant genotypes, or if they are 
+#' 					 chosen randomly, given initial genotypic frequencies (Fii.init). If inversion
+#' 					 genotypes are to be chosen randomly, set newMutant = 'random'. If they are to 
+#' 					 be specified, set newMutant to one of the following values: c(4,9,14,16:19), 
+#' 					 but consider which genotype each of these correspond to.
 #' @param saveTrajectories  Save evolutionary trajectories of inversion frequencies? Setting this 
 #' 							to TRUE can become extremely memory intensive if you are running many
 #' 							replicate simulations (see warning).
@@ -371,11 +426,20 @@ return(res)
 #' @author Colin Olito.
 runReplicateAutoInvSims  <-  function(nReps = 1000, N = 500, m = 0.01, s = 0.1, h = 1/2, r = 0.1, 
 									  n = 100, u = 1e-5, h.del = 0, s.del = 1, noDel = FALSE,
-									  saveTrajectories = FALSE) {
+									  newMutant = 'random', saveTrajectories = FALSE) {
 
 	##  Preemptive Warnings
 	if(any(c(N,m,s,h,r,n,u,h.del) < 0) | any(c(m,s,h,r,u,h.del) > 1) | r > 0.5)
 		stop('The chosen parameter values fall outside of reasonable parameter space')
+
+	specifyNewMutant  <-  is.numeric(newMutant)
+	if(specifyNewMutant & all(newMutant != c(4,9,14,16:19)))
+		stop('If specifying the genotype of new inversion mutants, newMutant must take 
+			  one of the following values: 4,9,14,16:19')
+
+	if(!specifyNewMutant & newMutant != 'random')
+		stop('If the genotype of new inversion mutants is being chosen randomly, 
+			  the parameter newMutant must equal random')
 
 	try({
 		 if(m >= s )
@@ -400,12 +464,9 @@ runReplicateAutoInvSims  <-  function(nReps = 1000, N = 500, m = 0.01, s = 0.1, 
  	## Find deterministic equilibrium frequencies in absence of inversion  
 	Fii.init  <-  findEqFreqs(W=W.init, m=m, r=r, threshold=1e-7)
 
-	# Use deterministic equilibrium frequencies of non-inversion genotypes
-	# as initial conditions when introducing the inversion via a single
-	# copy of the abba* genotype 
-	Fii.init[19]  <-  Fii.init[19] - 1/N
-	Fii.init[20]  <-  1/N
-	
+	# Introduce rare mutant inversion
+	Fii.init  <-  introduceInversion(newMutant=newMutant, Fii.init=Fii.init, N = N)
+
 	# Storage structures for replicate simulation data
 	finalInvFreq    <-  rep(0, times=nReps)
 	finalE.InvFreq  <-  rep(0, times=nReps)
