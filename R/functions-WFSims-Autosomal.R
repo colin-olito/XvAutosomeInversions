@@ -490,7 +490,7 @@ runReplicateAutoInvSims  <-  function(nReps = 1000, N = 500, m = 0.01, s = 0.1, 
 	for(i in 1:nReps) {
 
 	## Sample stationary distribution of deleterious alleles
-	delMutFreq  <-  rejectionSampler(n=n, Ne=N, u=u)
+	delMutFreq  <-  rejectionSampler(n=n, Ne=N, u=u, s=s.del, h=h.del)
 	n.del       <-  sum(delMutFreq > runif(n=n))
 
 	# Define fitness expressions, including fitness effects of deleterious mutations
