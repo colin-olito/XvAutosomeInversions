@@ -1,7 +1,6 @@
 ###############
 # DEPENDENCIES
 ###############
-#xxxxxxxxxxxxddddd
 
 ######################
 # Necessary functions  
