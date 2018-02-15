@@ -1,4 +1,11 @@
-functions-WFSims-Autosomal-SexSpec 
+15/2/18  
+Current issues:
 
-11/2/18  Linkage is working
+1. 
+
+I coded my version of autoInvFwdSim in functions-WFSims-Autosomal-SexSpec.R  , calling it  autoInvFwdSimSexSpec. I am struggling especially with two points, should the average fitness be calculated across sexes  and is the multinomial draw similar now that we have two sexes (Line 316-323)... Probably not as a custom test with a ridiculously fit mutation does not fix the mutation, 
+
+2. 
+functions-WFSims-Autosomal.R: It seems to me that W.mean has two different meanings if it is in save trajerctories or not within the function autoInvFwdSim ( line 273 or 333)
+
 
