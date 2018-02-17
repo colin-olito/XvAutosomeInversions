@@ -1,11 +1,45 @@
-15/2/18  
-Current issues:
 
-1. 
 
-I coded my version of autoInvFwdSim in functions-WFSims-Autosomal-SexSpec.R  , calling it  autoInvFwdSimSexSpec. I am struggling especially with two points, should the average fitness be calculated across sexes  and is the multinomial draw similar now that we have two sexes (Line 316-323)... Probably not as a custom test with a ridiculously fit mutation does not fix the mutation, 
+My  questions:
 
-2. 
-functions-WFSims-Autosomal.R: It seems to me that W.mean has two different meanings if it is in save trajerctories or not within the function autoInvFwdSim ( line 273 or 333)
+general?
+
+how do we want to introduce the mutation, always in females?  now it is done only in females line 548, maybe wrong 1/N
+
+
+
+
+When the whole thing  finish to run with an inversion that disappears, the average fitness get to 0, I do not understand. Is that a bug?
+
+finalInvFreq finalE.InvFreq finalW.mean finalWx.mean finalWy.mean
+1        0.001      0.0010000    0.000000     0.000000     0.000000
+ finalInvFreqx finalInvFreqy finalE.InvFreqx finalE.InvFreqy nGen InvEst
+1         0.000         0.000       0.0000000       0.0000000    2      0
+  InvEstTime nDels
+1         NA     2
+
+
+
+
+
+
+ Can we save travejctories in makeReplicateAutoInvSimsData or is it just to test the other functions
+
+
+
+
+
+
+Your code
+
+
+
+line 446 of  functions WFSims-autosomal in runReplicateAutoInvSims, it runs:
+
+		repRes  <-  autoInvFwdSim(Fii.init=Fii.init, N=N, W=W, m=m, r=r)
+
+It could probably include the savetrajectories argument like this
+
+		repRes  <-  autoInvFwdSim(Fii.init=Fii.init, N=N, W=W, m=m, r=r,saveTrajectories=saveTrajectories)
 
 
