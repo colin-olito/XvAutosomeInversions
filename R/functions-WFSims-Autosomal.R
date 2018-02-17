@@ -504,7 +504,7 @@ runReplicateAutoInvSims  <-  function(nReps = 1000, N = 500, m = 0.01, s = 0.1, 
 			(1 + h*s)^2*(1 - h.del*s.del)^n.del, (1 + h*s)*(1 + s)*(1 - h.del*s.del)^n.del, (1 + s)*(1 + h*s)*(1 - h.del*s.del)^n.del, (1 + s)^2*(1 - h.del*s.del)^n.del, (1 + s)^2*(1 - s.del)^n.del)
 
 		## RUN SIMULATION
-		repRes  <-  autoInvFwdSim(Fii.init=Fii.init, N=N, W=W, m=m, r=r)
+		repRes  <-  autoInvFwdSim(Fii.init=Fii.init, N=N, W=W, m=m, r=r, saveTrajectories=saveTrajectories)
 
 		# save results for each replicate
 		finalInvFreq[i]    <-  repRes$InvFreq[length(repRes$InvFreq)]
@@ -581,7 +581,7 @@ runReplicateAutoInvSims  <-  function(nReps = 1000, N = 500, m = 0.01, s = 0.1, 
 #' @author Colin Olito.
 makeReplicateAutoInvSimsData  <-  function(nReps = 1000, N.vals = c(500, 1000), m.vals = c(0.01, 0.05), 
 										   s = 0.1, h = 1/2, r = 0.1, 
-										   n = 100, u = 1e-5, h.del = 0) {
+										   n = 100, u = 1e-5, h.del = 0, newMutant = 'random') {
 
 	# Simulate deleterious mutations that are either 
 	# 1) recessive lethals OR
@@ -609,8 +609,8 @@ makeReplicateAutoInvSimsData  <-  function(nReps = 1000, N.vals = c(500, 1000), 
 
 				# Run simulations  
 				res  <-  runReplicateAutoInvSims(nReps = nReps, N = N.vals[j], m = m.vals[k], s = s, h = h, r = r, 
-												 n = n, u = u, h.del = h.del, s.del = s.del.vals[l], 
-												 noDel = FALSE, saveTrajectories = FALSE)
+												 n = n, u = u, h.del = h.del, s.del = s.del.vals[l], noDel = FALSE, 
+												 newMutant = newMutant)
 
 				# Save data 
 				Ns      <-  rep(N.vals[j], times=nrow(res$results.df))
