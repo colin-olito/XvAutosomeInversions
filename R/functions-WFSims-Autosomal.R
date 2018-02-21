@@ -76,8 +76,11 @@ rejectionSamplerX  <-  function(n=100, Ne=100, u=1e-6, h=0, sf=0.01, sm=0.01) {
 #' @param Fii Vector of adult genotypic frequencies (of length = 25)
 #' @param m   Migration rate
 #' @export
+#Dstar  <-  function(Fii=Fii, m=m, ...) {
+#	(((Fii[4] + Fii[16]) - (Fii[8] + Fii[12])) / 2)*(1 - m)
+#}
 Dstar  <-  function(Fii=Fii, m=m, ...) {
-	(((Fii[4] + Fii[16]) - (Fii[8] + Fii[12])) / 2)*(1 - m)
+	(((Fii[4] + Fii[16]) - (Fii[8] + Fii[12])) / 2)
 }
 
 		# genotypes ordered:
@@ -110,7 +113,21 @@ x.4  <-  function(Fii=Fii, m=m, r=r) {
 x.5  <-  function(Fii=Fii, m=m, r=r) {
 	((2*Fii[25] + (Fii[5] + Fii[21]) + (Fii[10] + Fii[22]) + (Fii[15] + Fii[23]) + (Fii[20] + Fii[24])) / 2)*(1 - m)
 }
-
+#x.1  <-  function(Fii=Fii, m=m, r=r) {
+#	((2*Fii[1] + (Fii[2] + Fii[6]) + (Fii[3] + Fii[11]) + (Fii[4] + Fii[16]) + (Fii[5] + Fii[21])) / 2) - r*Dstar(Fii=Fii, m=m)
+#} 
+#x.2  <-  function(Fii=Fii, m=m, r=r) {
+#	((2*Fii[7] + (Fii[2] + Fii[6]) + (Fii[8] + Fii[12]) + (Fii[9] + Fii[17]) + (Fii[10] + Fii[22])) / 2) + r*Dstar(Fii=Fii, m=m)
+#}
+#x.3  <-  function(Fii=Fii, m=m, r=r) {
+#	((2*Fii[13] + (Fii[3] + Fii[11]) + (Fii[8] + Fii[12]) + (Fii[14] + Fii[18]) + (Fii[15] + Fii[23])) / 2) + r*Dstar(Fii=Fii, m=m)
+#}
+#x.4  <-  function(Fii=Fii, m=m, r=r) {
+#	((2*Fii[19] + (Fii[4] + Fii[16]) + (Fii[9] + Fii[17]) + (Fii[14] + Fii[18]) + (Fii[20] + Fii[24])) / 2) - r*Dstar(Fii=Fii, m=m)
+#}
+#x.5  <-  function(Fii=Fii, m=m, r=r) {
+#	((2*Fii[25] + (Fii[5] + Fii[21]) + (Fii[10] + Fii[22]) + (Fii[15] + Fii[23]) + (Fii[20] + Fii[24])) / 2)
+#}
 
 
 #' Offspring frequencies after random mating
@@ -176,10 +193,16 @@ findEqFreqs  <-  function(W, m, r, threshold = 1e-6) {
 
 		# mean fitness 
 		Wbar      <-  sum(O*W)
+#proposed new frequencies
+#proposal  <-  (O*W/Wbar)
+#proposal  <-  proposal * (1-m)
+#proposal[1]  <-  proposal[1] + m
 
 	    # difference in expected frequency (has simulation reached equilibrium yet?)
 		delta   <-  E.Fii[c(1:4,6:9,11:14,16:19)] - (O*W/Wbar)[c(1:4,6:9,11:14,16:19)]
 		E.Fii   <-  O*W/Wbar
+#		delta   <-  E.Fii[c(1:4,6:9,11:14,16:19)] - proposal[c(1:4,6:9,11:14,16:19)]
+#		E.Fii   <-  proposal
 	}
 	names(E.Fii)  <-  NULL
 	E.Fii 
@@ -248,6 +271,9 @@ autoInvFwdSim  <-  function(Fii.init = Fii.init, N = N, W = W, m = m, r = r,
 			Wbar   <-  sum(O*W)
 			# 4) Expected frequencies
 			E.Fii  <-  O*W/Wbar
+# migration
+#E.Fii  <-  E.Fii * (1-m)
+#E.Fii[1]  <-  E.Fii[1] + m
 			# 5) Draw random frequencies in adults
 			Fii    <-  as.vector(rmultinom(1, N, E.Fii)/(N))
 	
@@ -305,6 +331,9 @@ autoInvFwdSim  <-  function(Fii.init = Fii.init, N = N, W = W, m = m, r = r,
 			Wbar   <-  sum(O*W)
 			# 4) Expected frequencies
 			E.Fii  <-  O*W/Wbar
+# migration
+#E.Fii  <-  E.Fii * (1-m)
+#E.Fii[1]  <-  E.Fii[1] + m
 			# 5) Draw random frequencies in adults
 			Fii    <-  as.vector(rmultinom(1, N, E.Fii)/(N))
 	
@@ -579,8 +608,8 @@ runReplicateAutoInvSims  <-  function(nReps = 1000, N = 500, m = 0.01, s = 0.1, 
 #' @seealso `offFreq`, `findEqFreqs`, `autoInvFwdSim`
 #' @export
 #' @author Colin Olito.
-makeReplicateAutoInvSimsData  <-  function(nReps = 1000, N.vals = c(500, 1000), m.vals = c(0.01, 0.05), 
-										   s = 0.1, h = 1/2, r = 0.1, 
+makeReplicateAutoInvSimsData  <-  function(nReps = 1000, N = 5000, m.vals = c(0.01, 0.05), 
+										   s = 0.1, h = 1/2, r.vals = c(0.5, 0.1), 
 										   n = 100, u = 1e-5, h.del = 0, newMutant = 'random') {
 
 	# Simulate deleterious mutations that are either 
@@ -596,10 +625,10 @@ makeReplicateAutoInvSimsData  <-  function(nReps = 1000, N.vals = c(500, 1000), 
 
 	# Convenience variables to monitor progress
 	prog  <-  0
-	tot   <-  length(N.vals)*length(m.vals)*length(s.del.vals)
+	tot   <-  length(r.vals)*length(m.vals)*length(s.del.vals)
 
 	# Loop over parameter values we want to explore 
-	for(j in 1:length(N.vals)) {
+	for(j in 1:length(r.vals)) {
 		for(k in 1:length(m.vals)) {
 			for(l in 1:length(s.del.vals)) {
 
@@ -608,17 +637,17 @@ makeReplicateAutoInvSimsData  <-  function(nReps = 1000, N.vals = c(500, 1000), 
 				cat("\n",paste('Running simulations for parameter set ', prog, "/", tot),"\n")
 
 				# Run simulations  
-				res  <-  runReplicateAutoInvSims(nReps = nReps, N = N.vals[j], m = m.vals[k], s = s, h = h, r = r, 
+				res  <-  runReplicateAutoInvSims(nReps = nReps, N = N, m = m.vals[k], s = s, h = h, r = r.vals[j], 
 												 n = n, u = u, h.del = h.del, s.del = s.del.vals[l], noDel = FALSE, 
 												 newMutant = newMutant)
 
 				# Save data 
-				Ns      <-  rep(N.vals[j], times=nrow(res$results.df))
+				rs      <-  rep(r.vals[j], times=nrow(res$results.df))
 				ms      <-  rep(m.vals[k], times=nrow(res$results.df))
 				s.dels  <-  rep(s.del.vals[l], times=nrow(res$results.df))
 
 				# Append to data frame
-				df      <-  cbind(res$results.df, Ns, ms, s.dels)
+				df      <-  cbind(res$results.df, rs, ms, s.dels)
 				data    <-  rbind(data, df)
 				rm(df)
 
@@ -629,16 +658,16 @@ makeReplicateAutoInvSimsData  <-  function(nReps = 1000, N.vals = c(500, 1000), 
 	# Include constant variables in data frame
 	ss      <-  rep(s, times=nrow(data))
 	hs      <-  rep(h, times=nrow(data))
-	rs      <-  rep(r, times=nrow(data))
+	Ns      <-  rep(N, times=nrow(data))
 	us      <-  rep(u, times=nrow(data))
 	h.dels  <-  rep(h.del, times=nrow(data))
-	data    <-  cbind(data, ss, hs, rs, us, h.dels)
+	data    <-  cbind(data, ss, hs, Ns, us, h.dels)
 	colnames(data)  <-  c("finalInvFreq","finalE.InvFreq","finalW.mean",
-						  "nGen","invEst","invEstTime","nDels","N","m",
-						  "s.dels","s","h","r","u","h.del")
+						  "nGen","invEst","invEstTime","nDels","r","m",
+						  "s.dels","s","h","N","u","h.del")
 
 	# create file name
-	filename  <-  paste("./output/data/simResults/auto-InvSimsData", "_s", s, "_h", h, "_r", r, "_n", n, "_u", u, ".csv", sep="")
+	filename  <-  paste("./output/data/simResults/auto-InvSimsData", "_s", s, "_h", h, "_N", N, "_n", n, "_u", u, "_hDel", h.del, ".csv", sep="")
 
 	# export data as .csv to ./output/data
 	write.csv(data, file=filename, row.names = FALSE)
