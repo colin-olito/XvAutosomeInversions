@@ -198,7 +198,7 @@ offFreq  <-  function(xi,yi) {
 
 
 
-findEqFreqs  <-  function(Wf,Wm, m, r, threshold = 1e-6) {
+findEqFreqs  <-  function(Wf,Wm, mm, mf r, threshold = 1e-6) {
 	
 	Fii.init  <-  c(1/16, 1/16, 1/16, 1/16, 0, 
 					1/16, 1/16, 1/16, 1/16, 0, 
@@ -228,9 +228,9 @@ findEqFreqs  <-  function(Wf,Wm, m, r, threshold = 1e-6) {
 		gen=gen+1
 		for (j in 1:length(xi)) {
 			recFct  <-  get(names(xi)[j])
-			xi[j]   <-  round(recFct(Fii = E.Fiix, m = m, r = r), digits=3)
+			xi[j]   <-  round(recFct(Fii = E.Fiix, m = mf, r = r), digits=3)
 			recFct  <-  get(names(yi)[j])
-			yi[j]   <-  round(recFct(Fii = E.Fiiy, m = m, r = r), digits=3)
+			yi[j]   <-  round(recFct(Fii = E.Fiiy, m = mm, r = r), digits=3)
 		}
 	    # offspring genotype frequencies
 	    O  <-  offFreq(xi,yi)
@@ -280,14 +280,15 @@ findEqFreqs  <-  function(Wf,Wm, m, r, threshold = 1e-6) {
 #' @param N         Population size
 #' @param Wf        Vector of fitness expressions for all 25 genotypes in females
 #' @param Wm        Vector of fitness expressions for all 25 genotypes in males
-#' @param m         Migration rate for locally maladaptive alleles (m =  0.01)
+#' @param mm         Migration rate for locally maladaptive alleles (m =  0.01) in males
+#' @param mf         Migration rate for locally maladaptive alleles (m =  0.01) in females
 #' @param r         Recombination rate among the two loci involved in local adaptation (r = 0.1).
 #' @param saveTrajectories  Save evolutionary trajectories of inversion frequencies? 
 #' @export
 #' @seealso `offFreq`, `findEqFreqs`, `x.1`, ...
 #' @author Ludovic Dutoit, based on Colin Olito
 
-autoInvFwdSimSexSpec  <-  function(Fiix.init = Fiix.init  , Fiiy.init = Fiiy.init,   N = N, Wf = Wf, Wm = Wm, m = m, r = r, 
+autoInvFwdSimSexSpec  <-  function(Fiix.init = Fiix.init  , Fiiy.init = Fiiy.init,   N = N, Wf = Wf, Wm = Wm, mm = sm,, mf=sf, r = r, 
 							saveTrajectories = FALSE, ...) {
 
 	# Use deterministic eq. initial frequencies
@@ -330,16 +331,15 @@ autoInvFwdSimSexSpec  <-  function(Fiix.init = Fiix.init  , Fiiy.init = Fiiy.ini
 			for (j in 1:length(xi)) {
 				recFctx  <-  get(names(xi)[j])
 				recFcty  <-  get(names(yi)[j])
-				xi[j]   <-  round(recFctx(Fii = Fiix, m = m, r = r), digits=8)
-				yi[j]   <-  round(recFcty(Fii = Fiiy, m = m, r = r), digits=8)
+				xi[j]   <-  round(recFctx(Fii = Fiix, m = mf, r = r), digits=8)
+				yi[j]   <-  round(recFcty(Fii = Fiiy, m = mm, r = r), digits=8)
 			}
 			# 2) Offspring genotype frequencies
 			O      <-  offFreq(xi,yi) # no need of two vectors, we just apply twice selection 
 			# 3) Mean fitness 
-			Wbar   <-  0.5 * (sum(O*Wf)+sum(O*Wm)) #Wbar is the average fitness across sexes, CHECK
 			Wbar.f  <-  sum(O*Wf)
 			Wbar.m  <-  sum(O*Wm)
-
+			Wbar   <-  0.5 * (sum(Wbar.f)+sum(Wbar.m)) #Wbar is the average fitness across sexes, CHECK
 			# 4) Expected frequencies
 			E.Fiix  <-  O*Wf/Wbar.f # sex specific expected freq
 			E.Fiiy  <-  O*Wm/Wbar.m # sex specific expected freq
@@ -400,7 +400,7 @@ autoInvFwdSimSexSpec  <-  function(Fiix.init = Fiix.init  , Fiiy.init = Fiiy.ini
 		W.mean     <-  0
 	
 		# Initial inversion frequency 
-		InvFreq    <-  sum(Fiix[c(5,10,15,20:24)]/2, Fiix[25]) +  sum(Fiiy[c(5,10,15,20:24)]/2, Fiiy[25])
+		InvFreq    <-  0.5 * (sum(Fiix[c(5,10,15,20:24)]/2, Fiix[25]) +  sum(Fiiy[c(5,10,15,20:24)]/2, Fiiy[25]))
 		E.InvFreq  <-  InvFreq[1]
 		
 		## Start forward simulation with newly introduced inversion
@@ -419,9 +419,9 @@ autoInvFwdSimSexSpec  <-  function(Fiix.init = Fiix.init  , Fiiy.init = Fiiy.ini
 			# 2) Offspring genotype frequencies
 			O      <-  offFreq(xi,yi) # no need of two vectors, we just apply twice selection 
 			# 3) Mean fitness 
-			Wbar   <-  0.5 * (sum(O*Wf)+sum(O*Wm)) #Wbar is the average fitness across sexes, CHECK
 			Wbar.f  <-  sum(O*Wf)
-			Wbar.m  <-  sum(O*Wm)			
+			Wbar.m  <-  sum(O*Wm)	
+			Wbar   <-  0.5 * (sum(O*Wbar.f)+sum(O*Wbar.m))		
 			# 4) Expected frequencies
 			E.Fiix  <-  O*Wf/Wbar.f # sex specific expected freq
 			E.Fiiy  <-  O*Wm/Wbar.m # sex specific expected freq
@@ -483,7 +483,8 @@ return(res)
 #' 				 a single copy of the inversion, it takes 1,600,000 replicate simulations to 
 #'				 get 10,000 where the inversion successfully establishes.
 #' @param N      Effective population size
-#' @param m      Migration rate for locally maladaptive alleles (m =  0.01)
+#' @param mf      Migration rate for locally maladaptive alleles (m =  0.01) in females
+#' @param mm     Migration rate for locally maladaptive alleles (m =  0.01) in males
 #' @param sf     Selective advantage of locally adaptive alleles over migrant alleles (s = 0.02) in females
 #' @param sm     Selective advantage of locally adaptive alleles over migrant alleles (s = 0.02) in males
 #' @param h      Dominance coefficient for locally adaptive alleles relative to migrant alleles (h = 0.5)
@@ -503,7 +504,7 @@ return(res)
 #' @seealso `offFreq`, `findEqFreqs`, `autoInvFwdSimSexSpec`
 #' @export
 #' @author Ludovic Dutoit based on Colin Olito.
-runReplicateAutoInvSimsSexSpec  <-  function(nReps = 1000, N = 500, m = 0.01, sf = 0.1, sm=0.1, h = 1/2, r = 0.1, 
+runReplicateAutoInvSimsSexSpec  <-  function(nReps = 1000, N = 500, mm = 0.01, mf=0.01, sf = 0.1, sm=0.1, h = 1/2, r = 0.1, 
 									  n = 100, u = 1e-5, h.del = 0, sf.del = 1, sm.del=1, noDel = FALSE,
 									  saveTrajectories = FALSE) {
 
@@ -603,7 +604,7 @@ runReplicateAutoInvSimsSexSpec  <-  function(nReps = 1000, N = 500, m = 0.01, sf
 				(1 + h*sm)^2,                         (1 + h*sm)*(1 + sm),                         (1 + sm)*(1 + h*sm),                         (1 + sm)^2,                         (1 + sm)^2*(1 - h.del*sm.del)^n.del,
 				(1 + h*sm)^2*(1 - h.del*sm.del)^n.del, (1 + h*sm)*(1 + sm)*(1 - h.del*sm.del)^n.del, (1 + sm)*(1 + h*sm)*(1 - h.del*sm.del)^n.del, (1 + sm)^2*(1 - h.del*sm.del)^n.del, (1 + sm)^2*(1 - sm.del)^n.del)
 	## RUN SIMULATION
-	repRes<-autoInvFwdSimSexSpec(Fiix.init =Fiix.init  , Fiiy.init = Fiiy.init,   N = N, Wf = Wf, Wm = Wm, m = m, r = r,saveTrajectories=saveTrajectories)
+	repRes<-autoInvFwdSimSexSpec(Fiix.init =Fiix.init  , Fiiy.init = Fiiy.init,   N = N, Wf = Wf, Wm = Wm, mm = mm, mf =mf, r = r,saveTrajectories=saveTrajectories)
 	# save results for each replicate
 	finalInvFreq[i]      <-  repRes$InvFreq[length(repRes$InvFreq)]
   	finalE.InvFreq[i]    <-  repRes$E.InvFreq[length(repRes$E.InvFreq)]
@@ -703,8 +704,8 @@ runReplicateAutoInvSimsSexSpec  <-  function(nReps = 1000, N = 500, m = 0.01, sf
 #' @seealso `offFreq`, `findEqFreqs`, `autoInvFwdSimSexSpec` runReplicateAutoInvSimsSexSpec
 #' @export
 #' @author Ludovic Dutoit based on Colin Olito.
-makeReplicateAutoInvSimsDataSexSpec  <-  function(nReps = 1000, N.vals = c(500, 1000), m.vals = c(0.01, 0.05), 
-										   sf.vals = 0.1, sm.vals,h = 1/2, r = 0.1, 
+makeReplicateAutoInvSimsDataSexSpec  <-  function(nReps = 1000, N.vals = c(500, 1000), mf.vals = c(0.01, 0.05), mm.vals,
+										   sf.vals = 0.1, sm.vals=0.1,h = 1/2, r = 0.1, 
 										   n = 100, u = 1e-5, h.del = 0, noDel = FALSE,saveTrajectories = FALSE) {
 
 
@@ -718,6 +719,8 @@ makeReplicateAutoInvSimsDataSexSpec  <-  function(nReps = 1000, N.vals = c(500, 
 	tot   <-  length(N.vals)*length(m.vals)*length(s.del.vals)*length(sf.vals)*length(sm.vals)
 
 	# Loop over parameter values we want to explore 
+	CHANGE THAT FOR R AND FOR mm mf
+	(Think of having in pair, just here)
 	for(j in 1:length(N.vals)) {
 		for(k in 1:length(m.vals)) {
 				for (m in 1:length(sf.vals))   { 
@@ -738,7 +741,7 @@ makeReplicateAutoInvSimsDataSexSpec  <-  function(nReps = 1000, N.vals = c(500, 
 							cat("\n",paste('Running simulations for parameter set ', prog, "/", tot),"\n")
 
 							# Run simulations  
-							res  <-  runReplicateAutoInvSimsSexSpec(nReps = nReps, N = N.vals[j], m = m.vals[k], sf = sf.vals[m], sm=sm.vals[n],  h = h, r = r, 
+							res  <-  runReplicateAutoInvSimsSexSpec(nReps = nReps, N = N.vals[j], mm = m.vals[k],mf =  m.vals[k] , sf = sf.vals[m], sm=sm.vals[n],  h = h, r = r, 
 															 n = n, u = u, h.del = h.del, sf.del = s.del.vals[l], sm.del=s.del.vals[l], 
 															 noDel = noDel, saveTrajectories = FALSE)
 
@@ -777,7 +780,7 @@ makeReplicateAutoInvSimsDataSexSpec  <-  function(nReps = 1000, N.vals = c(500, 
 	return(data)
 	
 }
-
+ 
 ###TEST the whole thing
 #source("R/functions-WFSims-Autosomal-SexSpec.R")# from repos home folder
 #a<-makeReplicateAutoInvSimsDataSexSpec(nReps = 2, N.vals = c(500, 1000), m.vals = c(0.01, 0.05), sf.vals = c(0.1), sm.vals=c(0.1),h = 1/2, r = 0.1,  n = 100, u = 1e-5, h.del = 0)
