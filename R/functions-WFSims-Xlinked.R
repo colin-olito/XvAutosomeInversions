@@ -80,8 +80,8 @@ rejectionSamplerX  <-  function(n=100, Ne=100, u=1e-6, h=0, sf=0.01, sm=0.01) {
 #' @param m   Migration rate
 #' @export
 #' Change Dstar for X chromosome:
-Dstar  <-  function(Fii=Fii, m=m, ...) {
-  (((Fii[4] + Fii[16]) - (Fii[8] + Fii[12])) / 2)*(1 - m)
+Dstar  <-  function(Fii=Fiix, m=m, ...) {
+  (((Fiix[4] + Fiix[16]) - (Fiix[8] + Fiix[12])) / 2)*(1 - m)
 }
 
 # female genotypes ordered:
@@ -104,16 +104,16 @@ Dstar  <-  function(Fii=Fii, m=m, ...) {
 
 #' Haplotype frequencies for X in females (XX)
 x.1  <-  function(Fii=Fiix, m=m, r=r) {
-  ((2*Fiix[1] + (Fiix[2] + Fiix[6]) + (Fiix[3] + Fiix[11]) + (Fiix[4] + Fiix[16]) + (Fiix[5] + Fiix[21])) / 2)*(1 - m) - r*Dstar(Fiix=Fiix, m=m) + m
+  ((2*Fiix[1] + (Fiix[2] + Fiix[6]) + (Fiix[3] + Fiix[11]) + (Fiix[4] + Fiix[16]) + (Fiix[5] + Fiix[21])) / 2)*(1 - m) - r*Dstar(Fii=Fiix, m=m) + m
 } 
 x.2  <-  function(Fii=Fiix, m=m, r=r) {
-  ((2*Fiix[7] + (Fiix[2] + Fiix[6]) + (Fiix[8] + Fiix[12]) + (Fiix[9] + Fiix[17]) + (Fiix[10] + Fiix[22])) / 2)*(1 - m) + r*Dstar(Fiix=Fiix, m=m)
+  ((2*Fiix[7] + (Fiix[2] + Fiix[6]) + (Fiix[8] + Fiix[12]) + (Fiix[9] + Fiix[17]) + (Fiix[10] + Fiix[22])) / 2)*(1 - m) + r*Dstar(Fii=Fiix, m=m)
 }
 x.3  <-  function(Fii=Fiix, m=m, r=r) {
-  ((2*Fiix[13] + (Fiix[3] + Fiix[11]) + (Fiix[8] + Fiix[12]) + (Fiix[14] + Fiix[18]) + (Fiix[15] + Fiix[23])) / 2)*(1 - m) + r*Dstar(Fiix=Fiix, m=m)
+  ((2*Fiix[13] + (Fiix[3] + Fiix[11]) + (Fiix[8] + Fiix[12]) + (Fiix[14] + Fiix[18]) + (Fiix[15] + Fiix[23])) / 2)*(1 - m) + r*Dstar(Fii=Fiix, m=m)
 }
 x.4  <-  function(Fii=Fiix, m=m, r=r) {
-  ((2*Fiix[19] + (Fiix[4] + Fiix[16]) + (Fiix[9] + Fiix[17]) + (Fiix[14] + Fiix[18]) + (Fiix[20] + Fiix[24])) / 2)*(1 - m) - r*Dstar(Fiix=Fiix, m=m)
+  ((2*Fiix[19] + (Fiix[4] + Fiix[16]) + (Fiix[9] + Fiix[17]) + (Fiix[14] + Fiix[18]) + (Fiix[20] + Fiix[24])) / 2)*(1 - m) - r*Dstar(Fii=Fiix, m=m)
 }
 x.5  <-  function(Fii=Fiix, m=m, r=r) {
   ((2*Fiix[25] + (Fiix[5] + Fiix[21]) + (Fiix[10] + Fiix[22]) + (Fiix[15] + Fiix[23]) + (Fiix[20] + Fiix[24])) / 2)*(1 - m)
