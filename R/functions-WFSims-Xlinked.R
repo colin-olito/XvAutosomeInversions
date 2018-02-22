@@ -81,7 +81,7 @@ rejectionSamplerX  <-  function(n=100, Ne=100, u=1e-6, h=0, sf=0.01, sm=0.01) {
 #' @export
 #' Change Dstar for X chromosome:
 Dstar  <-  function(Fii=Fii, m=m, ...) {
-  (((Fii[4] + Fii[16])/2 - (Fii[8] + Fii[12])/2) / 2)*(1 - m)
+  (((Fii[4] + Fii[16]) - (Fii[8] + Fii[12])) / 2)*(1 - m)
 }
 
 # female genotypes ordered:
@@ -102,37 +102,37 @@ Dstar  <-  function(Fii=Fii, m=m, ...) {
 #' @param r   Recombination rate
 #' @export
 
-#' Haplotype frequencies for X in females (XX) is a function of their frequencies in females and males in the previous generation
-x.1  <-  function(Fiix=Fiix, m=m, r=r) {
-  (((2*Fiix[1] + (Fiix[2] + Fiix[6]) + (Fiix[3] + Fiix[11]) + (Fiix[4] + Fiix[16]) + (Fiix[5] + Fiix[21])) / 2)*(1 - m) - r*Dstar(Fiix=Fiix, m=m) + m
+#' Haplotype frequencies for X in females (XX)
+x.1  <-  function(Fii=Fiix, m=m, r=r) {
+  ((2*Fiix[1] + (Fiix[2] + Fiix[6]) + (Fiix[3] + Fiix[11]) + (Fiix[4] + Fiix[16]) + (Fiix[5] + Fiix[21])) / 2)*(1 - m) - r*Dstar(Fiix=Fiix, m=m) + m
 } 
-x.2  <-  function(Fiix=Fiix, m=m, r=r) {
-  (((2*Fiix[7] + (Fiix[2] + Fiix[6]) + (Fiix[8] + Fiix[12]) + (Fiix[9] + Fiix[17]) + (Fiix[10] + Fiix[22])) / 2)*(1 - m) + r*Dstar(Fiix=Fiix, m=m)
+x.2  <-  function(Fii=Fiix, m=m, r=r) {
+  ((2*Fiix[7] + (Fiix[2] + Fiix[6]) + (Fiix[8] + Fiix[12]) + (Fiix[9] + Fiix[17]) + (Fiix[10] + Fiix[22])) / 2)*(1 - m) + r*Dstar(Fiix=Fiix, m=m)
 }
-x.3  <-  function(Fiix=Fiix, m=m, r=r) {
-  (((2*Fiix[13] + (Fiix[3] + Fiix[11]) + (Fiix[8] + Fiix[12]) + (Fiix[14] + Fiix[18]) + (Fiix[15] + Fiix[23])) / 2)*(1 - m) + r*Dstar(Fiix=Fiix, m=m)
+x.3  <-  function(Fii=Fiix, m=m, r=r) {
+  ((2*Fiix[13] + (Fiix[3] + Fiix[11]) + (Fiix[8] + Fiix[12]) + (Fiix[14] + Fiix[18]) + (Fiix[15] + Fiix[23])) / 2)*(1 - m) + r*Dstar(Fiix=Fiix, m=m)
 }
-x.4  <-  function(Fiix=Fiix, m=m, r=r) {
-  (((2*Fiix[19] + (Fiix[4] + Fiix[16]) + (Fiix[9] + Fiix[17]) + (Fiix[14] + Fiix[18]) + (Fiix[20] + Fiix[24])) / 2)*(1 - m) - r*Dstar(Fiix=Fiix, m=m)
+x.4  <-  function(Fii=Fiix, m=m, r=r) {
+  ((2*Fiix[19] + (Fiix[4] + Fiix[16]) + (Fiix[9] + Fiix[17]) + (Fiix[14] + Fiix[18]) + (Fiix[20] + Fiix[24])) / 2)*(1 - m) - r*Dstar(Fiix=Fiix, m=m)
 }
-x.5  <-  function(Fiix=Fiix, m=m, r=r) {
-  (((2*Fiix[25] + (Fiix[5] + Fiix[21]) + (Fiix[10] + Fiix[22]) + (Fiix[15] + Fiix[23]) + (Fiix[20] + Fiix[24])) / 2)*(1 - m)
+x.5  <-  function(Fii=Fiix, m=m, r=r) {
+  ((2*Fiix[25] + (Fiix[5] + Fiix[21]) + (Fiix[10] + Fiix[22]) + (Fiix[15] + Fiix[23]) + (Fiix[20] + Fiix[24])) / 2)*(1 - m)
 }
 
-# Haplotype frequencies for X in males (XY) is a function of only female frequencies in the previous generation
-y.1 <- function(Fiiy=Fiiy, m=m) {
+# Haplotype frequencies for X in males (XY)
+y.1 <- function(Fii=Fiiy, m=m) {
   Fiiy[1]*(1-m)+m
 } 
-y.2 <- function(Fiiy=Fiiy, m=m) {
+y.2 <- function(Fii=Fiiy, m=m) {
   Fiiy[2]*(1-m)
 }
-y.3 <- function(Fiiy=Fiiy, m=m) {
+y.3 <- function(Fii=Fiiy, m=m) {
   Fiiy[3]*(1-m)
 }
-y.4 <- function(Fiiy=Fiiy, m=m) {
+y.4 <- function(Fii=Fiiy, m=m) {
   Fiiy[4]*(1-m)
 }
-y.5 <- function(Fiiy=Fiiy, m=m) {
+y.5 <- function(Fii=Fiiy, m=m) {
   Fiiy[5]*(1-m)
 }
 
@@ -158,7 +158,6 @@ offFreq_males  <-  function(xi) {
   O
 }
 
-#***** Change genotype frequency functions Fii to correspond to males and females and fitness functions
 
 #' Calculate deterministic equilibrium genotype frequencies 
 #' in the absence of the inversion 
@@ -185,20 +184,21 @@ offFreq_males  <-  function(xi) {
 #' @seealso `offFreq`, `autoInvWrightFisherSim`
 #' @author Colin Olito
 
-findEqFreqs  <-  function(W, m, r, threshold = 1e-6) {
+findEqFreqs  <-  function(Wf, Wm, m, r, threshold = 1e-6) {
   
   Fiix.init  <-  c(1/16, 1/16, 1/16, 1/16, 0, 
                   1/16, 1/16, 1/16, 1/16, 0, 
                   1/16, 1/16, 1/16, 1/16, 0, 
                   1/16, 1/16, 1/16, 1/16, 0, 
                   0,    0,    0,    0, 0)
-  Fiiy.init <- c(1/4, 1/4, 1/4, 1/4, 0)
   
   Fiix    <-  Fiix.init
-  E.Fiix  <-  Fiix.init
+  E.Fiix  <-  Fiix.init #?
+  
+  Fiiy.init <- c(1/4, 1/4, 1/4, 1/4, 0)
   
   Fiiy    <-  Fiiy.init
-  E.Fiiy  <-  Fiiy.init
+  E.Fiiy  <-  Fiiy.init #?
   
   # Storage for female gamete frequencies
   xi        <-  rep(0, times=5)
@@ -206,19 +206,19 @@ findEqFreqs  <-  function(W, m, r, threshold = 1e-6) {
   # Storage for male gamete frequencies
   yi        <-  rep(0, times=5)
   names(yi)  <-  c('y.1', 'y.2', 'y.3', 'y.4', 'y.5')
-  # *************From here
+
   xdelta  <-  rep(1, times=16) # change of haplotype frequencies in 1 generation in females
   ydelta  <-  rep(1, times=4) # change of haplotye frequencies in 1 generation in males
   delta <- append(xdelta, ydelta)
   
   gen = 0 # counter of generations
-  while(any(delta > threshold)) {
+  while(any(delta > threshold)) { # It stops when all of them has reached the equilibrium.
     gen=gen+1
     for (j in 1:length(xi)) {
       recFct_x  <-  get(names(xi)[j])
+      xi[j]   <-  round(recFct_x(Fii = E.Fiix, m = m, r = r), digits=3) # rounding 3 digits while threshold is 1e-6
       recFct_y <- get(names(yi)[j])
-      xi[j]   <-  round(recFct_x(Fii = E.Fii, m = m, r = r), digits=3)
-      yi[j]   <-  round(recFct_y(Fii = E.Fii, m = m), digits=3)
+      yi[j]   <-  round(recFct_y(Fii = E.Fiiy, m = m), digits=3)
     }
     
     # offspring genotype frequencies
@@ -226,35 +226,39 @@ findEqFreqs  <-  function(W, m, r, threshold = 1e-6) {
     O_males <- offFreq_males(xi)
     
     # mean fitness 
-    Wfbar      <-  sum(O*Wf)
-    Wmbar      <-  sum(O*Wm)
+    Wfbar      <-  sum(O_females*Wf)
+    Wmbar      <-  sum(O_males*Wm)
     
     # difference in expected frequency (has simulation reached equilibrium yet?)
-    xdelta  <-  E.Fiix[c(1:4,6:9,11:14,16:19)] - (O*Wf/Wfbar)[c(1:4,6:9,11:14,16:19)]
-    ydelta   <-  E.Fiiy[c(1:4,6:9,11:14,16:19)] - (O*Wm/Wmbar)[c(1:4,6:9,11:14,16:19)]
+    xdelta  <-  E.Fiix[c(1:4,6:9,11:14,16:19)] - (O_females*Wf/Wfbar)[c(1:4,6:9,11:14,16:19)]
+    ydelta   <-  E.Fiiy[c(1:4)] - (O_males*Wm/Wmbar)[c(1:4)]
     delta <- append(xdelta, ydelta)
-    E.Fiix   <-  O*Wf/Wfbar
-    E.Fiiy   <-  O*Wm/Wmbar
+    E.Fiix   <-  O_females*Wf/Wfbar
+    E.Fiiy   <-  O_males*Wm/Wmbar
   }
-  print (c("reacg equilibrium of initial frequencies at gen", gen))
+  print (c("reach equilibrium of initial frequencies at gen", gen))
   
   names(E.Fiix)  <-  NULL
   names(E.Fiiy)  <-  NULL
-  return (rbind(E.Fiix, E.Fiiy)) 
+  return (rbind(E.Fiix, E.Fiiy)) # It returns two vectors, one eq. vector for females and one eq. vector for males.
 }
 
-#' Run a single Wright-Fisher Forward simulation with introduced autosomal inversion
+#' Run a single Wright-Fisher Forward simulation with introduced autosomal inversion on the X chromosome
 #' using multinomial sampling with linkage to deleterious mutations
 #'
 #' Genotypes are organized as numeric vectors of length = 25. For consistency
 #' they are always ordered as follows:
+#' Females:
 #'  	c(ABAB,  ABAb,  ABaB,  ABab,  ABba*,	c(x1x1, x1x2, x1x3, x1x4, x1x5, 
 #'		  AbAB,  AbAb,  AbaB,  Abab,  Abba*,	  x2x1, x2x2, x2x3, x2x4, x2x5, 
 #'		  aBAB,  aBAb,  aBaB,  aBab,  aBba*,	  x3x1, x3x2, x3x3, x3x4, x3x5, 
 #'		  abAB,  abAb,  abaB,  abab,  abba*,	  x4x1, x4x2, x4x3, x4x4, x4x5, 
 #'		  baAB*, baAb*, baaB*, baab*, baba*)	  x5x1, x5x2, x5x3, x5x4, x5x5)
 #'
-#' @title Find the deterministic equilibeium genotype frequencies prior to introducing the inversion
+#'Males:
+#'    c(AB, Ab, aB, ab, ba*)                c(y1, y2, y3, y4, y5)
+#'
+#' @title Find the deterministic equilibrium genotype frequencies prior to introducing the inversion
 #' @param Fii.init  Vector of initial frequencies (deterministic eq. frequencies in absence of inversion)
 #' @param N         Population size
 #' @param Wf        Vector of fitness expressions for all 25 female genotypes
@@ -277,53 +281,72 @@ autoInvFwdSim  <-  function(Fiix.init = Fiix.init, Fiiy.init = Fiiy.init, N = N,
   
   # Storage for gamete frequencies  
   xi         <-  rep(0, times=5)
-  yi         <-  rep(0, times=5)
   names(xi)  <-  c('x.1', 'x.2', 'x.3', 'x.4', 'x.5')
+  yi         <-  rep(0, times=5)
   names(yi)  <-  c('y.1', 'y.2', 'y.3', 'y.4', 'y.5')
-  
-############# WORKED UP UNTIL HERE 21 FEBRUARY  
-  
+    
   if(saveTrajectories) {
     # Storage structures for individual simulation data
-    InvFreq    <-  rep(0, times=(4*N+1))
+    InvFreq    <-  rep(0, times=(4*N+1)) # 4N is the time to fixation?
     E.InvFreq  <-  rep(0, times=(4*N+1))
-    W.mean     <-  rep(0, times=(4*N+1))
+    W.mean     <-  rep(0, times=(4*N+1)) # Overall fitness of the population regardless of sex?
+    Wf.mean    <-  rep(0, times=(4*N+1))
+    Wm.mean    <-  rep(0, times=(4*N+1))
+    InvFreq_f    <-  rep(0, times=(4*N+1))
+    InvFreq_m    <-  rep(0, times=(4*N+1))
+    E.InvFreq_f    <-  rep(0, times=(4*N+1))
+    E.InvFreq_m    <-  rep(0, times=(4*N+1))
     
     # Initial inversion frequency 
-    InvFreq[1]    <-  sum(Fii[c(5,10,15,20:24)]/2, Fii[25])
+    InvFreq[1]    <-  sum(Fiix[c(5,10,15,20:24)]/2, Fiix[25]) + Fiiy[5] # Sum of all inverted genotypes in females and males.
     E.InvFreq[1]  <-  InvFreq[1]
     
     ## Start forward simulation with newly introduced inversion
     gen  <-  1
-    while(gen < (4*N) & InvFreq[gen] != 0) {
+    while(gen < (4*N) & InvFreq[gen] != 0) { # no mutation rate for inversions so loop stops when inversion freq. goes to zero.
       
       ## Step through recursions:
       # 1) Calculate gamete frequencies
       for (j in 1:length(xi)) {
-        recFct  <-  get(names(xi)[j])
-        xi[j]   <-  round(recFct(Fii = Fii, m = m, r = r), digits=8)
+        recFctx  <-  get(names(xi)[j])
+        xi[j]   <-  round(recFctx(Fii = Fiix, m = m, r = r), digits=8)
+        recFcty  <-  get(names(yi)[j])
+        yi[j]   <-  round(recFcty(Fii = Fiiy, m = m, r = r), digits=8)
       }
       # 2) Offspring genotype frequencies
-      O      <-  offFreq(xi)
+      O_females     <-  offFreq_females(xi, yi)
+      O_males       <-  offFreq_males(xi)
       # 3) Mean fitness 
-      Wbar   <-  sum(O*W)
+      Wfbar   <-  sum(O_females*Wf)
+      Wmbar   <-  sum(O_males*Wm)
       # 4) Expected frequencies
-      E.Fii  <-  O*W/Wbar
+      E.Fiix  <-  O*Wf/Wfbar
+      E.Fiiy   <-  O*Wm/Wmbar
       # 5) Draw random frequencies in adults
-      Fii    <-  as.vector(rmultinom(1, N/2, E.Fii)/(N/2))
+      Fiix    <-  as.vector(rmultinom(1, N/2, E.Fiix)/(N/2)) # N/2 also applies for the X chromosome?
+      Fiiy    <-  as.vector(rmultinom(1, N/2, E.Fiiy)/(N/2))
       
       # Realized frequencies
-      InvFreq[gen+1]    <-  sum(Fii[c(5,10,15,20:24)]/2, Fii[25])
-      E.InvFreq[gen+1]  <-  sum(E.Fii[c(5,10,15,20:24)]/2, Fii[25])
+      InvFreq[gen+1]    <-  (sum(Fiix[c(5,10,15,20:24)]/2, Fii[25]) + Fiiy[5]) # Ask?
+      E.InvFreq[gen+1]  <-  (sum(E.Fiix[c(5,10,15,20:24)]/2, Fii[25]) + Fiiy[5])
       W.mean[gen+1]     <-  Wbar
       
+      #The variable below are stored specifically for the X linked simulation
+      Wf.mean[gen+1]   =  sum(O_females*Wf)
+      Wm.mean[gen+1]   =  sum(O_males*Wm)
+      InvFreq_f[gen+1]  =  sum(Fiix[c(5,10,15,20:24)]/2, Fiix[25])
+      InvFreq_m[gen+1]  =  Fiiy[5]
+      E.InvFreq_f[gen+1]=  sum(E.Fiix[c(5,10,15,20:24)]/2, E.Fiix[25])
+      E.InvFreq_m[gen+1]= Fiiy[5]
+      
       gen  <-  gen+1
+      print (gen)
     }
-    
+   
     # Has the inversion reached threshold frequency for establishment (pcrit)? 
     # When did it first reach pcrit?
-    if(any(InvFreq >= pcrit)) {
-      invEst      <-  1
+    if(any(InvFreq >= pcrit)) { # inversion got established
+      invEst      <-  1 #?
       invEstTime  <-  gen[invFreq >= pcrit][1]
     }
     
@@ -334,11 +357,17 @@ autoInvFwdSim  <-  function(Fiix.init = Fiix.init, Fiiy.init = Fiiy.init, N = N,
       "W.mean"      =  W.mean[1:gen-1],
       "nGen"        =  gen,
       "InvEst"      =  invEst,
-      "InvEstTime"  =  invEstTime
+      "InvEstTime"  =  invEstTime,
+      "Wf.mean"     =  Wf.mean(1:gen-1),
+      "Wm.mean"     =  Wm.mean(1:gen-1),
+      "InvFreq_f"   =  InvFreq_f(1:gen-1),
+      "InvFreq_m"   =  InvFreq_m(1:gen-1),
+      "E.InvFreq_f" =  E.InvFreq_f(1:gen-1),
+      "E.InvFreq_m" =  E.InvFreq_m(1:gen-1)
     )
   } 
   
-  if(!saveTrajectories) {
+  if(!saveTrajectories) { # change as above just not save the trajectories.
     
     # Storage structures for individual simulation data
     InvFreq    <-  0
@@ -357,22 +386,36 @@ autoInvFwdSim  <-  function(Fiix.init = Fiix.init, Fiiy.init = Fiiy.init, N = N,
       ## Step through recursions:
       # 1) Calculate gamete frequencies
       for (j in 1:length(xi)) {
-        recFct  <-  get(names(xi)[j])
-        xi[j]   <-  round(recFct(Fii = Fii, m = m, r = r), digits=8)
+        recFctx  <-  get(names(xi)[j])
+        xi[j]   <-  round(recFctx(Fii = Fiix, m = m, r = r), digits=8)
+        recFcty  <-  get(names(yi)[j])
+        yi[j]   <-  round(recFcty(Fii = Fiiy, m = m, r = r), digits=8)
       }
       # 2) Offspring genotype frequencies
-      O      <-  offFreq(xi)
+      O_females     <-  offFreq_females(xi, yi)
+      O_males       <-  offFreq_males(xi)
       # 3) Mean fitness 
-      Wbar   <-  sum(O*W)
+      Wfbar   <-  sum(O_females*Wf)
+      Wmbar   <-  sum(O_males*Wm)
       # 4) Expected frequencies
-      E.Fii  <-  O*W/Wbar
+      E.Fiix  <-  O*Wf/Wfbar
+      E.Fiiy   <-  O*Wm/Wmbar
       # 5) Draw random frequencies in adults
-      Fii    <-  as.vector(rmultinom(1, N/2, E.Fii)/(N/2))
+      Fiix    <-  as.vector(rmultinom(1, N/2, E.Fiix)/(N/2)) # N/2 also applies for the X chromosome?
+      Fiiy    <-  as.vector(rmultinom(1, N/2, E.Fiiy)/(N/2))
       
       # Realized frequencies
       InvFreq    <-  sum(Fii[c(5,10,15,20:24)]/2, Fii[25])
       E.InvFreq  <-  sum(E.Fii[c(5,10,15,20:24)]/2, Fii[25])
       W.mean     <-  Wbar
+      
+      #The variable below are stored specifically for the X linked simulation
+      Wf.mean[gen+1]   =  sum(O_females*Wf)
+      Wm.mean[gen+1]   =  sum(O_males*Wm)
+      InvFreq_f[gen+1]  =  sum(Fiix[c(5,10,15,20:24)]/2, Fiix[25])
+      InvFreq_m[gen+1]  =  Fiiy[5]
+      E.InvFreq_f[gen+1]=  sum(E.Fiix[c(5,10,15,20:24)]/2, E.Fiix[25])
+      E.InvFreq_m[gen+1]= Fiiy[5]
       
       gen  <-  gen+1
     }
@@ -389,19 +432,26 @@ autoInvFwdSim  <-  function(Fiix.init = Fiix.init, Fiiy.init = Fiiy.init, N = N,
     
     # Save  simulation data
     res  <-  list(
-      "InvFreq"     =  InvFreq,
-      "E.InvFreq"   =  E.InvFreq,
-      "W.mean"      =  sum(W.mean)/length(W.mean),
+      "InvFreq"     =  InvFreq[1:gen-1],
+      "E.InvFreq"   =  E.InvFreq[1:gen-1],
+      "W.mean"      =  W.mean[1:gen-1],
       "nGen"        =  gen,
-      "invEst"      =  invEst,
-      "invEstTime"  =  invEstTime
+      "InvEst"      =  invEst,
+      "InvEstTime"  =  invEstTime,
+      "Wf.mean"     =  Wf.mean(1:gen-1),
+      "Wm.mean"     =  Wm.mean(1:gen-1),
+      "InvFreq_f"   =  InvFreq_f(1:gen-1),
+      "InvFreq_m"   =  InvFreq_m(1:gen-1),
+      "E.InvFreq_f" =  E.InvFreq_f(1:gen-1),
+      "E.InvFreq_m" =  E.InvFreq_m(1:gen-1)
     )
   }
   
   return(res)
-  
 }
 
+
+# Untill here 22 Feb ***********************************************************************************
 
 #' Wrapper function to run replicate forward simulations for invasion
 #' of autosomal inversions in a Wright-Fisher population 
@@ -505,3 +555,147 @@ runReplicateAutoInvSims  <-  function(nReps = 1000, N = 500, m = 0.01, s = 0.1, 
              (1 + h*s)^2,                         (1 + h*s)*(1 + s),                         (1 + s)*(1 + h*s),                         (1 + s)^2,                         (1 + s)^2*(1 - h.del*s.del)^n.del,
              (1 + h*s)^2*(1 - h.del*s.del)^n.del, (1 + h*s)*(1 + s)*(1 - h.del*s.del)^n.del, (1 + s)*(1 + h*s)*(1 - h.del*s.del)^n.del, (1 + s)^2*(1 - h.del*s.del)^n.del, (1 + s)^2*(1 - s.del)^n.del)
     
+    ## RUN SIMULATION
+    repRes  <-  autoInvFwdSim(Fii.init=Fii.init, N=N, W=W, m=m, r=r)
+    
+    # save results for each replicate
+    finalInvFreq[i]    <-  repRes$InvFreq[length(repRes$InvFreq)]
+    finalE.InvFreq[i]  <-  repRes$E.InvFreq[length(repRes$E.InvFreq)]
+    finalW.mean[i]     <-  repRes$W.mean
+    nGen[i]            <-  repRes$nGen
+    invEst[i]          <-  repRes$invEst
+    invEstTime[i]      <-  repRes$invEstTime
+    nDels[i]           <-  n.del
+    
+    if(saveTrajectories) {
+      replicateTraj  <-  c(replicateTraj, rep(i, times=length(repRes$InvFreq)))
+      InvFreqTraj    <-  c(InvFreqTraj, repRes$InvFreq)
+      E.InvFreqTraj  <-  c(E.InvFreqTraj, repRes$E.InvFreq)
+      W.meanTraj     <-  c(W.meanTraj, repRes$W.mean)
+    } 
+    
+    setTxtProgressBar(pb, i)
+  }
+  
+  # Save results and return results as a list
+  results.df  <-  data.frame(
+    "finalInvFreq"    =  finalInvFreq,
+    "finalE.InvFreq"  =  finalE.InvFreq,
+    "finalW.mean"     =  finalW.mean,
+    "nGen"            =  nGen,
+    "invEst"          =  invEst,
+    "invEstTime"      =  invEstTime,
+    "nDels"           =  nDels
+  )
+  if(saveTrajectories) {
+    traj.df  <-  data.frame(
+      "replicateTraj"  =  replicateTraj,
+      "InvFreqTraj"    =  InvFreqTraj,
+      "E.InvFreqTraj"  =  E.InvFreqTraj,
+      "W.meanTraj"     =  W.meanTraj
+    )
+  } else {
+    traj.df  <-  NULL
+  }
+  res  <-  list(
+    "results.df"  =  results.df,
+    "traj.df"     =  traj.df
+  )
+  return(res)
+}
+
+
+#' Wrapper function to run replicate forward simulations for invasion
+#' of autosomal inversions in a Wright-Fisher population 
+#' USING DESIGNATED PARAMETER VALUES
+#'
+#' @title Run replicate Wright-Fisher forward simulations for autosomal inversion under different parameter values 
+#' @param N.vals Desired population sizes
+#' @param m.vals desired migration rates for locally maladaptive alleles (m =  0.01)
+#' @param s.del.vals  Desired selection coefficients for deleterious mutations (default value of s = 1).
+#' @param s      Selective advantage of locally adaptive alleles over migrant alleles (s = 0.02)
+#' @param h      Dominance coefficient for locally adaptive alleles relative to migrant alleles (h = 0.5)
+#' @param r      Recombination rate among the two loci involved in local adaptation (r = 0.1).
+#' @param n      Number of loci at which deleterious mutations may occur.
+#' @param u      Mutation rate (default value of u = 1e-6).
+#' @param h.del  Dominance of deleterious mutations (default value of h = 0).
+#' @param noDel  Omit fitness effects of deleterious mutations? Defalut value of FALSE assumes that 
+#' 				 selection against deleterious mutations is twice as strong as selection favouring
+#' 				 the locally adaptive alleles. Setting noDel = TRUE runs the W-F simulations as if
+#' 				 there were no delterious mutations segregating in the population that are linked
+#' 				 to the loci involved in local adaptation. 
+#' @param saveTrajectories  Save evolutionary trajectories of inversion frequencies? Setting this 
+#' 							to TRUE can become extremely memory intensive if you are running many
+#' 							replicate simulations (see warning).
+#' 							otherwise
+#' @seealso `offFreq`, `findEqFreqs`, `autoInvFwdSim`
+#' @export
+#' @author Colin Olito.
+makeReplicateAutoInvSimsData  <-  function(nReps = 1000, N.vals = c(500, 1000), m.vals = c(0.01, 0.05), 
+                                           s = 0.1, h = 1/2, r = 0.1, 
+                                           n = 100, u = 1e-5, h.del = 0) {
+  
+  # Simulate deleterious mutations that are either 
+  # 1) recessive lethals OR
+  # 2) recessive experiencing purifying selection
+  #    that is twice as strong as the selective 
+  #    advantage of the locally adaptive allels  
+  s.del.vals = c(0, 1, 2*s)
+  
+  
+  # create empty data frame with same structure as we are going to need
+  data  <-  data.frame(matrix(ncol=10, nrow=0))
+  
+  # Convenience variables to monitor progress
+  prog  <-  0
+  tot   <-  length(N.vals)*length(m.vals)*length(s.del.vals)
+  
+  # Loop over parameter values we want to explore 
+  for(j in 1:length(N.vals)) {
+    for(k in 1:length(m.vals)) {
+      for(l in 1:length(s.del.vals)) {
+        
+        # Display progress in terminal
+        prog  <-  prog + 1
+        cat("\n",paste('Running simulations for parameter set ', prog, "/", tot),"\n")
+        
+        # Run simulations  
+        res  <-  runReplicateAutoInvSims(nReps = nReps, N = N.vals[j], m = m.vals[k], s = s, h = h, r = r, 
+                                         n = n, u = u, h.del = h.del, s.del = s.del.vals[l], 
+                                         noDel = FALSE, saveTrajectories = FALSE)
+        
+        # Save data 
+        Ns      <-  rep(N.vals[j], times=nrow(res$results.df))
+        ms      <-  rep(m.vals[k], times=nrow(res$results.df))
+        s.dels  <-  rep(s.del.vals[l], times=nrow(res$results.df))
+        
+        # Append to data frame
+        df      <-  cbind(res$results.df, Ns, ms, s.dels)
+        data    <-  rbind(data, df)
+        rm(df)
+        
+      }
+    }
+  }
+  
+  # Include constant variables in data frame
+  ss      <-  rep(s, times=nrow(data))
+  hs      <-  rep(h, times=nrow(data))
+  rs      <-  rep(r, times=nrow(data))
+  us      <-  rep(u, times=nrow(data))
+  h.dels  <-  rep(h.del, times=nrow(data))
+  data    <-  cbind(data, ss, hs, rs, us, h.dels)
+  colnames(data)  <-  c("finalInvFreq","finalE.InvFreq","finalW.mean",
+                        "nGen","invEst","invEstTime","nDels","N","m",
+                        "s.dels","s","h","r","u","h.del")
+  
+  # create file name
+  filename  <-  paste("./output/data/simResults/auto-InvSimsData", "_s", s, "_h", h, "_r", r, "_n", n, "_u", u, ".csv", sep="")
+  
+  # export data as .csv to ./output/data
+  write.csv(data, file=filename, row.names = FALSE)
+  
+  #  Return results in case user wants it
+  return(data)
+  
+}    
