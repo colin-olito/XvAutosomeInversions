@@ -519,17 +519,16 @@ introduceInversion  <-  function(newMutant, Fiix.init, Fiiy.init, N) {
 			mutant            <-  c(4,9,14,16:19)[as.vector(rmultinom(1,1,probNewMutant)) == 1]
 
 			# Subtract new mutant individual from frequency of old genotype
-			Fiix.init[mutant]  <-  Fiix.init[mutant] - 1/(2*N)#!Colin?
+			Fiix.init[mutant]  <-  Fiix.init[mutant] - 1/(2*N)
 		}
 		if (sex=="m"){
 			probNewMutant     <-  Fiiy.init[c(4,9,14,16:19)]/sum(Fiiy.init[c(4,9,14,16:19)])
 			mutant            <-  c(4,9,14,16:19)[as.vector(rmultinom(1,1,probNewMutant)) == 1]
 
 			# Subtract new mutant individual from frequency of old genotype
-			Fiiy.init[mutant]  <-  Fiiy.init[mutant] - 1/(2*N)# !Colin?
+			Fiiy.init[mutant]  <-  Fiiy.init[mutant] - 1/(2*N)
 		}
 	}
-	print(mutant)
 	# Specify mutant genotype
 	if(specified) {
 		if (sex=="f"){
@@ -545,10 +544,8 @@ introduceInversion  <-  function(newMutant, Fiix.init, Fiiy.init, N) {
 	# Add mutant individual to frequency of new inversion genotype
 	if (sex=="f"){
 		if(mutant == 4 | mutant == 9 | mutant == 14)
-			print (Fiix.init[mutant + 1]  )
 			Fiix.init[mutant + 1]  <-  1/(2*N)
 		if(mutant == 16 | mutant == 17 | mutant == 18)
-			print (Fiix.init[mutant + 1]  )
 			Fiix.init[mutant + 5]  <-  1/(2*N)
 
 		# if inversion occurs on abab genotype, choose randomly whether it occurs on
@@ -885,12 +882,7 @@ makeReplicateAutoInvSimsDataSexSpec  <-  function(nReps = 1000, N.vals = c(500, 
 							sfs		<-   rep(sm, times=nrow(res$results.df))
 							sms  	<-   rep(sf, times=nrow(res$results.df))
 							rs      <-  rep(r.case, times=nrow(res$results.df))
-							# Append to data frame
-							print("here")
-							print(dim(res$results.df))
-							print(res$results.df)
-							print(length(res$results.df))
-							print(c( Ns, mms, mfs, s.delss, sfs, sms, rs))
+							# Append to data frame						
 							df      <-  cbind(res$results.df,	 Ns, mms,mfs, s.delss,sfs,sms,rs)
 							data    <-  rbind(data, df)
 							rm(df)
