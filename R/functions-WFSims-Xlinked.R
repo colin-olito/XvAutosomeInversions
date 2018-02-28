@@ -435,7 +435,8 @@ autoInvFwdSim  <-  function(Fiix.init = Fiix.init, Fiiy.init = Fiiy.init, N = N,
 #' 					 mutant inversion occurring
 #' @param N			 Population size
 
-introduceInversion  <-  function(newMutantX, newMutantY, Fiix.init, Fiiy.init, N) {
+# add m, which is true if the inversion is introduced into the male genotype.
+introduceInversion  <-  function(newMutant, m = FALSE, Fiix.init, Fiiy.init, N) {
 #' Females:
 #'    c(ABAB,  ABAb,  ABaB,  ABab,  ABba*,  c(x1x1, x1x2, x1x3, x1x4, x1x5, 
 #'		  AbAB,  AbAb,  AbaB,  Abab,  Abba*,	  x2x1, x2x2, x2x3, x2x4, x2x5, 
@@ -467,10 +468,14 @@ introduceInversion  <-  function(newMutantX, newMutantY, Fiix.init, Fiiy.init, N
   # Specify mutant genotype
   if(specifyNewMutant) {
     # Subtract new mutant individual from frequency of old genotype
-    newMutX  <-  newMutantX
-    newMutY  <-  newMutantY
-    Fiix.init[newMutX]  <-  Fiix.init[newMutX] - 1/N
-    Fiiy.init[newMutY]  <-  Fiiy.init[newMutY] - 1/N
+    if(m) {
+      newMutY  <-  newMutant
+      Fiiy.init[newMutY]  <-  Fiiy.init[newMutY] - 1/N
+    }
+    else {
+      newMutX  <-  newMutant
+      Fiix.init[newMutX]  <-  Fiix.init[newMutX] - 1/N
+    }
   }
 
   # Add mutant individual to frequency of new inversion genotype
