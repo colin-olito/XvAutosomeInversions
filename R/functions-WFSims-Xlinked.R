@@ -429,7 +429,7 @@ autoInvFwdSim  <-  function(Fiix.init = Fiix.init, Fiiy.init = Fiiy.init, N = N,
 #' @param Fii.init   Initial genotypic frequencies, from which to calculate probability of new 
 #' 					 mutant inversion occurring
 #' @param N			 Population size
-introduceInversion  <-  function(newMutant, Fiix.init, Fiiy.init, N) {
+introduceInversion  <-  function(newMutantX, newMutantY, Fiix.init, Fiiy.init, N) {
   
   # Toggle
   specifyNewMutant  <-  is.numeric(newMutant)
@@ -440,12 +440,12 @@ introduceInversion  <-  function(newMutant, Fiix.init, Fiiy.init, N) {
     if(runif(1) >= 1/3){
       # Probability of new mutant occuring on X in females
       probNewMutantX     <-  Fiix.init[c(4,9,14,16:19)]/sum(Fiix.init[c(4,9,14,16:19)])
-      newMutX            <-  (2/3)*c(4,9,14,16:19)[as.vector(rmultinom(1,1,probNewMutantX)) == 1]
+      newMutX            <-  c(4,9,14,16:19)[as.vector(rmultinom(1,1,probNewMutantX)) == 1]
     }
     else {
       # Probability of new mutant occuring on X in males: For Y, inversion only on ab matters?
       probNewMutantY    <-  Fiiy.init[c(1:4)]/sum(Fiiy.init[c(1:4)])
-      newMutY           <-  (1/3)*c(1:4)[as.vector(rmultinom(1,1,probNewMutantY)) == 1]
+      newMutY           <-  c(1:4)[as.vector(rmultinom(1,1,probNewMutantY)) == 1]
     }
   }
     
@@ -457,10 +457,10 @@ introduceInversion  <-  function(newMutant, Fiix.init, Fiiy.init, N) {
   # Specify mutant genotype
   if(specifyNewMutant) {
     # Subtract new mutant individual from frequency of old genotype
-    newMutX  <-  newMutant
-    newMutY  <-  newMutant
-    Fiix.init[newMutant]  <-  Fiix.init[newMutant] - 1/N
-    Fiiy.init[newMutant]  <-  Fiiy.init[newMutant] - 1/N
+    newMutX  <-  newMutantX
+    newMutY  <-  newMutantY
+    Fiix.init[newMutX]  <-  Fiix.init[newMutX] - 1/N
+    Fiiy.init[newMutY]  <-  Fiiy.init[newMutY] - 1/N
   }
 
   # Add mutant individual to frequency of new inversion genotype
@@ -474,15 +474,29 @@ introduceInversion  <-  function(newMutant, Fiix.init, Fiiy.init, N) {
   
   # if inversion occurs on abab genotype, choose randomly whether it occurs on
   # the maternally or paternally inherited chromosome 
+  # for an X linked inversion, it is more probable to have occurred on X in females
+  # than X in males. 
   if(newMut == 19) {
     if(runif(1) >= 1/2) {
       Fii.init[newMut + 1]  <-  1/N
     }
     else Fii.init[newMut + 5]  <-  1/N
-  }
-  
-  Fii.init
+  } 
+  Fiix.init
+  Fiiy.init
 }
+
+#' Genotypes are organized as numeric vectors of length = 25. For consistency
+#' they are always ordered as follows:
+#' Females:
+#'    c(ABAB,  ABAb,  ABaB,  ABab,  ABba*,	c(x1x1, x1x2, x1x3, x1x4, x1x5, 
+#'		  AbAB,  AbAb,  AbaB,  Abab,  Abba*,	  x2x1, x2x2, x2x3, x2x4, x2x5, 
+#'		  aBAB,  aBAb,  aBaB,  aBab,  aBba*,	  x3x1, x3x2, x3x3, x3x4, x3x5, 
+#'		  abAB,  abAb,  abaB,  abab,  abba*,	  x4x1, x4x2, x4x3, x4x4, x4x5, 
+#'		  baAB*, baAb*, baaB*, baab*, baba*)	  x5x1, x5x2, x5x3, x5x4, x5x5)
+#'
+#'Males:
+#'    c(AB, Ab, aB, ab, ba*)                c(y1, y2, y3, y4, y5)
 #*******************************************************************************************************************
 
 #' Wrapper function to run replicate forward simulations for invasion
