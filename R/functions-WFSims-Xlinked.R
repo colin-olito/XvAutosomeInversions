@@ -276,8 +276,8 @@ autoInvFwdSim  <-  function(Fiix.init = Fiix.init, Fiiy.init = Fiiy.init, N = N,
       for (j in 1:length(xi)) {
         recFctx  <-  get(names(xi)[j])
         recFcty  <-  get(names(yi)[j])
-        xi[j]   <-  round(recFctx(Fii = Fiix, m = m, r = r), digits=8)
-        yi[j]   <-  round(recFcty(Fii = Fiiy, m = m, r = r), digits=8)
+        xi[j]   <-  round(recFctx(Fii = Fiix, m = mf, r = r), digits=8)
+        yi[j]   <-  round(recFcty(Fii = Fiiy, m = mm, r = r), digits=8)
       }
       # 2) Offspring genotype frequencies
       O_females     <-  offFreq_females(xi, yi)
