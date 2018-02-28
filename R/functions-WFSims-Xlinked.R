@@ -633,21 +633,20 @@ runReplicateAutoInvSims  <-  function(nReps = 1000, N = 500, mm = 0.01, mf = 0.0
              (1 + h*sf)^2*(1 - h.del*sf.del)^n.del, (1 + h*sf)*(1 + sf)*(1 - h.del*sf.del)^n.del, (1 + sf)*(1 + h*sf)*(1 - h.del*sf.del)^n.del, (1 + sf)^2*(1 - h.del*sf.del)^n.del, (1 + sf)^2*(1 - sf.del)^n.del)
     
     Wm  <-  c(1, (1 + sm), (1 + sm), (1 + sm)^2, (1 + sm)^2*(1 - sm.del)^n.del)
-#****************************************************************************************************************    
- # 27 Feb - Check the functions above and modify the code below    
+
     ## RUN SIMULATION
     repRes  <-  autoInvFwdSim(Fiix.init=Fiix.init, Fiiy.init=Fiiy.init, N=N, Wf=Wf, Wm=Wm, mm=mm, mf=mf, r=r)
     
     # save results for each replicate
     finalInvFreq[i]    <-  repRes$InvFreq[length(repRes$InvFreq)]
     finalE.InvFreq[i]  <-  repRes$E.InvFreq[length(repRes$E.InvFreq)]
-    # finalW.mean[i]
+    finalInvFreq_f[i]  <-  repRes$InvFreq_f[length(repRes$InvFreq_f)]
+    finalInvFreq_m[i]  <-  repRes$InvFreq_m[length(repRes$InvFreq_m)]
+    finalE.InvFreq_f[i]  <- repRes$E.InvFreq_f[length(repRes$E.InvFreq_f)]
+    finalE.InvFreq_m[i]  <- repRes$E.InvFreq_m[length(repRes$E.InvFreq_m)]
+    finalW.mean[i]     <-  repRes$W.mean
     finalWf.mean[i]     <-  repRes$Wf.mean
     finalWm.mean[i]     <-  repRes$Wm.mean
-    # finalInvFreq_f[i]
-    # finalInvFreq_m[i]
-    # finalE.InvFreq_f[i]
-    # finalE.InvFreq_m[i]
     nGen[i]            <-  repRes$nGen
     invEst[i]          <-  repRes$invEst
     invEstTime[i]      <-  repRes$invEstTime
@@ -657,13 +656,13 @@ runReplicateAutoInvSims  <-  function(nReps = 1000, N = 500, mm = 0.01, mf = 0.0
       replicateTraj  <-  c(replicateTraj, rep(i, times=length(repRes$InvFreq)))
       InvFreqTraj    <-  c(InvFreqTraj, repRes$InvFreq)
       E.InvFreqTraj  <-  c(E.InvFreqTraj, repRes$E.InvFreq)
-      #W.meanTraj
+      InvFreq_fTraj  <-  c(InvFreq_fTraj, repRes$InvFreq_f)
+      InvFreq_mTraj  <-  c(InvFreq_mTraj, repRes$InvFreq_m)
+      E.InvFreq_fTraj <- c(E.InvFreq_fTraj, repRes$E.InvFreq_f)
+      E.InvFreq_mTraj <- c(E.InvFreq_mTraj, repRes$E.InvFreq_m)
+      W.meanTraj     <-  c(W.meanTraj, repRes$W.mean)
       Wf.meanTraj     <-  c(Wf.meanTraj, repRes$Wf.mean)
       Wm.meanTraj     <-  c(Wm.meanTraj, repRes$Wm.mean)
-      #InvFreq_fTraj
-      #InvFreq_mTraj
-      #E.InvFreq_fTraj
-      #E.InvFreq_mTraj
     } 
     
     setTxtProgressBar(pb, i)
@@ -673,6 +672,11 @@ runReplicateAutoInvSims  <-  function(nReps = 1000, N = 500, mm = 0.01, mf = 0.0
   results.df  <-  data.frame(
     "finalInvFreq"    =  finalInvFreq,
     "finalE.InvFreq"  =  finalE.InvFreq,
+    "finalInvFreq_f"  =  finalInvFreq_f,
+    "finalInvFreq_m"  =  finalInvFreq_m,
+    "finalE.InvFreq_f" = finalE.InvFreq_f,
+    "finalE.InvFreq_m" = finalE.InvFreq_m,
+    "finalW.mean"      = finalW.mean  
     "finalWf.mean"     =  finalWf.mean,
     "finalWm.mean"     =  finalWm.mean,
     "nGen"            =  nGen,
@@ -685,6 +689,11 @@ runReplicateAutoInvSims  <-  function(nReps = 1000, N = 500, mm = 0.01, mf = 0.0
       "replicateTraj"  =  replicateTraj,
       "InvFreqTraj"    =  InvFreqTraj,
       "E.InvFreqTraj"  =  E.InvFreqTraj,
+      "InvFreq_fTraj"  = InvFreq_fTraj,
+      "InvFreq_mTraj"  = InvFreq_mTraj,
+      "E.InvFreq_fTraj" = E.InvFreq_fTraj,
+      "E.InvFreq_mTraj" = E.InvFreq_mTraj,
+      "W.meanTraj"      = W.meanTraj,
       "Wf.meanTraj"     =  Wf.meanTraj
       "Wm.meanTraj"     =  Wm.meanTraj
     )
@@ -697,7 +706,8 @@ runReplicateAutoInvSims  <-  function(nReps = 1000, N = 500, mm = 0.01, mf = 0.0
   )
   return(res)
 }
-
+#****************************************************************************************************************    
+# 27 Feb - Check the functions above and modify the code below    
 
 #' Wrapper function to run replicate forward simulations for invasion
 #' of X-linked inversions in a Wright-Fisher population 
