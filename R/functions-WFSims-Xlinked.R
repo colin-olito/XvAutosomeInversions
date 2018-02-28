@@ -536,6 +536,13 @@ runReplicateAutoInvSims  <-  function(nReps = 1000, N = 500, mm = 0.01, mf = 0.0
   if(any(c(N,mm,mf,sf,sm,h,r,n,u,h.del) < 0) | any(c(mm,mf,sf,sm,h,r,u,h.del) > 1) | r > 0.5)
     stop('The chosen parameter values fall outside of reasonable parameter space')
   
+  specifyNewMutant <- is.numeric(newMutant)
+  if(specifyNewMutant & all(newMutant != c(4,9,14,16:19)))
+    stop('If specifying the genotype of new inversion mutants, newMutant must take one of the following values: 4,9,14,16:19')
+  
+  if(!specifyNewMutant & newMutant != 'random')
+    stop('If the genotype of new inversion mutants is being chosen randomly, the parameter newMutant must equal random')
+  
   try({
     if(m >= s )
       stop('Warning: migration is stronger than than selection, 
@@ -562,7 +569,7 @@ runReplicateAutoInvSims  <-  function(nReps = 1000, N = 500, mm = 0.01, mf = 0.0
   Fiix.init <- findEqFreqs(Wf=Wf.init, Wm=Wm.init, mm=mm, mf=mf, r=r, threshold = 1e-7)[1] # First row for females  
   Fiiy.init <- findEqFreqs(Wf=Wf.init, Wm=Wm.init, mm=mm, mf=mf, r=r, threshold = 1e-7)[2] # Second row for males
   
-  # Introduce rare mutant inversion
+  # Introduce rare inversion mutations
   Fiix.init <- introduceInversion(newMutant=newMutant, Fiix.init=Fiix.init, N = N)[1]
   Fiiy.init <- introduceInversion(newMutant=newMutant, Fiiy.init=Fiiy.init, N = N)[2]
     
