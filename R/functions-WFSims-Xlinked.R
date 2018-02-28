@@ -453,7 +453,7 @@ introduceInversion  <-  function(newMutant, m = FALSE, Fiix.init, Fiiy.init, N) 
   # Choose mutant genotype randomly
   if(!specifyNewMutant) {
     
-      # Probability of new mutant occuring on X in females
+      # Probability of new mutant occuring on X in a genotype containing ab in females and males
       probNewMutantX     <-  c(Fiix.init[c(4,9,14,16:18)], Fiix.init[19]*2, Fiiy.init[4])/sum(Fiix.init[c(4,9,14,16:18)], Fiix.init[19]*2 , sum(Fiiy.init[4]))
       newMutX            <-  c(4,9,14,16:19,100)[as.vector(rmultinom(1,1,probNewMutantX)) == 1]
       if(newMutX == 100) {
@@ -707,7 +707,7 @@ runReplicateAutoInvSims  <-  function(nReps = 1000, N = 500, mm = 0.01, mf = 0.0
   return(res)
 }
 #****************************************************************************************************************    
-# 27 Feb - Check the functions above and modify the code below    
+# 28 Feb - Check the functions above and modify the code below    
 
 #' Wrapper function to run replicate forward simulations for invasion
 #' of X-linked inversions in a Wright-Fisher population 
