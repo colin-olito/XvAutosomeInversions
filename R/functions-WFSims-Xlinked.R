@@ -449,7 +449,7 @@ introduceInversion  <-  function(newMutantX, newMutantY, Fiix.init, Fiiy.init, N
       # Probability of new mutant occuring on X in females
       probNewMutantX     <-  c(Fiix.init[c(4,9,14,16:18)], Fiix.init[19]*2, Fiiy.init[4])/sum(Fiix.init[c(4,9,14,16:18)], Fiix.init[19]*2 , sum(Fiiy.init[4]))
       newMutX            <-  c(4,9,14,16:19,100)[as.vector(rmultinom(1,1,probNewMutantX)) == 1]
-      if(newMutX) == 100 {
+      if(newMutX == 100) {
         # Subtract new mutant individual from frequency of old genotype
         Fiiy.init[4]  <-  Fiiy.init[4] - 1/N
       }
@@ -615,7 +615,8 @@ runReplicateAutoInvSims  <-  function(nReps = 1000, N = 500, mm = 0.01, mf = 0.0
              (1 + h*sf)^2*(1 - h.del*sf.del)^n.del, (1 + h*sf)*(1 + sf)*(1 - h.del*sf.del)^n.del, (1 + sf)*(1 + h*sf)*(1 - h.del*sf.del)^n.del, (1 + sf)^2*(1 - h.del*sf.del)^n.del, (1 + sf)^2*(1 - sf.del)^n.del)
     
     Wm  <-  c(1, (1 + sm), (1 + sm), (1 + sm)^2, (1 + sm)^2*(1 - sm.del)^n.del)
-    
+#****************************************************************************************************************    
+ # 27 Feb - Check the functions above and modify the code below    
     ## RUN SIMULATION
     repRes  <-  autoInvFwdSim(Fiix.init=Fiix.init, Fiiy.init=Fiiy.init, N=N, Wf=Wf, Wm=Wm, mm=mm, mf=mf, r=r)
     
@@ -649,7 +650,7 @@ runReplicateAutoInvSims  <-  function(nReps = 1000, N = 500, mm = 0.01, mf = 0.0
     
     setTxtProgressBar(pb, i)
   }
-# Until here -- Feb 25  
+  
   # Save results and return results as a list
   results.df  <-  data.frame(
     "finalInvFreq"    =  finalInvFreq,
