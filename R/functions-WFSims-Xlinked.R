@@ -420,6 +420,61 @@ autoInvFwdSim  <-  function(Fiix.init = Fiix.init, Fiiy.init = Fiiy.init, N = N,
   return(res)
 }
 
+#' Introduce new mutant inversion genotype
+#'
+#' @title Introduce new mutant inversion genotype
+#' @param newMutant  Switch to choose whether to specify new mutant genotypes, or if they are 
+#'   				 chosen randomly, given initial genotypic frequencies (Fii.init). 
+#' 					 See params for runReplicateAutoInvSims().
+#' @param Fii.init   Initial genotypic frequencies, from which to calculate probability of new 
+#' 					 mutant inversion occurring
+#' @param N			 Population size
+introduceInversion  <-  function(newMutant, Fiix.init, Fiiy.init, N) {
+  
+  # Toggle
+  specifyNewMutant  <-  is.numeric(newMutant)
+  ##### Up to here
+  # Decide whether it will happen in male or female
+  
+  # Choose mutant genotype randomly
+  if(!specifyNewMutant) {
+    
+    # Probability of new mutant occuring on X in females
+    probNewMutantX    <-  Fiix.init[c(4,9,14,16:19)]/sum(Fiix.init[c(4,9,14,16:19)])
+    newMutX            <-  c(4,9,14,16:19)[as.vector(rmultinom(1,1,probNewMutantX)) == 1]
+    
+    # Probability of new mutant occuring on X in males
+    probNewMutantY    <-  Fiiy.init[c(1:4)]/sum(Fiiy.init[c(1:4)])
+    newMutY           <-  c(1:4)[as.vector(rmultinom(1,1,probNewMutantY)) == 1]
+    
+    # Subtract new mutant individual from frequency of old genotype
+    Fii.init[newMut]  <-  Fii.init[newMut] - 1/N
+  }
+  
+  # Specify mutant genotype
+  if(specifyNewMutant) {
+    # Subtract new mutant individual from frequency of old genotype
+    newMut  <-  newMutant
+    Fii.init[newMutant]  <-  Fii.init[newMutant] - 1/N
+  }
+  
+  # Add mutant individual to frequency of new inversion genotype
+  if(newMut == 4 | newMut == 9 | newMut == 14)
+    Fii.init[newMut + 1]  <-  1/N
+  if(newMut == 16 | newMut == 17 | newMut == 18)
+    Fii.init[newMut + 5]  <-  1/N
+  
+  # if inversion occurs on abab genotype, choose randomly whether it occurs on
+  # the maternally or paternally inherited chromosome 
+  if(newMut == 19) {
+    if(runif(1) >= 1/2) {
+      Fii.init[newMut + 1]  <-  1/N
+    }
+    else Fii.init[newMut + 5]  <-  1/N
+  }
+  
+  Fii.init
+}
 
 #' Wrapper function to run replicate forward simulations for invasion
 #' of X-linked inversions in a Wright-Fisher population 
@@ -481,6 +536,10 @@ runReplicateAutoInvSims  <-  function(nReps = 1000, N = 500, m = 0.01, s = 0.1, 
   ## Find deterministic equilibrium frequencies in absence of inversion in females and males
   Fiix.init <- findEqFreqs(Wf=Wf.init, Wm=Wm.init, m=m, r=r, threshold = 1e-7)[1,] # First row for females  
   Fiiy.init <- findEqFreqs(Wf=Wf.init, Wm=Wm.init, m=m, r=r, threshold = 1e-7)[2,] # Second row for males
+  
+  # Introduce rare mutant inversion
+  Fiix.init <- introduceInversion(newMutant=newMutant, Fiix.init=Fiix.init, N = N)
+  Fiiy.init <- introduceInversion(newMutant=newMutant, Fiiy.init=Fiiy.init, N = N)
     
   # Use deterministic equilibrium frequencies of non-inversion genotypes
   # as initial conditions when introducing the inversion via a single
@@ -615,7 +674,7 @@ runReplicateAutoInvSims  <-  function(nReps = 1000, N = 500, m = 0.01, s = 0.1, 
 #' @export
 #' @author Colin Olito.
 makeReplicateAutoInvSimsData  <-  function(nReps = 1000, N.vals = c(500, 1000), m.vals = c(0.01, 0.05), 
-                                           s = 0.1, h = 1/2, r = 0.1, 
+                                           sf = 0.1, sm = 0.1, h = 1/2, r = 0.1, 
                                            n = 100, u = 1e-5, h.del = 0) {
   
   # Simulate deleterious mutations that are either 
@@ -643,7 +702,7 @@ makeReplicateAutoInvSimsData  <-  function(nReps = 1000, N.vals = c(500, 1000), 
         cat("\n",paste('Running simulations for parameter set ', prog, "/", tot),"\n")
         
         # Run simulations  
-        res  <-  runReplicateAutoInvSims(nReps = nReps, N = N.vals[j], m = m.vals[k], s = s, h = h, r = r, 
+        res  <-  runReplicateAutoInvSims(nReps = nReps, N = N.vals[j], m = m.vals[k], sf = sf, sm = sm, h = h, r = r, 
                                          n = n, u = u, h.del = h.del, s.del = s.del.vals[l], 
                                          noDel = FALSE, saveTrajectories = FALSE)
         
@@ -668,9 +727,9 @@ makeReplicateAutoInvSimsData  <-  function(nReps = 1000, N.vals = c(500, 1000), 
   us      <-  rep(u, times=nrow(data))
   h.dels  <-  rep(h.del, times=nrow(data))
   data    <-  cbind(data, ss, hs, rs, us, h.dels)
-  colnames(data)  <-  c("finalInvFreq","finalE.InvFreq","finalW.mean",
+  colnames(data)  <-  c("finalInvFreq","finalE.InvFreq","finalWf.mean", "finalWm.mean",
                         "nGen","invEst","invEstTime","nDels","N","m",
-                        "s.dels","s","h","r","u","h.del")
+                        "s.dels","sf", "m", "h","r","u","h.del")
   
   # create file name
   filename  <-  paste("./output/data/simResults/auto-InvSimsData", "_s", s, "_h", h, "_r", r, "_n", n, "_u", u, ".csv", sep="")
