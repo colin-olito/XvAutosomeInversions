@@ -139,7 +139,7 @@ offFreq_males  <-  function(xi) {
 #' @title Find the deterministic equilibrium genotype frequencies prior to introducing the inversion
 #' @param Wf     Vector of fitness expressions for all 25 female genotypes
 #' @param Wm     Vector of fitness expressions for all 5 male genotypes 
-#' @param m      Migration rate for locally maladaptive alleles (m =  0.01)
+#' @param mm, mf      Migration rate for locally maladaptive alleles (m =  0.01)
 #' @param r      Recombination rate among the two loci involved in local adaptation (r = 0.1).
 #' @param threshold The threshold change in genotype frequency at which the simulation
 #'                  will accept the current state as having reached equilibrium. Values
@@ -229,7 +229,7 @@ findEqFreqs  <-  function(Wf, Wm, mm, mf, r, threshold = 1e-6) {
 #' @param N         Population size
 #' @param Wf        Vector of fitness expressions for all 25 female genotypes
 #' @param Wm        Vector of fitness expressions for all 5 male genotypes
-#' @param m         Migration rate for locally maladaptive alleles (m =  0.01)
+#' @param mm, mf         Migration rate for locally maladaptive alleles (m =  0.01)
 #' @param r         Recombination rate among the two loci involved in local adaptation in females (r = 0.1).
 #' @param saveTrajectories  Save evolutionary trajectories of inversion frequencies? 
 #' @export
@@ -255,15 +255,15 @@ autoInvFwdSim  <-  function(Fiix.init = Fiix.init, Fiiy.init = Fiiy.init, N = N,
     # Storage structures for individual simulation data
     InvFreq    <-  rep(0, times=(4*N+1))
     E.InvFreq  <-  rep(0, times=(4*N+1))
-    W.mean     <-  rep(0, times=(4*N+1)) # Overall fitness of the population regardless of sex
-    Wf.mean    <-  rep(0, times=(4*N+1))
-    Wm.mean    <-  rep(0, times=(4*N+1))
     InvFreq_f    <-  rep(0, times=(4*N+1))
     InvFreq_m    <-  rep(0, times=(4*N+1))
     E.InvFreq_f    <-  rep(0, times=(4*N+1))
     E.InvFreq_m    <-  rep(0, times=(4*N+1))
+    W.mean     <-  rep(0, times=(4*N+1)) # Overall fitness of the population regardless of sex
+    Wf.mean    <-  rep(0, times=(4*N+1))
+    Wm.mean    <-  rep(0, times=(4*N+1))
     
-    # Initial inversion frequency 
+    # Initial inversion frequency #!InvFreq for females and males separate or as is it?!
     InvFreq[1]    <-  sum(Fiix[c(5,10,15,20:24)]/2, Fiix[25]) + Fiiy[5] # Sum of all inverted genotypes in females and males.
     E.InvFreq[1]  <-  InvFreq[1]
     
@@ -323,16 +323,16 @@ autoInvFwdSim  <-  function(Fiix.init = Fiix.init, Fiiy.init = Fiiy.init, N = N,
     res  <-  list(
       "InvFreq"     =  InvFreq[1:gen-1],
       "E.InvFreq"   =  E.InvFreq[1:gen-1],
-      "W.mean"      =  W.mean[1:gen-1],
-      "nGen"        =  gen,
-      "InvEst"      =  invEst,
-      "InvEstTime"  =  invEstTime,
-      "Wf.mean"     =  Wf.mean(1:gen-1),
-      "Wm.mean"     =  Wm.mean(1:gen-1),
       "InvFreq_f"   =  InvFreq_f(1:gen-1),
       "InvFreq_m"   =  InvFreq_m(1:gen-1),
       "E.InvFreq_f" =  E.InvFreq_f(1:gen-1),
-      "E.InvFreq_m" =  E.InvFreq_m(1:gen-1)
+      "E.InvFreq_m" =  E.InvFreq_m(1:gen-1),
+      "InvEst"      =  invEst,
+      "InvEstTime"  =  invEstTime,
+      "W.mean"      =  W.mean[1:gen-1],
+      "Wf.mean"     =  Wf.mean(1:gen-1),
+      "Wm.mean"     =  Wm.mean(1:gen-1),
+      "nGen"        =  gen
     )
   } 
   
@@ -341,8 +341,14 @@ autoInvFwdSim  <-  function(Fiix.init = Fiix.init, Fiiy.init = Fiiy.init, N = N,
     # Storage structures for individual simulation data
     InvFreq    <-  0
     E.InvFreq  <-  0
+    InvFreq_f    <-  0
+    InvFreq_m    <-  0
+    E.InvFreq_f    <-  0
+    E.InvFreq_m    <-  0
     W.mean     <-  0
-    
+    Wf.mean    <-  rep(0, times=(4*N+1))
+    Wm.mean    <-  rep(0, times=(4*N+1))
+        
     # Initial inversion frequency 
     InvFreq    <-  sum(Fii[c(5,10,15,20:24)]/2, Fii[25])
     E.InvFreq  <-  InvFreq[1]
@@ -403,16 +409,16 @@ autoInvFwdSim  <-  function(Fiix.init = Fiix.init, Fiiy.init = Fiiy.init, N = N,
     res  <-  list(
       "InvFreq"     =  InvFreq[1:gen-1],
       "E.InvFreq"   =  E.InvFreq[1:gen-1],
-      "W.mean"      =  W.mean[1:gen-1],
-      "nGen"        =  gen,
+      "InvFreq_f"   =  InvFreq_f(1:gen-1),
+      "InvFreq_m"   =  InvFreq_m(1:gen-1),
+      "E.InvFreq_f" =  E.InvFreq_f(1:gen-1),
+      "E.InvFreq_m" =  E.InvFreq_m(1:gen-1),
       "InvEst"      =  invEst,
       "InvEstTime"  =  invEstTime,
       "Wf.mean"     =  Wf.mean(1:gen-1),
       "Wm.mean"     =  Wm.mean(1:gen-1),
-      "InvFreq_f"   =  InvFreq_f(1:gen-1),
-      "InvFreq_m"   =  InvFreq_m(1:gen-1),
-      "E.InvFreq_f" =  E.InvFreq_f(1:gen-1),
-      "E.InvFreq_m" =  E.InvFreq_m(1:gen-1)
+      "W.mean"      =  W.mean[1:gen-1],
+      "nGen"        =  gen
     )
   }
   
