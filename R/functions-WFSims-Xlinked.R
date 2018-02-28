@@ -448,15 +448,17 @@ introduceInversion  <-  function(newMutant, m = FALSE, Fiix.init, Fiiy.init, N) 
 #'    c(AB, Ab, aB, ab, ba*)                c(y1, y2, y3, y4, y5)
   
   # Toggle
-  specifyNewMutant  <-  is.numeric(newMutant)
+  specifyNewMutant  <-  is.numeric(newMutant) # it returns TRUE if newMutant is the number of a specific genotype given. 
+                                              # In this case, sex and genotype are pre-defined and are not random.
   
   # Choose mutant genotype randomly
   if(!specifyNewMutant) {
     
       # Probability of new mutant occuring on X in a genotype containing ab in females and males
+      # 7 genotypes in females contain ab haplotype, only one contains 2 ab, in this case, the frequency of abab is multiplied by 2. For the other genotypes, it's only 1 ab within each. 
       probNewMutantX     <-  c(Fiix.init[c(4,9,14,16:18)], Fiix.init[19]*2, Fiiy.init[4])/sum(Fiix.init[c(4,9,14,16:18)], Fiix.init[19]*2 , sum(Fiiy.init[4]))
-      newMutX            <-  c(4,9,14,16:19,100)[as.vector(rmultinom(1,1,probNewMutantX)) == 1]
-      if(newMutX == 100) {
+      newMutX            <-  c(4,9,14,16:19,100)[as.vector(rmultinom(1,1,probNewMutantX)) == 1] # In the vector c(4,9,14,16:19,100), 100 is a number that indicates the male genotype. If this is chosen by rmultinom, 
+      if(newMutX == 100) {                                                                      # then the inversion is introduced in male which is indicated by the condition if(newMutX == 100)
         # Subtract new mutant individual from frequency of old genotype
         Fiiy.init[4]  <-  Fiiy.init[4] - 1/N
       }
