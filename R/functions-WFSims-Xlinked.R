@@ -707,9 +707,7 @@ runReplicateAutoInvSims  <-  function(nReps = 1000, N = 500, mm = 0.01, mf = 0.0
     "traj.df"     =  traj.df
   )
   return(res)
-}
-#****************************************************************************************************************    
-# 28 Feb - Check the functions above and modify the code below    
+}   
 
 #' Wrapper function to run replicate forward simulations for invasion
 #' of X-linked inversions in a Wright-Fisher population 
@@ -717,9 +715,11 @@ runReplicateAutoInvSims  <-  function(nReps = 1000, N = 500, mm = 0.01, mf = 0.0
 #'
 #' @title Run replicate Wright-Fisher forward simulations for autosomal inversion under different parameter values 
 #' @param N.vals Desired population sizes
-#' @param m.vals desired migration rates for locally maladaptive alleles (m =  0.01)
+#' @param mm.vals desired male migration rates for locally maladaptive alleles (mm =  0.01)
+#' @param mf.vals desired female migration rates for locally maladaptive alleles (mf =  0.01)
 #' @param s.del.vals  Desired selection coefficients for deleterious mutations (default value of s = 1).
-#' @param s      Selective advantage of locally adaptive alleles over migrant alleles (s = 0.02)
+#' @param sf      Female selective advantage of locally adaptive alleles over migrant alleles (sf = 0.02)
+#' @param sm      Male selective advantage of locally adaptive alleles over migrant alleles (sm = 0.02)
 #' @param h      Dominance coefficient for locally adaptive alleles relative to migrant alleles (h = 0.5)
 #' @param r      Recombination rate among the two loci involved in local adaptation (r = 0.1).
 #' @param n      Number of loci at which deleterious mutations may occur.
@@ -737,10 +737,11 @@ runReplicateAutoInvSims  <-  function(nReps = 1000, N = 500, mm = 0.01, mf = 0.0
 #' @seealso `offFreq`, `findEqFreqs`, `autoInvFwdSim`
 #' @export
 #' @author Colin Olito.
-makeReplicateAutoInvSimsData  <-  function(nReps = 1000, N.vals = c(500, 1000), m.vals = c(0.01, 0.05), 
-                                           sf = 0.1, sm = 0.1, h = 1/2, r = 0.1, 
-                                           n = 100, u = 1e-5, h.del = 0) {
-  
+makeReplicateAutoInvSimsData  <-  function(nReps = 1000, N.vals = c(500, 1000), mm.vals = c(0.01, 0.05), mf.vals = c(0.01, 0.05), 
+                                           sf = 0.1, sm = 0.1, h = 1/2, r = 0.1, n = 100, u = 1e-5, h.del = 0, newMutant=c("random"), saveTrajectories = FALSE) {
+
+#****************************************************************************************************************    
+  # 28 Feb - Check the functions above and modify the code below   
   # Simulate deleterious mutations that are either 
   # 1) recessive lethals OR
   # 2) recessive experiencing purifying selection
@@ -750,11 +751,11 @@ makeReplicateAutoInvSimsData  <-  function(nReps = 1000, N.vals = c(500, 1000), 
   
   
   # create empty data frame with same structure as we are going to need
-  data  <-  data.frame(matrix(ncol=10, nrow=0))
+  data  <-  data.frame(matrix(ncol=13, nrow=0))
   
   # Convenience variables to monitor progress
   prog  <-  0
-  tot   <-  length(N.vals)*length(m.vals)*length(s.del.vals)
+  tot   <-  length(N.vals)*length(mm.vals)*length(s.del.vals)
   
   # Loop over parameter values we want to explore 
   for(j in 1:length(N.vals)) {
@@ -766,7 +767,7 @@ makeReplicateAutoInvSimsData  <-  function(nReps = 1000, N.vals = c(500, 1000), 
         cat("\n",paste('Running simulations for parameter set ', prog, "/", tot),"\n")
         
         # Run simulations  
-        res  <-  runReplicateAutoInvSims(nReps = nReps, N = N.vals[j], m = m.vals[k], sf = sf, sm = sm, h = h, r = r, 
+        res  <-  runReplicateAutoInvSims(nReps = nReps, N = N.vals[j], mm = mm.vals[k], mf = mf.vals[k], sf = sf, sm = sm, h = h, r = r, 
                                          n = n, u = u, h.del = h.del, s.del = s.del.vals[l], 
                                          noDel = FALSE, saveTrajectories = FALSE)
         
