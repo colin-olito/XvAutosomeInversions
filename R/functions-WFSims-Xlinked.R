@@ -37,11 +37,6 @@ rejectionSamplerX  <-  function(n=100, Ne=100, u=1e-6, h=0, sf=0.01, sm=0.01) {
 	qi
 }
 
-
-# Whoeveer is going to do the X-linked model
-# should start writing their functions here (using the code provided in 
-# './R/functions-WFSims-Autosomal.R' as a template)...
-#
 #' Linkage Disequilibrium function for W-F recursions
 #'
 #' @title Linkage Disequilibrium (Dstar)
@@ -153,7 +148,7 @@ offFreq_males  <-  function(xi) {
 #' @seealso `offFreq`, `autoInvWrightFisherSim`
 #' @author Colin Olito
 
-findEqFreqs  <-  function(Wf, Wm, m, r, threshold = 1e-6) {
+findEqFreqs  <-  function(Wf, Wm, mm, mf, r, threshold = 1e-6) {
   
   Fiix.init  <-  c(1/16, 1/16, 1/16, 1/16, 0, 
                   1/16, 1/16, 1/16, 1/16, 0, 
@@ -178,16 +173,16 @@ findEqFreqs  <-  function(Wf, Wm, m, r, threshold = 1e-6) {
 
   xdelta  <-  rep(1, times=16) # change of haplotype frequencies in 1 generation in females
   ydelta  <-  rep(1, times=4) # change of haplotye frequencies in 1 generation in males
-  delta <- append(xdelta, ydelta)
+  delta <- append(xdelta, ydelta) # putting xdelta and ydelta in one vector
   
   gen = 0 # counter of generations
   while(any(delta > threshold)) { # It stops when all of them has reached the equilibrium.
     gen=gen+1
     for (j in 1:length(xi)) {
       recFct_x  <-  get(names(xi)[j])
-      xi[j]   <-  round(recFct_x(Fii = E.Fiix, m = m, r = r), digits=3) # rounding 3 digits while threshold is 1e-6
+      xi[j]   <-  round(recFct_x(Fii = E.Fiix, m = mf, r = r), digits=3)
       recFct_y <- get(names(yi)[j])
-      yi[j]   <-  round(recFct_y(Fii = E.Fiiy, m = m), digits=3)
+      yi[j]   <-  round(recFct_y(Fii = E.Fiiy, m = mm), digits=3)
     }
     
     # offspring genotype frequencies
@@ -209,8 +204,17 @@ findEqFreqs  <-  function(Wf, Wm, m, r, threshold = 1e-6) {
   
   names(E.Fiix)  <-  NULL
   names(E.Fiiy)  <-  NULL
-  return (rbind(E.Fiix, E.Fiiy)) # It returns two vectors, one eq. vector for females and one eq. vector for males.
+  return (list(E.Fiix, E.Fiiy)) # It returns two vectors, one eq. vector for females and one eq. vector for males.
 }
+
+# Test findEqFreqs
+Wf<-rep(1,25)
+Wm<-rep(1,5)
+mf=0
+mm=0
+r=0.2
+findEqFreqs(Wf, Wm, mm, mf, r, threshold = 1e-6)
+
 
 #' Run a single Wright-Fisher Forward simulation with introduced inversion on the X chromosome
 #' using multinomial sampling with linkage to deleterious mutations
@@ -418,8 +422,7 @@ autoInvFwdSim  <-  function(Fiix.init = Fiix.init, Fiiy.init = Fiiy.init, N = N,
   
   return(res)
 }
-# Needs cleaning!
-#*******************************************************************************************************************
+
 #' Introduce new mutant inversion genotype
 #'
 #' @title Introduce new mutant inversion genotype
@@ -456,7 +459,6 @@ introduceInversion  <-  function(newMutantX, newMutantY, Fiix.init, Fiiy.init, N
         Fiix.init[newMutX]  <-  Fiix.init[newMutX] - 1/N
       }
     }
-  }
   
   # Specify mutant genotype
   if(specifyNewMutant) {
