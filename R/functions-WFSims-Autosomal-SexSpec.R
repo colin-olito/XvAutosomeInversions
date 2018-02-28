@@ -910,31 +910,13 @@ makeReplicateAutoInvSimsDataSexSpec  <-  function(nReps = 1000, N.vals = c(500, 
 	return(data)
 	
 }
- 
-###TEST the whole thing
+
+
+
+###One simple test
 #source("R/functions-WFSims-Autosomal-SexSpec.R")# from repos home folder
 #a<-makeReplicateAutoInvSimsDataSexSpec(nReps = 2, N.vals = c(100, 200), m=0.01, m.delta=0.01,
 #										   s = 0.1, s.delta=0.1, r.vals = c(0.1,0.5), h = 1/2,newMutant=c("random","random"),
 #										   n = 100, u = 1e-5, h.del = 0, noDel = FALSE,saveTrajectories = FALSE)
-
-
-#Note Parameter space we wanna explore:
-
-
-#
-
-# 3 AVERAGE SELECTION REMAIN THE SAME sx =0.1 then we can have sy=0 and sy = 0.2 or the !!!#
-
-# 3 and we do that for migration again !!!#
-
-#2 recombination ( froee or r -=1) !!#
-
-#3x deleterious mutations #
-
-# multiplied by replicates 30000#
-
-# and 1 pop size #
-
-# (54 combinations for popsize alone) (put that introduce)
 
 
