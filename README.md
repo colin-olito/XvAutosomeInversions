@@ -23,3 +23,8 @@ The easiest way to reproduce the manuscript is to simply clone the repo, run `cr
 ## Contact & bug reporting
 
 Please report any bugs, problems, or issues by opening an issue on the XvAutosomeInversions github [issues page](https://github.com/colin-olito/XvAutosomeInversions/issues). If you would like to report a bug/issue, and do not have a github account (and don't want to get one), please send a brief email detailing the problem you encountered to colin.olito at monash dot edu.
+
+
+## Ludo branch notes
+
+I added a file that track the progress and the current issues of understanding
