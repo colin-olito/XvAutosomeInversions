@@ -498,14 +498,15 @@ autoInvFwdSim  <-  function(Fiix.init = Fiix.init, Fiiy.init = Fiiy.init, N = N,
 #' 					 mutant inversion occurring
 #' @param N			 Population size
 
-# add m, which is true if the inversion is introduced into the male genotype.
+# added m, which is true if the inversion is introduced into the male genotype.
+# if inversion needs to be introduced in males, set m = TRUE.
 introduceInversion  <-  function(newMutant, m = FALSE, Fiix.init, Fiiy.init, N) {
 #' Females:
-#'    c(ABAB,  ABAb,  ABaB,  ABab,  ABba*,  c(x1x1, x1x2, x1x3, x1x4, x1x5, 
-#'		  AbAB,  AbAb,  AbaB,  Abab,  Abba*,	  x2x1, x2x2, x2x3, x2x4, x2x5, 
-#'		  aBAB,  aBAb,  aBaB,  aBab,  aBba*,	  x3x1, x3x2, x3x3, x3x4, x3x5, 
-#'		  abAB,  abAb,  abaB,  abab,  abba*,	  x4x1, x4x2, x4x3, x4x4, x4x5, 
-#'		  baAB*, baAb*, baaB*, baab*, baba*)	  x5x1, x5x2, x5x3, x5x4, x5x5)
+#'    c(ABAB,  ABAb,  ABaB,  ABab,  ABba*,	c(x1y1, x1y2, x1y3, x1y4, x1y5, 
+#'		  AbAB,  AbAb,  AbaB,  Abab,  Abba*,	  x2y1, x2y2, x2y3, x2y4, x2y5, 
+#'		  aBAB,  aBAb,  aBaB,  aBab,  aBba*,	  x3y1, x3y2, x3y3, x3y4, x3y5, 
+#'		  abAB,  abAb,  abaB,  abab,  abba*,	  x4y1, x4y2, x4y3, x4y4, x4y5, 
+#'		  baAB*, baAb*, baaB*, baab*, baba*)	  x5y1, x5y2, x5y3, x5y4, x5y5)
 #'
 #'Males:
 #'    c(AB, Ab, aB, ab, ba*)                c(y1, y2, y3, y4, y5)
@@ -524,6 +525,7 @@ introduceInversion  <-  function(newMutant, m = FALSE, Fiix.init, Fiiy.init, N) 
       if(newMutX == 100) {                                                                      # then the inversion is introduced in male which is indicated by the condition if(newMutX == 100)
         # Subtract new mutant individual from frequency of old genotype
         Fiiy.init[4]  <-  Fiiy.init[4] - 1/N
+        Fiiy.init[5] <- 1/N
       }
       else {
         Fiix.init[newMutX]  <-  Fiix.init[newMutX] - 1/N
@@ -536,6 +538,7 @@ introduceInversion  <-  function(newMutant, m = FALSE, Fiix.init, Fiiy.init, N) 
     if(m) {
       newMutY  <-  newMutant
       Fiiy.init[newMutY]  <-  Fiiy.init[newMutY] - 1/N
+        Fiiy.init[5] <- 1/N
     }
     else {
       newMutX  <-  newMutant
@@ -545,17 +548,13 @@ introduceInversion  <-  function(newMutant, m = FALSE, Fiix.init, Fiiy.init, N) 
 
   # Add mutant individual to frequency of new inversion genotype
   if(newMutX == 4 | newMutX == 9 | newMutX == 14)
-    Fiix.init[newMutX + 1]  <-  1/N # add up mutations?
+    Fiix.init[newMutX + 1]  <-  1/N
   if(newMutX == 16 | newMutX == 17 | newMutX == 18)
     Fiix.init[newMutX + 5]  <-  1/N
   
-  # For males
-  Fiiy.init[5] <- 1/N # add up mutations?
   
   # if inversion occurs on abab genotype, choose randomly whether it occurs on
   # the maternally or paternally inherited chromosome 
-  # for an X linked inversion, it is more probable to have occurred on X in females
-  # than X in males. 
   if(newMutX == 19) {
     if(runif(1) >= 1/2) {
       Fiix.init[newMutX + 1]  <-  1/N
@@ -565,6 +564,17 @@ introduceInversion  <-  function(newMutant, m = FALSE, Fiix.init, Fiiy.init, N) 
   return (list(Fiix.init, Fiiy.init))
 }
 
+#*********************************************************************************
+# Run introduceInversion
+# Returns a list. First element is Fiix.init and second element is Fiiy.init after
+# introducing the inversion.
+# Introduce inversion on the 4th genotype of males
+# introduceInversion(4, m = TRUE, Fiix.init, Fiiy.init, 100)
+# Introduce inversion on the 4th genotype of females
+# introduceInversion(4, m = FALSE, Fiix.init, Fiiy.init, 100)
+# Introduce inversion in a random genotype and sex
+# introduceInversion("random", m = FALSE, Fiix.init, Fiiy.init, N)
+#*********************************************************************************
 
 #' Wrapper function to run replicate forward simulations for invasion
 #' of X-linked inversions in a Wright-Fisher population 
