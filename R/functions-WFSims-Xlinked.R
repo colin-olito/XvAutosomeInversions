@@ -224,7 +224,7 @@ findEqFreqs  <-  function(Wf, Wm, mm, mf, r, threshold = 1e-6) {
     Wmbar      <-  sum(O_males*Wm)
     
     # difference in expected frequency (has simulation reached equilibrium yet?)
-    #!!! Shouldn't we subtract the first term from the second term? Because now it returns negative values. I tried and it works but I don't know how it works. 
+    #!!! My silly remark :) Shouldn't we subtract the first term from the second term? Because now it returns negative values. It is correct as I tried and it works but I don't know how it works. 
     #xdelta  <-  E.Fiix[c(1:4,6:9,11:14,16:19)] - (O_females*Wf/Wfbar)[c(1:4,6:9,11:14,16:19)]
     #ydelta   <-  E.Fiiy[c(1:4)] - (O_males*Wm/Wmbar)[c(1:4)]
     xdelta  <-  (O_females*Wf/Wfbar)[c(1:4,6:9,11:14,16:19)] - E.Fiix[c(1:4,6:9,11:14,16:19)]  # O_females*Wf/Wfbar is frequency of a genotype after selection.
@@ -259,11 +259,11 @@ findEqFreqs  <-  function(Wf, Wm, mm, mf, r, threshold = 1e-6) {
 #' Genotypes are organized as numeric vectors of length = 25. For consistency
 #' they are always ordered as follows:
 #' Females:
-#'  	c(ABAB,  ABAb,  ABaB,  ABab,  ABba*,	c(x1x1, x1x2, x1x3, x1x4, x1x5, 
-#'		  AbAB,  AbAb,  AbaB,  Abab,  Abba*,	  x2x1, x2x2, x2x3, x2x4, x2x5, 
-#'		  aBAB,  aBAb,  aBaB,  aBab,  aBba*,	  x3x1, x3x2, x3x3, x3x4, x3x5, 
-#'		  abAB,  abAb,  abaB,  abab,  abba*,	  x4x1, x4x2, x4x3, x4x4, x4x5, 
-#'		  baAB*, baAb*, baaB*, baab*, baba*)	  x5x1, x5x2, x5x3, x5x4, x5x5)
+#'  	c(ABAB,  ABAb,  ABaB,  ABab,  ABba*,	c(x1y1, x1y2, x1y3, x1y4, x1y5, 
+#'		  AbAB,  AbAb,  AbaB,  Abab,  Abba*,	  x2y1, x2y2, x2y3, x2y4, x2y5, 
+#'		  aBAB,  aBAb,  aBaB,  aBab,  aBba*,	  x3y1, x3y2, x3y3, x3y4, x3y5, 
+#'		  abAB,  abAb,  abaB,  abab,  abba*,	  x4y1, x4y2, x4y3, x4y4, x4y5, 
+#'		  baAB*, baAb*, baaB*, baab*, baba*)	  x5y1, x5y2, x5y3, x5y4, x5y5)
 #'
 #'Males:
 #'    c(AB, Ab, aB, ab, ba*)                c(y1, y2, y3, y4, y5)
@@ -278,7 +278,8 @@ findEqFreqs  <-  function(Wf, Wm, mm, mf, r, threshold = 1e-6) {
 #' @param saveTrajectories  Save evolutionary trajectories of inversion frequencies? 
 #' @export
 #' @seealso `offFreq`, `findEqFreqs`, `x.1`, ...
-#' @author Colin Olito
+#' @author Colin Olito - Modified for X-linked by Homa Papoli
+
 autoInvFwdSim  <-  function(Fiix.init = Fiix.init, Fiiy.init = Fiiy.init, N = N, Wf = Wf, Wm = Wm, mm = mm, mf = mf, sm = sm, sf = sf, r = r, 
                             saveTrajectories = FALSE, ...) {
   
@@ -287,11 +288,13 @@ autoInvFwdSim  <-  function(Fiix.init = Fiix.init, Fiiy.init = Fiiy.init, N = N,
   Fiiy  <-  Fiiy.init
   
   # Define threshold frequency for establishment of inversion
-  pcrit  <-  2/(N*(mm+mf)/2)
+  mbar = 1/3*(2*mf + mm)
+  pcrit  <-  2/(N*mbar)
   
-  # Storage for gamete frequencies  
+  # Storage for female gamete frequencies  
   xi         <-  rep(0, times=5)
   names(xi)  <-  c('x.1', 'x.2', 'x.3', 'x.4', 'x.5')
+  # Storage for male gamete frequencies  
   yi         <-  rep(0, times=5)
   names(yi)  <-  c('y.1', 'y.2', 'y.3', 'y.4', 'y.5')
     
@@ -307,13 +310,13 @@ autoInvFwdSim  <-  function(Fiix.init = Fiix.init, Fiiy.init = Fiiy.init, N = N,
     Wf.mean    <-  rep(0, times=(4*N+1))
     Wm.mean    <-  rep(0, times=(4*N+1))
     
-    # Initial inversion frequency #!InvFreq for females and males separate or as is it?!
+    # Initial inversion frequency
     InvFreq[1]    <-  sum(Fiix[c(5,10,15,20:24)]/2, Fiix[25]) + Fiiy[5] # Sum of all inverted genotypes in females and males.
     E.InvFreq[1]  <-  InvFreq[1]
     
     ## Start forward simulation with newly introduced inversion
     gen  <-  1
-    while(gen < (4*N) & InvFreq[gen] != 0) { # no mutation rate for inversions so loop stops when inversion freq. goes to zero.
+    while(gen < (4*N) & InvFreq[gen] != 0) { # There is no mutation rate for inversions so loop stops when inversion freq. goes to zero.
       
       ## Step through recursions:
       # 1) Calculate gamete frequencies
@@ -329,12 +332,22 @@ autoInvFwdSim  <-  function(Fiix.init = Fiix.init, Fiiy.init = Fiiy.init, N = N,
       # 3) Mean fitness 
       Wfbar   <-  sum(O_females*Wf)
       Wmbar   <-  sum(O_males*Wm)
+      Wbar    <-  (Wfbar+Wmbar)/2 #!!! Mean fitness of the population. If Nm=Nf, then it seems division by 2 would be right.
       # 4) Expected frequencies
-      E.Fiix  <-  O*Wf/Wfbar
-      E.Fiiy   <-  O*Wm/Wmbar
+      E.Fiix  <-  O_females*Wf/Wfbar
+      E.Fiiy   <-  O_males*Wm/Wmbar
+      # In deterministic case, E.Fiix, that is the expected frequency would become the Fiix for the next round. Here, however, we draw from the multinomial distribution
+      # using the expected frequency to get the Fiix for the new round. In this way, we generate stochasticity in the sampling of genotypes. 
       # 5) Draw random frequencies in adults
-      Fiix    <-  as.vector(rmultinom(1, N/2, E.Fiix)/(N/2)) # N/2 also applies for the X chromosome?
+      Fiix    <-  as.vector(rmultinom(1, N/2, E.Fiix)/(N/2)) 
       Fiiy    <-  as.vector(rmultinom(1, N/2, E.Fiiy)/(N/2))
+      # Explanation for rmultinom: 
+      # Considering equal sex ration = Nm = Nf
+      # Females: We have 25 genotypes, each has an expected frequency stored in E.Fiix. rmultinom draws 1 value for genotype ABAB out of N/2 (this means 1 to 50 if N is 100)
+      # with a probability which is the frequency of ABAB. This number can be 10. We then divide 10 by 50 which means the new frequency of genotype ABAB will be 0.2. If a genotype
+      # has a higher frequency, it is more likely that a larger value will be chosen from 1:50. For example, if genotype ABAB has a frequency of 0.9 and genotype abab has a frequency of
+      # 0.01, it is more likely that the number from multinomial draw for ABAB will be around 50. 
+      # If Nm = Nf = 20, if 10 males are AB, then frequency of AB males will be 0.5. Dividing by N/2 is correct as we are dealing with genotypes not with haplotypes here. 
       
       # Realized frequencies
       InvFreq[gen+1]    <-  (sum(Fiix[c(5,10,15,20:24)]/2, Fii[25]) + Fiiy[5])
@@ -342,8 +355,8 @@ autoInvFwdSim  <-  function(Fiix.init = Fiix.init, Fiiy.init = Fiiy.init, N = N,
       W.mean[gen+1]     <-  Wbar
       
       #The variable below are stored specifically for the X linked simulation
-      Wf.mean[gen+1]   =  sum(O_females*Wf)
-      Wm.mean[gen+1]   =  sum(O_males*Wm)
+      Wf.mean[gen+1]   =  Wfbar
+      Wm.mean[gen+1]   =  Wmbar
       InvFreq_f[gen+1]  =  sum(Fiix[c(5,10,15,20:24)]/2, Fiix[25])
       InvFreq_m[gen+1]  =  Fiiy[5]
       E.InvFreq_f[gen+1]=  sum(E.Fiix[c(5,10,15,20:24)]/2, E.Fiix[25])
@@ -367,15 +380,15 @@ autoInvFwdSim  <-  function(Fiix.init = Fiix.init, Fiiy.init = Fiiy.init, N = N,
     res  <-  list(
       "InvFreq"     =  InvFreq[1:gen-1],
       "E.InvFreq"   =  E.InvFreq[1:gen-1],
-      "InvFreq_f"   =  InvFreq_f(1:gen-1),
-      "InvFreq_m"   =  InvFreq_m(1:gen-1),
-      "E.InvFreq_f" =  E.InvFreq_f(1:gen-1),
-      "E.InvFreq_m" =  E.InvFreq_m(1:gen-1),
+      "InvFreq_f"   =  InvFreq_f[1:gen-1],
+      "InvFreq_m"   =  InvFreq_m[1:gen-1],
+      "E.InvFreq_f" =  E.InvFreq_f[1:gen-1],
+      "E.InvFreq_m" =  E.InvFreq_m[1:gen-1],
       "InvEst"      =  invEst,
       "InvEstTime"  =  invEstTime,
       "W.mean"      =  W.mean[1:gen-1],
-      "Wf.mean"     =  Wf.mean(1:gen-1),
-      "Wm.mean"     =  Wm.mean(1:gen-1),
+      "Wf.mean"     =  Wf.mean[1:gen-1],
+      "Wm.mean"     =  Wm.mean[1:gen-1],
       "nGen"        =  gen
     )
   } 
@@ -390,11 +403,11 @@ autoInvFwdSim  <-  function(Fiix.init = Fiix.init, Fiiy.init = Fiiy.init, N = N,
     E.InvFreq_f    <-  0
     E.InvFreq_m    <-  0
     W.mean     <-  0
-    Wf.mean    <-  rep(0, times=(4*N+1))
-    Wm.mean    <-  rep(0, times=(4*N+1))
+    Wf.mean    <-  0
+    Wm.mean    <-  0
         
     # Initial inversion frequency 
-    InvFreq    <-  sum(Fii[c(5,10,15,20:24)]/2, Fii[25])
+    InvFreq    <-  sum(Fiix[c(5,10,15,20:24)]/2, Fiix[25]) + Fiiy[5]
     E.InvFreq  <-  InvFreq[1]
     
     ## Start forward simulation with newly introduced inversion
@@ -406,8 +419,8 @@ autoInvFwdSim  <-  function(Fiix.init = Fiix.init, Fiiy.init = Fiiy.init, N = N,
       # 1) Calculate gamete frequencies
       for (j in 1:length(xi)) {
         recFctx  <-  get(names(xi)[j])
-        xi[j]   <-  round(recFctx(Fii = Fiix, m = mf, r = r), digits=8)
         recFcty  <-  get(names(yi)[j])
+        xi[j]   <-  round(recFctx(Fii = Fiix, m = mf, r = r), digits=8)
         yi[j]   <-  round(recFcty(Fii = Fiiy, m = mm, r = r), digits=8)
       }
       # 2) Offspring genotype frequencies
@@ -416,25 +429,26 @@ autoInvFwdSim  <-  function(Fiix.init = Fiix.init, Fiiy.init = Fiiy.init, N = N,
       # 3) Mean fitness 
       Wfbar   <-  sum(O_females*Wf)
       Wmbar   <-  sum(O_males*Wm)
+      Wbar    <-  (Wfbar+Wmbar)/2 #!!! Mean fitness of the population. If Nm=Nf, then it seems division by 2 would be right.
       # 4) Expected frequencies
-      E.Fiix  <-  O*Wf/Wfbar
-      E.Fiiy   <-  O*Wm/Wmbar
+      E.Fiix  <-  O_females*Wf/Wfbar
+      E.Fiiy   <-  O_males*Wm/Wmbar
       # 5) Draw random frequencies in adults
-      Fiix    <-  as.vector(rmultinom(1, N/2, E.Fiix)/(N/2)) # N/2 also applies for the X chromosome?
+      Fiix    <-  as.vector(rmultinom(1, N/2, E.Fiix)/(N/2))
       Fiiy    <-  as.vector(rmultinom(1, N/2, E.Fiiy)/(N/2))
       
       # Realized frequencies
-      InvFreq    <-  sum(Fii[c(5,10,15,20:24)]/2, Fii[25])
-      E.InvFreq  <-  sum(E.Fii[c(5,10,15,20:24)]/2, Fii[25])
+      InvFreq    <-  (sum(Fiix[c(5,10,15,20:24)]/2, Fii[25]) + Fiiy[5])
+      E.InvFreq  <-  (sum(Fiix[c(5,10,15,20:24)]/2, Fii[25]) + Fiiy[5])
       W.mean     <-  Wbar
       
       #The variable below are stored specifically for the X linked simulation
-      Wf.mean[gen+1]   =  sum(O_females*Wf)
-      Wm.mean[gen+1]   =  sum(O_males*Wm)
-      InvFreq_f[gen+1]  =  sum(Fiix[c(5,10,15,20:24)]/2, Fiix[25])
-      InvFreq_m[gen+1]  =  Fiiy[5]
-      E.InvFreq_f[gen+1]=  sum(E.Fiix[c(5,10,15,20:24)]/2, E.Fiix[25])
-      E.InvFreq_m[gen+1]= Fiiy[5]
+      Wf.mean   =  sum(O_females*Wf)
+      Wm.mean   =  sum(O_males*Wm)
+      InvFreq_f  =  sum(Fiix[c(5,10,15,20:24)]/2, Fiix[25])
+      InvFreq_m  =  Fiiy[5]
+      E.InvFreq_f =  sum(E.Fiix[c(5,10,15,20:24)]/2, E.Fiix[25])
+      E.InvFreq_m = Fiiy[5]
       
       gen  <-  gen+1
     }
@@ -451,23 +465,28 @@ autoInvFwdSim  <-  function(Fiix.init = Fiix.init, Fiiy.init = Fiiy.init, N = N,
     
     # Save  simulation data
     res  <-  list(
-      "InvFreq"     =  InvFreq[1:gen-1],
-      "E.InvFreq"   =  E.InvFreq[1:gen-1],
-      "InvFreq_f"   =  InvFreq_f(1:gen-1),
-      "InvFreq_m"   =  InvFreq_m(1:gen-1),
-      "E.InvFreq_f" =  E.InvFreq_f(1:gen-1),
-      "E.InvFreq_m" =  E.InvFreq_m(1:gen-1),
+      "InvFreq"     =  InvFreq,
+      "E.InvFreq"   =  E.InvFreq,
+      "InvFreq_f"   =  InvFreq_f,
+      "InvFreq_m"   =  InvFreq_m,
+      "E.InvFreq_f" =  E.InvFreq_f,
+      "E.InvFreq_m" =  E.InvFreq_m,
       "InvEst"      =  invEst,
       "InvEstTime"  =  invEstTime,
-      "Wf.mean"     =  Wf.mean(1:gen-1),
-      "Wm.mean"     =  Wm.mean(1:gen-1),
-      "W.mean"      =  W.mean[1:gen-1],
+      "Wf.mean"     =  Wf.mean, #!!! Here the code differs from your autosomal version. There you have sum(W.mean)/length(W.mean), but here, as I understand, we're not storing it in a vector so I couldn't understand how sum() & length() would work.
+      "Wm.mean"     =  Wm.mean,
+      "W.mean"      =  W.mean,
       "nGen"        =  gen
     )
   }
   
   return(res)
 }
+#*********************************************************************************
+# Run autoInvFwdSim
+# autoInvFwdSim(Fiix, Fiiy, 100, Wf, Wm, 0, 0, 0.01, 0.01, 0.5, saveTrajectories = TRUE) : returns a list of 12 elements
+# autoInvFwdSim(Fiix, Fiiy, 100, Wf, Wm, 0, 0, 0.01, 0.01, 0.5, saveTrajectories = FALSE) : returns a list of 12 elements
+#*********************************************************************************
 
 #' Introduce new mutant inversion genotype
 #'
