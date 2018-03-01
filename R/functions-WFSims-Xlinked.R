@@ -224,11 +224,8 @@ findEqFreqs  <-  function(Wf, Wm, mm, mf, r, threshold = 1e-6) {
     Wmbar      <-  sum(O_males*Wm)
     
     # difference in expected frequency (has simulation reached equilibrium yet?)
-    #!!! My silly remark :) Shouldn't we subtract the first term from the second term? Because now it returns negative values. It is correct as I tried and it works but I don't know how it works. 
-    #xdelta  <-  E.Fiix[c(1:4,6:9,11:14,16:19)] - (O_females*Wf/Wfbar)[c(1:4,6:9,11:14,16:19)]
-    #ydelta   <-  E.Fiiy[c(1:4)] - (O_males*Wm/Wmbar)[c(1:4)]
-    xdelta  <-  (O_females*Wf/Wfbar)[c(1:4,6:9,11:14,16:19)] - E.Fiix[c(1:4,6:9,11:14,16:19)]  # O_females*Wf/Wfbar is frequency of a genotype after selection.
-    ydelta   <-  (O_males*Wm/Wmbar)[c(1:4)] - E.Fiiy[c(1:4)] 
+    xdelta  <-  E.Fiix[c(1:4,6:9,11:14,16:19)] - (O_females*Wf/Wfbar)[c(1:4,6:9,11:14,16:19)]
+    ydelta   <-  E.Fiiy[c(1:4)] - (O_males*Wm/Wmbar)[c(1:4)]
     delta <- append(xdelta, ydelta)
     E.Fiix   <-  O_females*Wf/Wfbar
     E.Fiiy   <-  O_males*Wm/Wmbar
@@ -371,10 +368,10 @@ autoInvFwdSim  <-  function(Fiix.init = Fiix.init, Fiiy.init = Fiiy.init, N = N,
     if(any(InvFreq >= pcrit)) { # inversion got established
       invEst      <-  1
       invEstTime  <-  gen[invFreq >= pcrit][1]
-    } else {
-      invEst      <-  0
-      invEstTime  <-  NA
-    }
+    }# else {
+#       invEst      <-  0
+#       invEstTime  <-  NA
+#     }
     
     # Save  simulation data
     res  <-  list(
@@ -384,8 +381,8 @@ autoInvFwdSim  <-  function(Fiix.init = Fiix.init, Fiiy.init = Fiiy.init, N = N,
       "InvFreq_m"   =  InvFreq_m[1:gen-1],
       "E.InvFreq_f" =  E.InvFreq_f[1:gen-1],
       "E.InvFreq_m" =  E.InvFreq_m[1:gen-1],
-#       "InvEst"      =  invEst,
-#        "InvEstTime"  =  invEstTime,
+#!!!       "InvEst"      =  invEst,
+#!!!       "InvEstTime"  =  invEstTime,
       "W.mean"      =  W.mean[1:gen-1],
       "Wf.mean"     =  Wf.mean[1:gen-1],
       "Wm.mean"     =  Wm.mean[1:gen-1],
@@ -471,8 +468,8 @@ autoInvFwdSim  <-  function(Fiix.init = Fiix.init, Fiiy.init = Fiiy.init, N = N,
       "InvFreq_m"   =  InvFreq_m,
       "E.InvFreq_f" =  E.InvFreq_f,
       "E.InvFreq_m" =  E.InvFreq_m,
-#       "InvEst"      =  invEst,
-#       "InvEstTime"  =  invEstTime,
+#!!!       "InvEst"      =  invEst,
+#!!!       "InvEstTime"  =  invEstTime,
       "Wf.mean"     =  Wf.mean, #!!! Here the code differs from your autosomal version. There you have sum(W.mean)/length(W.mean), but here, as I understand, we're not storing it in a vector so I couldn't understand how sum() & length() would work.
       "Wm.mean"     =  Wm.mean,
       "W.mean"      =  W.mean,
@@ -661,8 +658,8 @@ runReplicateAutoInvSims  <-  function(nReps = 1000, N = 500, mm = 0.01, mf = 0.0
   finalInvFreq_m   <-  rep(0, times=nReps)
   finalE.InvFreq_f   <-  rep(0, times=nReps)
   finalE.InvFreq_m   <-  rep(0, times=nReps)
-#   invEst          <-  rep(0, times=nReps)
-#   invEstTime      <-  rep(0, times=nReps)
+#!!!   invEst          <-  rep(0, times=nReps)
+#!!!   invEstTime      <-  rep(0, times=nReps)
   finalW.mean     <-  rep(0, times=nReps)
   finalWf.mean     <-  rep(0, times=nReps)
   finalWm.mean     <-  rep(0, times=nReps)
@@ -721,8 +718,8 @@ runReplicateAutoInvSims  <-  function(nReps = 1000, N = 500, mm = 0.01, mf = 0.0
     finalWf.mean[i]     <-  repRes$Wf.mean
     finalWm.mean[i]     <-  repRes$Wm.mean
     nGen[i]            <-  repRes$nGen
-#     invEst[i]          <-  repRes$invEst
-#     invEstTime[i]      <-  repRes$invEstTime
+#!!!     invEst[i]          <-  repRes$invEst
+#!!!     invEstTime[i]      <-  repRes$invEstTime
     nDels[i]           <-  n.del
     
     if(saveTrajectories) {
@@ -753,8 +750,8 @@ runReplicateAutoInvSims  <-  function(nReps = 1000, N = 500, mm = 0.01, mf = 0.0
     "finalWf.mean"     =  finalWf.mean,
     "finalWm.mean"     =  finalWm.mean,
     "nGen"            =  nGen,
-#     "invEst"          =  invEst,
-#     "invEstTime"      =  invEstTime,
+#!!!     "invEst"          =  invEst,
+#!!!     "invEstTime"      =  invEstTime,
     "nDels"           =  nDels
   )
   if(saveTrajectories) {
@@ -807,31 +804,29 @@ runReplicateAutoInvSims  <-  function(nReps = 1000, N = 500, mm = 0.01, mf = 0.0
 #' 							otherwise
 #' @seealso `offFreq`, `findEqFreqs`, `autoInvFwdSim`
 #' @export
-#' @author Colin Olito.
+#' @author Colin Olito - Modified for X-linked by Homa Papoli
 makeReplicateAutoInvSimsData  <-  function(nReps = 1000, N.vals = c(500, 1000), mm.vals = c(0.01, 0.05), mf.vals = c(0.01, 0.05), 
-                                           sf = 0.1, sm = 0.1, h = 1/2, r = 0.1, n = 100, u = 1e-5, h.del = 0, newMutant=c("random"), saveTrajectories = FALSE) {
-
-#****************************************************************************************************************    
-  # 28 Feb - Check the functions above and modify the code below   
+                                           sf = 0.1, sm = 0.1, h = 1/2, r = 0.1, n = 100, u = 1e-5, h.del = 0, newMutant="random", male = FALSE, saveTrajectories = FALSE) {
+ 
   # Simulate deleterious mutations that are either 
   # 1) recessive lethals OR
   # 2) recessive experiencing purifying selection
   #    that is twice as strong as the selective 
   #    advantage of the locally adaptive allels  
-  s.del.vals = c(0, 1, 2*s)
-  
+  sf.del.vals = c(0, 1, 2*s)
+  sm.del.vals = c(0, 1, 2*s)
   
   # create empty data frame with same structure as we are going to need
   data  <-  data.frame(matrix(ncol=13, nrow=0))
   
   # Convenience variables to monitor progress
   prog  <-  0
-  tot   <-  length(N.vals)*length(mm.vals)*length(s.del.vals)
+  tot   <-  length(N.vals)*length(mm.vals)*length(sf.del.vals)
   # For single population size. Loop of population size will change with recombination rate. 
   # Loop over parameter values we want to explore 
   for(j in 1:length(N.vals)) {
-    for(k in 1:length(m.vals)) {
-      for(l in 1:length(s.del.vals)) {
+    for(k in 1:length(mm.vals)) {
+      for(l in 1:length(sf.del.vals)) {
         
         # Display progress in terminal
         prog  <-  prog + 1
@@ -839,16 +834,17 @@ makeReplicateAutoInvSimsData  <-  function(nReps = 1000, N.vals = c(500, 1000), 
         
         # Run simulations  
         res  <-  runReplicateAutoInvSims(nReps = nReps, N = N.vals[j], mm = mm.vals[k], mf = mf.vals[k], sf = sf, sm = sm, h = h, r = r, 
-                                         n = n, u = u, h.del = h.del, s.del = s.del.vals[l], 
+                                         n = n, u = u, h.del = h.del, sf.del = sf.del.vals[l], sm.del = sm.del.vals[l],
                                          noDel = FALSE, saveTrajectories = FALSE)
         
         # Save data 
         Ns      <-  rep(N.vals[j], times=nrow(res$results.df))
-        ms      <-  rep(m.vals[k], times=nrow(res$results.df))
-        s.dels  <-  rep(s.del.vals[l], times=nrow(res$results.df))
+        ms      <-  rep(mm.vals[k], times=nrow(res$results.df))
+        sf.dels  <-  rep(sf.del.vals[l], times=nrow(res$results.df))
+        sm.dels  <-  rep(sm.del.vals[l], times=nrow(res$results.df))
         
         # Append to data frame
-        df      <-  cbind(res$results.df, Ns, ms, s.dels)
+        df      <-  cbind(res$results.df, Ns, ms, sf.dels, sm.dels)
         data    <-  rbind(data, df)
         rm(df)
         
@@ -857,15 +853,16 @@ makeReplicateAutoInvSimsData  <-  function(nReps = 1000, N.vals = c(500, 1000), 
   }
   
   # Include constant variables in data frame
-  ss      <-  rep(s, times=nrow(data))
+  ssf      <-  rep(sf, times=nrow(data))
+  ssm      <-  rep(sm, times=nrow(data))
   hs      <-  rep(h, times=nrow(data))
   rs      <-  rep(r, times=nrow(data))
   us      <-  rep(u, times=nrow(data))
   h.dels  <-  rep(h.del, times=nrow(data))
-  data    <-  cbind(data, ss, hs, rs, us, h.dels)
+  data    <-  cbind(data, ssf, ssm, hs, rs, us, h.dels)
   colnames(data)  <-  c("finalInvFreq","finalE.InvFreq","finalWf.mean", "finalWm.mean",
                         "nGen","invEst","invEstTime","nDels","N","m",
-                        "s.dels","sf", "m", "h","r","u","h.del")
+                        "sf.dels", "sm.dels", "sf", "sm", "h","r","u","h.del")
   
   # create file name
   filename  <-  paste("./output/data/simResults/auto-InvSimsData", "_s", s, "_h", h, "_r", r, "_n", n, "_u", u, ".csv", sep="")
