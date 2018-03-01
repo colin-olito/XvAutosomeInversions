@@ -36,30 +36,44 @@ rejectionSamplerX  <-  function(n=100, Ne=100, u=1e-6, h=0, sf=0.01, sm=0.01) {
 	}
 	qi
 }
-
+#********************************************************************************************
+# Run rejectionSamplerX
+# rejectionSamplerX(100,100,1e-6,0,0.01,0.01)
+# It returns a vector of length 100 of 0 and 1.
+#********************************************************************************************
 #' Linkage Disequilibrium function for W-F recursions
 #'
 #' @title Linkage Disequilibrium (Dstar)
 #' @param Fii Vector of adult genotypic frequencies (of length = 25)
 #' @param m   Migration rate
 #' @export
-#' Change Dstar for X chromosome:
+#' Change Dstar for X chromosome
 Dstar  <-  function(Fii=Fiix, m=m, ...) {
   (((Fii[4] + Fii[16]) - (Fii[8] + Fii[12])) / 2)*(1 - m)
 }
-
-# female genotypes ordered:
+#********************************************************************************************
+# Run Dstar
+# Returns 0 with the Fiix vector of x1x4=1/16 and x2x3=1/16
+# Change Fiix as follows to run D.
+# Fiix[4] = 0.0625*2
+# Fiix[8] = 0
+# Dstar(Fiix, m=0) returns 0.0625
+# Dstar(Fiix, m=0.9) return 0.00625
+# This means that migration reduces linkage disequilibrium. 
+#********************************************************************************************
+# For X-linked loci:
+# Female genotypes ordered:
 #	c(ABAB, ABAb, ABaB, ABab, ABba*,		c(x1y1, x1y2, x1y3, x1y4, x1y5, 
 #	  AbAB, AbAb, AbaB, Abab, Abba*,		  x2y1, x2y2, x2y3, x2y4, x2y5, 
 #	  aBAB, aBAb, aBaB, aBab, aBba*,		  x3y1, x3y2, x3y3, x3y4, x3y5, 
 #	  abAB, abAb, abaB, abab, abba*,		  x4y1, x4y2, x4y3, x4y4, x4y5, 
 #	  baAB*, baAb*, baaB*, baab*, baba*)	  x5y1, x5y2, x5y3, x5y4, x5y5)
 
-# male genotypes ordered:
+# Male genotypes ordered:
 # c(AB, Ab, aB, ab, ba*)              c(y1, y2, y3, y4, y5)
 
 #' Haplotype frequencies among gametes
-#'
+#' 
 #' @title Haplotype frequencies among gametes
 #' @param Fii Vector of adult genotypic frequencies (of length = 25)
 #' @param m   Migration rate
@@ -83,6 +97,16 @@ x.5  <-  function(Fii=Fiix, m=m, r=r) {
   ((2*Fii[25] + (Fii[5] + Fii[21]) + (Fii[10] + Fii[22]) + (Fii[15] + Fii[23]) + (Fii[20] + Fii[24])) / 2)*(1 - m)
 }
 
+#*********************************************************************************
+# Run x.1
+# Maximum r = 0.5. This means with free recombination, D is halved every generation.
+# if m = 0, with the changed Fiix as for Dstar above, x.1(Fiix, m=0, r=0.5) = 0.25.
+# ((2*Fiix[1] + (Fiix[2] + Fiix[6]) + (Fiix[3] + Fiix[11]) + (Fiix[4] + Fiix[16]) + (Fiix[5] + Fiix[21])) / 2)*(1 - 0) = 0.28125
+# Dstar(Fii=Fiix, m=0) = 0.0625 with free recombination (r=0.5), it is halved and becomes 0.03125. Finally, with no migration and
+# free recombination, x1 = 0.28125-0.03125; x1=x2=x3=x4=0.25 which is what is expected from Mendelian segregation if two loci were
+# independent, we could have x1 = 0.5*0.5 = 0.25.
+#*********************************************************************************
+
 # Haplotype frequencies for X in males (XY)
 y.1 <- function(Fii=Fiiy, m=m) {
   Fii[1]*(1-m)+m
@@ -99,6 +123,13 @@ y.4 <- function(Fii=Fiiy, m=m) {
 y.5 <- function(Fii=Fiiy, m=m) {
   Fii[5]*(1-m)
 }
+
+#*********************************************************************************
+# Run y.1
+# For male haplotype, as there's no recombination in males, it's only migration
+# that affects the haplotype frequency in males. 
+# y.1(Fiiy, 0) = 0.25
+#*********************************************************************************
 
 #' Offspring frequencies after random mating for X linked haplotypes
 #' @title Offspring frequencies after random mating
@@ -122,7 +153,6 @@ offFreq_males  <-  function(xi) {
   O
 }
 
-
 #' Calculate deterministic equilibrium genotype frequencies 
 #' in the absence of the inversion 
 #'
@@ -139,14 +169,14 @@ offFreq_males  <-  function(xi) {
 #' @title Find the deterministic equilibrium genotype frequencies prior to introducing the inversion
 #' @param Wf     Vector of fitness expressions for all 25 female genotypes
 #' @param Wm     Vector of fitness expressions for all 5 male genotypes 
-#' @param mm, mf      Migration rate for locally maladaptive alleles (m =  0.01)
+#' @param mm, mf      Male and Female migration rate for locally maladaptive alleles (mm = mf = 0.01)
 #' @param r      Recombination rate among the two loci involved in local adaptation (r = 0.1).
 #' @param threshold The threshold change in genotype frequency at which the simulation
 #'                  will accept the current state as having reached equilibrium. Values
 #'                  of 1e-6 or 1e-7 have worked pretty well in the past. 
 #' @export
 #' @seealso `offFreq`, `autoInvWrightFisherSim`
-#' @author Colin Olito
+#' @author Colin Olito - Modified for X-linked by Homa Papoli
 
 findEqFreqs  <-  function(Wf, Wm, mm, mf, r, threshold = 1e-6) {
   
@@ -156,10 +186,10 @@ findEqFreqs  <-  function(Wf, Wm, mm, mf, r, threshold = 1e-6) {
                   1/16, 1/16, 1/16, 1/16, 0, 
                   0,    0,    0,    0, 0)
   
+  Fiiy.init <- c(1/4, 1/4, 1/4, 1/4, 0)
+  
   Fiix    <-  Fiix.init
   E.Fiix  <-  Fiix.init 
-  
-  Fiiy.init <- c(1/4, 1/4, 1/4, 1/4, 0)
   
   Fiiy    <-  Fiiy.init
   E.Fiiy  <-  Fiiy.init 
@@ -180,8 +210,8 @@ findEqFreqs  <-  function(Wf, Wm, mm, mf, r, threshold = 1e-6) {
     gen=gen+1
     for (j in 1:length(xi)) {
       recFct_x  <-  get(names(xi)[j])
-      xi[j]   <-  round(recFct_x(Fii = E.Fiix, m = mf, r = r), digits=3)
       recFct_y <- get(names(yi)[j])
+      xi[j]   <-  round(recFct_x(Fii = E.Fiix, m = mf, r = r), digits=3) # Calculate haplotype frequencies based on new equilibrium frequencies.
       yi[j]   <-  round(recFct_y(Fii = E.Fiiy, m = mm), digits=3)
     }
     
@@ -190,12 +220,15 @@ findEqFreqs  <-  function(Wf, Wm, mm, mf, r, threshold = 1e-6) {
     O_males <- offFreq_males(xi)
     
     # mean fitness 
-    Wfbar      <-  sum(O_females*Wf)
+    Wfbar      <-  sum(O_females*Wf) # Remember this is a normalizing factor, also known as the mean fitness of the population. Here would be the mean fitness of females. For 1 locus model: wbar = p^2w11+2pqw12+q^2w22
     Wmbar      <-  sum(O_males*Wm)
     
     # difference in expected frequency (has simulation reached equilibrium yet?)
-    xdelta  <-  E.Fiix[c(1:4,6:9,11:14,16:19)] - (O_females*Wf/Wfbar)[c(1:4,6:9,11:14,16:19)]
-    ydelta   <-  E.Fiiy[c(1:4)] - (O_males*Wm/Wmbar)[c(1:4)]
+    #!!! Shouldn't we subtract the first term from the second term? Because now it returns negative values. I tried and it works but I don't know how it works. 
+    #xdelta  <-  E.Fiix[c(1:4,6:9,11:14,16:19)] - (O_females*Wf/Wfbar)[c(1:4,6:9,11:14,16:19)]
+    #ydelta   <-  E.Fiiy[c(1:4)] - (O_males*Wm/Wmbar)[c(1:4)]
+    xdelta  <-  (O_females*Wf/Wfbar)[c(1:4,6:9,11:14,16:19)] - E.Fiix[c(1:4,6:9,11:14,16:19)]  # O_females*Wf/Wfbar is frequency of a genotype after selection.
+    ydelta   <-  (O_males*Wm/Wmbar)[c(1:4)] - E.Fiiy[c(1:4)] 
     delta <- append(xdelta, ydelta)
     E.Fiix   <-  O_females*Wf/Wfbar
     E.Fiiy   <-  O_males*Wm/Wmbar
@@ -204,10 +237,21 @@ findEqFreqs  <-  function(Wf, Wm, mm, mf, r, threshold = 1e-6) {
   
   names(E.Fiix)  <-  NULL
   names(E.Fiiy)  <-  NULL
-  return (list(E.Fiix, E.Fiiy)) # It returns two vectors, one eq. vector for females and one eq. vector for males.
+  return (list(E.Fiix, E.Fiiy)) # It returns two vectors, one eq. vector for females and one eq. vector for males. I can't use rbind() because the two vectors have different lengths.
 }
-
-
+#*********************************************************************************
+# Run findEqFreqs
+#Wf = Wf.init
+#Wm = Wm.init
+#mm = mf = 0
+#r = 0.5
+#sf = sm = 0.01
+#findEqFreqs(Wf, Wm, mm, mf, r, threshold = 1e-6)
+# It is deterministic so everytime it must give the same result. Everytime, with the above setting, the equilibrium is reached at generation 439. 
+# If mm=mf=0.8, equilibrium is reached at generation 5.
+#!!! When changing r=0.1, it still reaches equilibrium at generation 439.
+#!!! When changing sf=sm=0.5, it still reaches equilibrium at generation 439.
+#*********************************************************************************
 
 #' Run a single Wright-Fisher Forward simulation with introduced inversion on the X chromosome
 #' using multinomial sampling with linkage to deleterious mutations
@@ -562,7 +606,7 @@ runReplicateAutoInvSims  <-  function(nReps = 1000, N = 500, mm = 0.01, mf = 0.0
   Wf.init  <-  c(1,          (1 + h*sf),         (1 + h*sf),         (1 + h*sf)^2,        0,
                 (1 + h*sf),   (1 + sf),           (1 + h*sf)^2,       (1 + h*sf)*(1 + sf),  0,
                 (1 + h*sf),   (1 + h*sf)^2,       (1 + sf),           (1 + sf)*(1 + h*sf),  0,
-                (1 + h*sf)^2, (1 + h*sf)*(1 + sf), (1 + sf)*(1 + h*s), (1 + sf)^2,          0,
+                (1 + h*sf)^2, (1 + h*sf)*(1 + sf), (1 + sf)*(1 + h*sf), (1 + sf)^2,          0,
                 0,           0,                 0,                 0,                  0)
   ## Define Fitness Expressions for males for determining eq. frequencies in absence of inversion
   Wm.init  <-  c(1, (1 + sm), (1 + sm), (1 + sm)^2, 0)
@@ -756,7 +800,7 @@ makeReplicateAutoInvSimsData  <-  function(nReps = 1000, N.vals = c(500, 1000), 
   # Convenience variables to monitor progress
   prog  <-  0
   tot   <-  length(N.vals)*length(mm.vals)*length(s.del.vals)
-  
+  # For single population size. Loop of population size will change with recombination rate. 
   # Loop over parameter values we want to explore 
   for(j in 1:length(N.vals)) {
     for(k in 1:length(m.vals)) {
