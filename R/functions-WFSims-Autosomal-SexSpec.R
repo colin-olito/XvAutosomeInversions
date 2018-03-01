@@ -40,12 +40,12 @@ rejectionSampler  <-  function(n=100, Ne=100, u=1e-6, h=0, s=0.01) {
 #' Linkage Disequilibrium function for W-F recursions
 #'
 #' @title Linkage Disequilibrium (Dstar)
-#' @param Fii.f Vector of adult genotypic frequencies in females (of length = 25)
-#' @param Fii.m Vector of adult genotypic frequencies in males (of length = 25)
+#' @param Fii  Accepts a vector of adult genotypic frequencies in females (Fii.f; of length = 25)
+#' 				OR a vector of adult genotypic frequencies in males (Fii.m; of length = 25)
 #' @param m   Migration rate
 #' @export
 
-Dstar  <-  function(Fii, m=m, ...) {
+Dstar  <-  function(Fii, m, ...) {
 	(((Fii[4] + Fii[16]) - (Fii[8] + Fii[12])) / 2)*(1 - m)
 }
 
@@ -66,11 +66,12 @@ Dstar  <-  function(Fii, m=m, ...) {
 #' Haplotype frequencies among gametes
 #'
 #' @title Haplotype frequencies among gametes
-#' @param Fii Vector of adult genotypic frequencies (of length = 25)
+#' @param Fii  Accepts a vector of adult genotypic frequencies in females (Fii.f; of length = 25)
+#' 				OR a vector of adult genotypic frequencies in males (Fii.m; of length = 25)
 #' @param m   Migration rate
 #' @param r   Recombination rate
 #' @export
-
+# Haplotype frequency equations for ovules
 x.1  <-  function(Fii=Fii.f, m=m, r=r) { 
 	((2*Fii[1] + (Fii[2] + Fii[6]) + (Fii[3] + Fii[11]) + (Fii[4] + Fii[16]) + (Fii[5] + Fii[21])) / 2)*(1 - m) - r*Dstar(Fii=Fii, m=m) + m
 } 
@@ -86,8 +87,7 @@ x.4  <-  function(Fii=Fii.f, m=m, r=r) {
 x.5  <-  function(Fii=Fii.f, m=m, r=r) {
 	((2*Fii[25] + (Fii[5] + Fii[21]) + (Fii[10] + Fii[22]) + (Fii[15] + Fii[23]) + (Fii[20] + Fii[24])) / 2)*(1 - m)
 }
-
-
+# Haplotype frequency equations for sperm/pollen
 y.1  <-  function(Fii=Fii.m, m=m, r=r) {
 	((2*Fii[1] + (Fii[2] + Fii[6]) + (Fii[3] + Fii[11]) + (Fii[4] + Fii[16]) + (Fii[5] + Fii[21])) / 2)*(1 - m) - r*Dstar(Fii=Fii, m=m) + m
 } 
@@ -110,7 +110,6 @@ y.5  <-  function(Fii=Fii.m, m=m, r=r) {
 #' @title Offspring frequencies after random mating, ( males and females have the same allele frequencies)
 #' @param xi Vector of haplotype frequencies among female gametes (of length = 5)
 #' @param yi Vector of haplotype frequencies among male gametes (of length = 5)
-
 #' @export
 offFreq  <-  function(xi,yi) {
 	O  <-  c(xi[1] *yi[1], (xi[1]*yi[2]), (xi[1]*yi[3]), (xi[1]*yi[4]), (xi[1]*yi[5]),
@@ -128,13 +127,13 @@ offFreq  <-  function(xi,yi) {
 #'
 #' Genotypes are organized as numeric vectors of length = 25. For consistency
 #' they are always ordered as follows:
-#.Females
+#' Females
 #'		c(ABAB,  ABAb,  ABaB,  ABab,  ABba*,	c(x1x1, x1x2, x1x3, x1x4, x1x5, 
 #'		  AbAB,  AbAb,  AbaB,  Abab,  Abba*,	  x2x1, x2x2, x2x3, x2x4, x2x5, 
 #'		  aBAB,  aBAb,  aBaB,  aBab,  aBba*,	  x3x1, x3x2, x3x3, x3x4, x3x5, 
 #'		  abAB,  abAb,  abaB,  abab,  abba*,	  x4x1, x4x2, x4x3, x4x4, x4x5, 
 #'		  baAB*, baAb*, baaB*, baab*, baba*)	  x5x1, x5x2, x5x3, x5x4, x5x5)
-#.<ales
+#' Males
 #'		c(ABAB,  ABAb,  ABaB,  ABab,  ABba*,	c(y1y1, y1y2, y1y3, y1y4, y1y5, 
 #'		  AbAB,  AbAb,  AbaB,  Abab,  Abba*,	  y2y1, y2y2, y2y3, y2y4, y2y5, 
 #'		  aBAB,  aBAb,  aBaB,  aBab,  aBba*,	  y3y1, y3y2, y3y3, y3y4, y3y5, 
@@ -143,19 +142,16 @@ offFreq  <-  function(xi,yi) {
 #' @title Find the deterministic equilibeium genotype frequencies prior to introducing the inversion
 #' @param Wf     Vector of fitness expressions for all 25 genotypes in females
 #' @param Wm     Vector of fitness expressions for all 25 genotypes in males
-#' @param m      Migration rate for locally maladaptive alleles (m =  0.01)
-#' @param r      Recombination rate among the two loci involved in local adaptation (r = 0.1).
+#' @param mf     Female migration rate for locally maladaptive alleles
+#' @param mm     Male migration rate for locally maladaptive alleles
+#' @param r      Recombination rate among the two loci involved in local adaptation
 #' @param threshold The threshold change in genotype frequency at which the simulation
 #'                  will accept the current state as having reached equilibrium. Values
 #'                  of 1e-6 or 1e-7 have worked pretty well in the past. 
 #' @export
 #' @seealso `offFreq`, `autoInvWrightFisherSim`
 #' @author Ludovic Dutoit based on Colin Olito
-
-
-
-
-findEqFreqs  <-  function(Wf,Wm, mm, mf, r, threshold = 1e-6) {
+findEqFreqs  <-  function(Wf,Wm, mf, mm, r, threshold = 1e-6) {
 	Fii.init  <-  c(1/16, 1/16, 1/16, 1/16, 0, 
 					1/16, 1/16, 1/16, 1/16, 0, 
 					1/16, 1/16, 1/16, 1/16, 0, 
@@ -175,19 +171,24 @@ findEqFreqs  <-  function(Wf,Wm, mm, mf, r, threshold = 1e-6) {
 	yi         <-  rep(0, times=5)
 	names(yi)  <-  c('y.1', 'y.2', 'y.3', 'y.4', 'y.5')
 	
-	xdelta  <-  rep(1, times=16) # change of allele frequencies in 1gen in males
-	ydelta  <-  rep(1, times=16)#  change of allele frequencies in 1gen in females
-	delta<-append(xdelta,ydelta) # just to be able to check if ANY allele is not stable
+	# Storage for differences in frequencies across 1 generation
+	deltaF  <-  rep(1, times=16)
+	deltaM  <-  rep(1, times=16)
+	delta   <-  append(deltaF,deltaM)
 	
-	gen=0 # counter of generations
+	# Initiate generation counter 
+	gen  <-  0 
+	
+	# Simulation loop
 	while(any(delta > threshold)) {
-		gen=gen+1
+		gen  <-  gen+1
 		for (j in 1:length(xi)) {
 			recFct  <-  get(names(xi)[j])
 			xi[j]   <-  round(recFct(Fii = E.Fii.f, m = mf, r = r), digits=3)
 			recFct  <-  get(names(yi)[j])
 			yi[j]   <-  round(recFct(Fii = E.Fii.m, m = mm, r = r), digits=3)
 		}
+
 	    # offspring genotype frequencies
 	    O  <-  offFreq(xi,yi)
 
@@ -196,13 +197,13 @@ findEqFreqs  <-  function(Wf,Wm, mm, mf, r, threshold = 1e-6) {
 		Wmbar      <-  sum(O*Wm)
 
 	    # difference in expected frequency (has simulation reached equilibrium yet?)
-		xdelta   <-  E.Fii.f[c(1:4,6:9,11:14,16:19)] - (O*Wf/Wfbar)[c(1:4,6:9,11:14,16:19)] # not the inversion freq which will not move
-		ydelta   <-  E.Fii.m[c(1:4,6:9,11:14,16:19)] - (O*Wm/Wmbar)[c(1:4,6:9,11:14,16:19)]
-		delta<-append(xdelta,ydelta)
+		deltaF   <-  E.Fii.f[c(1:4,6:9,11:14,16:19)] - (O*Wf/Wfbar)[c(1:4,6:9,11:14,16:19)] # not the inversion freq which will not move
+		deltaM   <-  E.Fii.m[c(1:4,6:9,11:14,16:19)] - (O*Wm/Wmbar)[c(1:4,6:9,11:14,16:19)]
+		delta<-append(deltaF,deltaM)
 
+		# Expected adult genotypic frequencies in next generation
 		E.Fii.f   <-  O*Wf/Wfbar
 		E.Fii.m   <-  O*Wm/Wmbar
-
 	}
 	print (c("reach equilibrium of initial frequencies at gen",gen))
 
