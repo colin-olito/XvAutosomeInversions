@@ -48,7 +48,7 @@ rejectionSamplerX  <-  function(n=100, Ne=100, u=1e-6, h=0, sf=0.01, sm=0.01) {
 #' @param m   Migration rate
 #' @export
 #' Change Dstar for X chromosome
-Dstar  <-  function(Fii=Fiix, m=m, ...) {
+Dstar  <-  function(Fii=Fii, m=m, ...) {
   (((Fii[4] + Fii[16]) - (Fii[8] + Fii[12])) / 2)*(1 - m)
 }
 #********************************************************************************************
@@ -81,19 +81,19 @@ Dstar  <-  function(Fii=Fiix, m=m, ...) {
 #' @export
 
 #' Haplotype frequencies for X in females (XX)
-x.1  <-  function(Fii=Fiix, m=m, r=r) {
-  ((2*Fii[1] + (Fii[2] + Fii[6]) + (Fii[3] + Fii[11]) + (Fii[4] + Fii[16]) + (Fii[5] + Fii[21])) / 2)*(1 - m) - r*Dstar(Fii=Fiix, m=m) + m
+x.1  <-  function(Fii=Fii, m=m, r=r) {
+  ((2*Fii[1] + (Fii[2] + Fii[6]) + (Fii[3] + Fii[11]) + (Fii[4] + Fii[16]) + (Fii[5] + Fii[21])) / 2)*(1 - m) - r*Dstar(Fii=Fii, m=m) + m
 } 
-x.2  <-  function(Fii=Fiix, m=m, r=r) {
-  ((2*Fii[7] + (Fii[2] + Fii[6]) + (Fii[8] + Fii[12]) + (Fii[9] + Fii[17]) + (Fii[10] + Fii[22])) / 2)*(1 - m) + r*Dstar(Fii=Fiix, m=m)
+x.2  <-  function(Fii=Fii, m=m, r=r) {
+  ((2*Fii[7] + (Fii[2] + Fii[6]) + (Fii[8] + Fii[12]) + (Fii[9] + Fii[17]) + (Fii[10] + Fii[22])) / 2)*(1 - m) + r*Dstar(Fii=Fii, m=m)
 }
-x.3  <-  function(Fii=Fiix, m=m, r=r) {
-  ((2*Fii[13] + (Fii[3] + Fii[11]) + (Fii[8] + Fii[12]) + (Fii[14] + Fii[18]) + (Fii[15] + Fii[23])) / 2)*(1 - m) + r*Dstar(Fii=Fiix, m=m)
+x.3  <-  function(Fii=Fii, m=m, r=r) {
+  ((2*Fii[13] + (Fii[3] + Fii[11]) + (Fii[8] + Fii[12]) + (Fii[14] + Fii[18]) + (Fii[15] + Fii[23])) / 2)*(1 - m) + r*Dstar(Fii=Fii, m=m)
 }
-x.4  <-  function(Fii=Fiix, m=m, r=r) {
-  ((2*Fii[19] + (Fii[4] + Fii[16]) + (Fii[9] + Fii[17]) + (Fii[14] + Fii[18]) + (Fii[20] + Fii[24])) / 2)*(1 - m) - r*Dstar(Fii=Fiix, m=m)
+x.4  <-  function(Fii=Fii, m=m, r=r) {
+  ((2*Fii[19] + (Fii[4] + Fii[16]) + (Fii[9] + Fii[17]) + (Fii[14] + Fii[18]) + (Fii[20] + Fii[24])) / 2)*(1 - m) - r*Dstar(Fii=Fii, m=m)
 }
-x.5  <-  function(Fii=Fiix, m=m, r=r) {
+x.5  <-  function(Fii=Fii, m=m, r=r) {
   ((2*Fii[25] + (Fii[5] + Fii[21]) + (Fii[10] + Fii[22]) + (Fii[15] + Fii[23]) + (Fii[20] + Fii[24])) / 2)*(1 - m)
 }
 
@@ -108,19 +108,19 @@ x.5  <-  function(Fii=Fiix, m=m, r=r) {
 #*********************************************************************************
 
 # Haplotype frequencies for X in males (XY)
-y.1 <- function(Fii=Fiiy, m=m) {
+y.1 <- function(Fii=Fii, m=m) {
   Fii[1]*(1-m)+m
 } 
-y.2 <- function(Fii=Fiiy, m=m) {
+y.2 <- function(Fii=Fii, m=m) {
   Fii[2]*(1-m)
 }
-y.3 <- function(Fii=Fiiy, m=m) {
+y.3 <- function(Fii=Fii, m=m) {
   Fii[3]*(1-m)
 }
-y.4 <- function(Fii=Fiiy, m=m) {
+y.4 <- function(Fii=Fii, m=m) {
   Fii[4]*(1-m)
 }
-y.5 <- function(Fii=Fiiy, m=m) {
+y.5 <- function(Fii=Fii, m=m) {
   Fii[5]*(1-m)
 }
 
