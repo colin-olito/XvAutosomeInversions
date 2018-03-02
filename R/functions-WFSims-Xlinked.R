@@ -819,8 +819,8 @@ makeReplicateAutoInvSimsData  <-  function(nReps = 1000, N.vals = c(500, 1000), 
   # 2) recessive experiencing purifying selection
   #    that is twice as strong as the selective 
   #    advantage of the locally adaptive allels  
-  sf.del.vals = c(0, 1, 2*s)
-  sm.del.vals = c(0, 1, 2*s)
+  sf.del.vals = c(0, 1, 2*sf)
+  sm.del.vals = c(0, 1, 2*sm)
   
   # create empty data frame with same structure as we are going to need
   data  <-  data.frame(matrix(ncol=13, nrow=0))
@@ -871,7 +871,7 @@ makeReplicateAutoInvSimsData  <-  function(nReps = 1000, N.vals = c(500, 1000), 
                         "sf.dels", "sm.dels", "sf", "sm", "h","r","u","h.del")
   
   # create file name
-  filename  <-  paste("./output/data/simResults/auto-InvSimsData", "_s", s, "_h", h, "_r", r, "_n", n, "_u", u, ".csv", sep="")
+  filename  <-  paste("./output/data/simResults/auto-InvSimsData", "_sf", sf, "_sm", sm, "_h", h, "_r", r, "_n", n, "_u", u, ".csv", sep="")
   
   # export data as .csv to ./output/data
   write.csv(data, file=filename, row.names = FALSE)
