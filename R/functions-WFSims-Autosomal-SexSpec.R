@@ -523,49 +523,46 @@ autoInvFwdSimSexSpec  <-  function(Fii.f.init = Fii.f.init, Fii.m.init = Fii.m.i
 #' @param Fii.m.init   Initial genotypic frequencies, from which to calculate probability of new 
 #' 					 mutant inversion occurring
 #' @param N			 Population size
-
-
 introduceInversion  <-  function(newMutant, Fii.f.init, Fii.m.init, N) {
-	#extract newMutant Parameters
-
-	sex<-newMutant[1]
-	specified <- is.numeric(newMutant[2])	# Toggle
-	mutant <-newMutant[2]
-	#check for correctness of the paramer 
 	
+	#extract newMutant Parameters
+	sex        <-  newMutant[1]
+	specified  <-  is.numeric(newMutant[2])
+	mutant     <-  newMutant[2]
+
+	#Preemptive warnings
 	if(sex!="m" &  sex!="f" & sex!="random") 
 			stop('Warning: newMutant is of wrong format')
 	if(specified & all(mutant != c(4,9,14,16:19)))
 		stop('If specifying the genotype of new inversion mutants, newMutant must take 
 			  one of the following values: 4,9,14,16:19')
-
 	if(!specified & newMutant[2] != 'random')
 		stop('If the genotype of new inversion mutants is being chosen randomly, 
 			  the parameter newMutant must equal random')
 
-
 	# First determine which sex the inversion will occur if it is random
-	if (sex=="random"){
-		sex<-sample(c("m","f"),1)
+	if (sex == "random"){
+		sex  <-  sample(c("m","f"),1)
 	}
 
 	# Choose mutant genotype randomly
 	if(!specified) {
-		if (sex=="f"){
-			probNewMutant     <-  Fii.f.init[c(4,9,14,16:19)]/sum(Fii.f.init[c(4,9,14,16:19)])
-			mutant            <-  c(4,9,14,16:19)[as.vector(rmultinom(1,1,probNewMutant)) == 1]
+		if (sex == "f"){
+			probNewMutant       <-  c(Fii.f.init[c(4,9,14,16:18)], Fii.f.init[19]*2)/sum(c(Fii.f.init[c(4,9,14,16:18)], Fii.f.init[19]*2))
+			mutant              <-  c(4,9,14,16:19)[as.vector(rmultinom(1,1,probNewMutant)) == 1]
 
 			# Subtract new mutant individual from frequency of old genotype
 			Fii.f.init[mutant]  <-  Fii.f.init[mutant] - 1/(2*N)
 		}
-		if (sex=="m"){
-			probNewMutant     <-  Fii.m.init[c(4,9,14,16:19)]/sum(Fii.m.init[c(4,9,14,16:19)])
-			mutant            <-  c(4,9,14,16:19)[as.vector(rmultinom(1,1,probNewMutant)) == 1]
+		if (sex == "m"){
+			probNewMutant       <-  Fii.m.init[c(4,9,14,16:19)]/sum(Fii.m.init[c(4,9,14,16:19)])
+			mutant              <-  c(4,9,14,16:19)[as.vector(rmultinom(1,1,probNewMutant)) == 1]
 
 			# Subtract new mutant individual from frequency of old genotype
 			Fii.m.init[mutant]  <-  Fii.m.init[mutant] - 1/(2*N)
 		}
 	}
+
 	# Specify mutant genotype
 	if(specified) {
 		if (sex=="f"){
@@ -589,7 +586,7 @@ introduceInversion  <-  function(newMutant, Fii.f.init, Fii.m.init, N) {
 		# the maternally or paternally inherited chromosome 
 		if(mutant == 19) {
 			if(runif(1) >= 1/2) {
-				Fii.f.init[mutant + 1]  <-  1/(2*N)
+				Fii.f.init[mutant + 1]   <-  1/(2*N)
 			}
 			else Fii.f.init[mutant + 5]  <-  1/(2*N)
 		}
@@ -604,12 +601,12 @@ introduceInversion  <-  function(newMutant, Fii.f.init, Fii.m.init, N) {
 		# the maternally or paternally inherited chromosome 
 		if(mutant == 19) {
 			if(runif(1) >= 1/2) {
-				Fii.m.init[mutant + 1]  <-  1/(2*N)
+				Fii.m.init[mutant + 1]   <-  1/(2*N)
 			}
 			else Fii.m.init[mutant + 5]  <-  1/(2*N)
 		}
 	}
-	return (rbind(Fii.f.init,Fii.m.init) )
+	return (rbind(Fii.f.init,Fii.m.init))
 }
 
 
