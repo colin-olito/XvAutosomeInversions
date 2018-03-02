@@ -113,7 +113,7 @@ y.5  <-  function(Fii=Fii.m, m=m, r=r) {
 #' @export
 offFreq  <-  function(xi,yi) {
 	O  <-  c(xi[1] *yi[1], (xi[1]*yi[2]), (xi[1]*yi[3]), (xi[1]*yi[4]), (xi[1]*yi[5]),
-			 (xi[2]*yi[1]), xi[2]*yi[2], (xi[2]*yi[3]), (xi[2]*yi[4]), (xi[2]*yi[5]),
+			 (xi[2]*yi[1]), xi[2]*yi[2],  (xi[2]*yi[3]), (xi[2]*yi[4]), (xi[2]*yi[5]),
 			 (xi[3]*yi[1]), (xi[3]*yi[2]), xi[3]*yi[3], (xi[3]*yi[4]), (xi[3]*yi[5]),
 			 (xi[4]*yi[1]), (xi[4]*yi[2]), (xi[4]*yi[3]), xi[4]*yi[4], (xi[4]*yi[5]),
 			 (xi[5]*yi[1]), (xi[5]*yi[2]), (xi[5]*yi[3]), (xi[5]*yi[4]), xi[5]*yi[4]
@@ -197,7 +197,7 @@ findEqFreqs  <-  function(Wf,Wm, mf, mm, r, threshold = 1e-6) {
 		Wmbar      <-  sum(O*Wm)
 
 	    # difference in expected frequency (has simulation reached equilibrium yet?)
-		deltaF   <-  E.Fii.f[c(1:4,6:9,11:14,16:19)] - (O*Wf/Wfbar)[c(1:4,6:9,11:14,16:19)] # not the inversion freq which will not move
+		deltaF   <-  E.Fii.f[c(1:4,6:9,11:14,16:19)] - (O*Wf/Wfbar)[c(1:4,6:9,11:14,16:19)]
 		deltaM   <-  E.Fii.m[c(1:4,6:9,11:14,16:19)] - (O*Wm/Wmbar)[c(1:4,6:9,11:14,16:19)]
 		delta<-append(deltaF,deltaM)
 
@@ -213,13 +213,6 @@ findEqFreqs  <-  function(Wf,Wm, mf, mm, r, threshold = 1e-6) {
 }
 
 
-##Test findEqFreqs 
-#Wf<-rep(1,25)
-#Wm<-rep(1,25)
-#m=0
-#r=1
-#findEqFreqs(Wf,Wm, m, r, threshold = 1e-6)#
-
 #' Run a single Wright-Fisher Forward simulation with introduced autosomal inversion
 #' using multinomial sampling with linkage to deleterious mutations
 #'
@@ -234,24 +227,24 @@ findEqFreqs  <-  function(Wf,Wm, mf, mm, r, threshold = 1e-6) {
 #' @title Find the deterministic equilibeium genotype frequencies prior to introducing the inversion
 #' @param Fii.f.init  Vector of initial frequencies (deterministic eq. frequencies in absence of inversion) in females
 #' @param Fii.m.init  Vector of initial frequencies (deterministic eq. frequencies in absence of inversion) in males
-#' @param N         Population size
-#' @param Wf        Vector of fitness expressions for all 25 genotypes in females
-#' @param Wm        Vector of fitness expressions for all 25 genotypes in males
-#' @param mm         Migration rate for locally maladaptive alleles (m =  0.01) in males
-#' @param mf         Migration rate for locally maladaptive alleles (m =  0.01) in females
-#' @param r         Recombination rate among the two loci involved in local adaptation (r = 0.1).
+#' @param N           Population size
+#' @param Wf          Vector of fitness expressions for all 25 genotypes in females
+#' @param Wm          Vector of fitness expressions for all 25 genotypes in males
+#' @param mm          Migration rate for locally maladaptive alleles (m =  0.01) in males
+#' @param mf          Migration rate for locally maladaptive alleles (m =  0.01) in females
+#' @param r           Recombination rate among the two loci involved in local adaptation (r = 0.1).
+#' @param fastSim     Logical. Use threshold frequency for establishment of inversion? 
 #' @param saveTrajectories  Save evolutionary trajectories of inversion frequencies? 
 #' @export
 #' @seealso `offFreq`, `findEqFreqs`, `x.1`, ...
 #' @author Ludovic Dutoit, based on Colin Olito
+autoInvFwdSimSexSpec  <-  function(Fii.f.init = Fii.f.init, Fii.m.init = Fii.m.init, 
+									N = N, Wf = Wf, Wm = Wm, mm = mm, mf = mf, sm = sm, sf = sf, r = r, 
+									fastSim = TRUE, saveTrajectories = FALSE, ...) {
 
-autoInvFwdSimSexSpec  <-  function(Fii.f.init = Fii.f.init  , Fii.m.init = Fii.m.init,   N = N, Wf = Wf, Wm = Wm, mm = mm, mf=mf,sm=sm,sf=sf, r = r, 
-							saveTrajectories = FALSE, ...) {
 	# Use deterministic eq. initial frequencies
-	
 	Fii.f  <-  Fii.f.init 
 	Fii.m  <-  Fii.m.init
-
 
 	# Define threshold frequency for establishment of inversion
 	pcrit  <-  2/(N*(mm+mf)/2)
@@ -262,94 +255,9 @@ autoInvFwdSimSexSpec  <-  function(Fii.f.init = Fii.f.init  , Fii.m.init = Fii.m
 	names(xi)  <-  c('x.1', 'x.2', 'x.3', 'x.4', 'x.5')
 	names(yi)  <-  c('y.1', 'y.2', 'y.3', 'y.4', 'y.5')
 
+	# use threshold frequency for establishment of inversion?
+	if(fastSim) {
 
-	if(saveTrajectories) {
-		# Storage structures for individual simulation data
-		InvFreq    <-  rep(0, times=(4*N+1))
-		E.InvFreq  <-  rep(0, times=(4*N+1))
-		W.mean     <-  rep(0, times=(4*N+1))
-		Wf.mean <-  rep(0, times=(4*N+1)) 
-		Wm.mean <-  rep(0, times=(4*N+1))
-		InvFreq_f <-  rep(0, times=(4*N+1))
-		InvFreq_m <-  rep(0, times=(4*N+1)) 
-		E.InvFreq_f <-  rep(0, times=(4*N+1))
-		E.InvFreq_m <-  rep(0, times=(4*N+1))	
-				# Initial inversion frequency 
-		InvFreq[1]    <-  sum(Fii.f[c(5,10,15,20:24)]/2, Fii.f[25]) +  sum(Fii.m[c(5,10,15,20:24)]/2, Fii.m[25])
-		E.InvFreq[1]  <-  InvFreq[1]
-		
-		## Start forward simulation with newly introduced inversion
-		gen  <-  1
-#		while(InvFreq > 0 & InvFreq <= pcrit) {
-		while(gen < (4*N) & InvFreq[gen] > 0 ) {
-		
-			## Step through recursions:
-			# 1) Calculate gamete frequencies
-			for (j in 1:length(xi)) {
-				recFctx  <-  get(names(xi)[j])
-				recFcty  <-  get(names(yi)[j])
-				xi[j]   <-  round(recFctx(Fii = Fii.f, m = mf, r = r), digits=8)
-				yi[j]   <-  round(recFcty(Fii = Fii.m, m = mm, r = r), digits=8)
-			}
-			# 2) Offspring genotype frequencies
-			O      <-  offFreq(xi,yi) # no need of two vectors, we just apply twice selection 
-			# 3) Mean fitness 
-			Wbar.f  <-  sum(O*Wf)
-			Wbar.m  <-  sum(O*Wm)
-			Wbar   <-  0.5 * (sum(Wbar.f)+sum(Wbar.m)) #Wbar is the average fitness across sexes, CHECK
-			# 4) Expected frequencies
-			E.Fii.f  <-  O*Wf/Wbar.f # sex specific expected freq
-			E.Fii.m  <-  O*Wm/Wbar.m # sex specific expected freq
-			# 5) Draw random frequencies in adults
-			Fii.f    <-  as.vector(rmultinom(1, N/2, E.Fii.f)/(N/2)) #IS THAT RIGHT?? or does the draw change
-			Fii.m    <-  as.vector(rmultinom(1, N/2, E.Fii.m)/(N/2)) #IS THAT RIGHT??
-			
-
-			# Realized frequencies
-			InvFreq[gen+1]     <-  0.5 * (sum(Fii.f[c(5,10,15,20:24)]/2, Fii.f[25]) +  sum(Fii.m[c(5,10,15,20:24)]/2, Fii.m[25]))
-			E.InvFreq[gen+1]   <-  0.5 * (sum(E.Fii.f[c(5,10,15,20:24)]/2, E.Fii.f[25]) +  sum(E.Fii.m[c(5,10,15,20:24)]/2, Fii.m[25]))
-			W.mean[gen+1]     <-  Wbar
-			
-			#The variable below are stored specifically for the SexSpecific simulation 
-			Wf.mean[gen+1]   =  sum(O*Wf)
-			Wm.mean[gen+1]   =  sum(O*Wm)
-			InvFreq_f[gen+1]  =  sum(Fii.f[c(5,10,15,20:24)]/2, Fii.f[25])
-			InvFreq_m[gen+1]  =  sum(Fii.m[c(5,10,15,20:24)]/2, Fii.m[25])
-			E.InvFreq_f[gen+1]=  sum(E.Fii.f[c(5,10,15,20:24)]/2, E.Fii.f[25])
-			E.InvFreq_m[gen+1]=  sum(E.Fii.m[c(5,10,15,20:24)]/2, Fii.m[25])
-
-			gen  <-  gen+1
-			print (gen)
-		}
-			
-		# Has the inversion reached threshold frequency for establishment (pcrit)? 
-		# When did it first reach pcrit?
-		if(any(InvFreq >= pcrit)) {
-			invEst      <-  1
-			invEstTime  <-  gen[InvFreq >= pcrit][1]
-		} else {	
-			invEst      <-  0
-			invEstTime  <-  NA
-		}
-	
-		# Save  simulation data
-		res  <-  list(
-				  	"InvFreq"     =  InvFreq[1:gen-1],
-				  	"E.InvFreq"   =  E.InvFreq[1:gen-1],
-				  	"W.mean"      =  W.mean[1:gen-1],
-					"Wf.mean" 	  =  Wf.mean[1:gen-1], 
-					"Wm.mean" 	  =	 Wm.mean[1:gen-1],
-					"InvFreq_f" 	  =  InvFreq_f[1:gen-1],
-					"InvFreq_m" 	  =  InvFreq_m[1:gen-1], 
-					"E.InvFreq_f"  =  E.InvFreq_f[1:gen-1],
-					"E.InvFreq_m"  =  E.InvFreq_m[1:gen-1],
-					"nGen"        =  gen,
-				  	"InvEst"      =  invEst,
-				  	"InvEstTime"  =  invEstTime
- 				 	)
-	} 
-
-	if(!saveTrajectories) {
 		# Storage structures for individual simulation data
 		InvFreq    <-  0
 		E.InvFreq  <-  0
@@ -360,45 +268,45 @@ autoInvFwdSimSexSpec  <-  function(Fii.f.init = Fii.f.init  , Fii.m.init = Fii.m
 		
 		## Start forward simulation with newly introduced inversion
 		gen  <-  1
-#		while(InvFreq > 0 & InvFreq <= pcrit) {
-		while(gen < (4*N) & InvFreq > 0 ) {
+
+		# use threshold frequency for establishment of inversion?
+		while(InvFreq > 0 & InvFreq <= pcrit & gen < (4*N)) {		
 		
 			## Step through recursions:
 			# 1) Calculate gamete frequencies
 			for (j in 1:length(xi)) {
 				recFctx  <-  get(names(xi)[j])
 				recFcty  <-  get(names(yi)[j])
-				xi[j]   <-  round(recFctx(Fii = Fii.f, m = mf, r = r), digits=8)
-				yi[j]   <-  round(recFcty(Fii = Fii.m, m = mm, r = r), digits=8)
+				xi[j]    <-  round(recFctx(Fii = Fii.f, m = mf, r = r), digits=8)
+				yi[j]    <-  round(recFcty(Fii = Fii.m, m = mm, r = r), digits=8)
 			}
-
-
 			# 2) Offspring genotype frequencies
-			O      <-  offFreq(xi,yi) # no need of two vectors, we just apply twice selection 
+			O          <-  offFreq(xi,yi) # no need of two vectors, we just apply twice selection 
 			# 3) Mean fitness 
-			Wbar.f  <-  sum(O*Wf)
-			Wbar.m  <-  sum(O*Wm)	
-			Wbar   <-  0.5 * (sum(O*Wbar.f)+sum(O*Wbar.m))		
+			Wbar.f     <-  sum(O*Wf)
+			Wbar.m     <-  sum(O*Wm)	
+			Wbar       <-  0.5 * (sum(O*Wbar.f)+sum(O*Wbar.m))		
 			# 4) Expected frequencies
-			E.Fii.f  <-  O*Wf/Wbar.f # sex specific expected freq
-			E.Fii.m  <-  O*Wm/Wbar.m # sex specific expected freq
+			E.Fii.f    <-  O*Wf/Wbar.f # sex specific expected freq
+			E.Fii.m    <-  O*Wm/Wbar.m # sex specific expected freq
 			# 5) Draw random frequencies in adults
-			Fii.f    <-  as.vector(rmultinom(1, N/2, E.Fii.f)/(N/2)) #IS THAT RIGHT?? or does the draw change
-			Fii.m    <-  as.vector(rmultinom(1, N/2, E.Fii.m)/(N/2)) #IS THAT RIGHT??
+			Fii.f      <-  as.vector(rmultinom(1, N/2, E.Fii.f)/(N/2)) #IS THAT RIGHT?? or does the draw change
+			Fii.m      <-  as.vector(rmultinom(1, N/2, E.Fii.m)/(N/2)) #IS THAT RIGHT??
 			# Realized frequencies
 			InvFreq    <-  0.5 * (sum(Fii.f[c(5,10,15,20:24)]/2, Fii.f[25]) +  sum(Fii.m[c(5,10,15,20:24)]/2, Fii.m[25]))
 			E.InvFreq  <-  0.5 * (sum(E.Fii.f[c(5,10,15,20:24)]/2, E.Fii.f[25]) +  sum(E.Fii.m[c(5,10,15,20:24)]/2, Fii.m[25]))
 			W.mean     <-  Wbar
-			#The variable below are stored specifically for the SexSpecific simulation 
-			
 		}
-		Wf.mean =  sum(O*Wf)
-		Wm.mean =  sum(O*Wm)
-		InvFreq_f <- sum(Fii.f[c(5,10,15,20:24)]/2, Fii.f[25])
-		InvFreq_m  = sum(Fii.m[c(5,10,15,20:24)]/2, Fii.m[25])
-		E.InvFreq_f = sum(E.Fii.f[c(5,10,15,20:24)]/2, E.Fii.f[25])
-		E.InvFreq_m = sum(E.Fii.m[c(5,10,15,20:24)]/2, Fii.m[25])
-		gen  <-  gen+1		
+
+		# Store relevant data 
+		Wf.mean      <-  sum(O*Wf)
+		Wm.mean      <-  sum(O*Wm)
+		InvFreq_f    <-  sum(Fii.f[c(5,10,15,20:24)]/2, Fii.f[25])
+		InvFreq_m    <-  sum(Fii.m[c(5,10,15,20:24)]/2, Fii.m[25])
+		E.InvFreq_f  <-  sum(E.Fii.f[c(5,10,15,20:24)]/2, E.Fii.f[25])
+		E.InvFreq_m  <-  sum(E.Fii.m[c(5,10,15,20:24)]/2, Fii.m[25])
+		gen          <-  gen+1		
+
 		# Has the inversion reached threshold frequency for establishment (pcrit)? 
 		# When did it first reach pcrit?
 		if(InvFreq >= pcrit) {
@@ -409,25 +317,196 @@ autoInvFwdSimSexSpec  <-  function(Fii.f.init = Fii.f.init  , Fii.m.init = Fii.m
 			invEstTime  <-  NA
 		}
 		res  <-  list(
-				  	"InvFreq"     =  InvFreq,
-				  	"E.InvFreq"   =  E.InvFreq,
-				  	"W.mean"      =  sum(W.mean)/length(W.mean),
-					"Wf.mean" 	  =  sum(Wf.mean)/length(Wf.mean), 
-					"Wm.mean" 	  =	 sum(Wm.mean)/length(Wm.mean),
-					"InvFreq_f" 	  =  InvFreq_f,
-					"InvFreq_m" 	  =  InvFreq_m, 
+				  	"InvFreq"      =  InvFreq,
+				  	"E.InvFreq"    =  E.InvFreq,
+				  	"Wbar"         =  sum(W.mean)/length(W.mean),
+					"Wbar_f"       =  sum(Wf.mean)/length(Wf.mean), 
+					"Wbar_m"       =  sum(Wm.mean)/length(Wm.mean),
+					"InvFreq_f"    =  InvFreq_f,
+					"InvFreq_m"    =  InvFreq_m, 
 					"E.InvFreq_f"  =  E.InvFreq_f,
 					"E.InvFreq_m"  =  E.InvFreq_m,
-					"nGen"        =  gen,
-				  	"InvEst"      =  invEst,
-				  	"InvEstTime"  =  invEstTime
+					"nGen"         =  gen,
+				  	"InvEst"       =  invEst,
+				  	"InvEstTime"   =  invEstTime
 			 )
+
+	return(res)
+	}
+	else {	# Run simulations until 4N generations
+
+		if(saveTrajectories) {
+			# Storage structures for individual simulation data
+			InvFreq      <-  rep(0, times=(4*N+1))
+			E.InvFreq    <-  rep(0, times=(4*N+1))
+			W.mean       <-  rep(0, times=(4*N+1))
+			Wf.mean      <-  rep(0, times=(4*N+1)) 
+			Wm.mean      <-  rep(0, times=(4*N+1))
+			InvFreq_f    <-  rep(0, times=(4*N+1))
+			InvFreq_m    <-  rep(0, times=(4*N+1)) 
+			E.InvFreq_f  <-  rep(0, times=(4*N+1))
+			E.InvFreq_m  <-  rep(0, times=(4*N+1))	
+			
+			# Initial inversion frequency 
+			InvFreq[1]    <-  sum(Fii.f[c(5,10,15,20:24)]/2, Fii.f[25]) + sum(Fii.m[c(5,10,15,20:24)]/2, Fii.m[25])
+			E.InvFreq[1]  <-  InvFreq[1]
+			
+			## Start forward simulation with newly introduced inversion
+			gen  <-  1
+			while(gen < (4*N) & InvFreq[gen] > 0 ) {
+	
+				## Step through recursions:
+				# 1) Calculate gamete frequencies
+				for (j in 1:length(xi)) {
+					recFctx  <-  get(names(xi)[j])
+					recFcty  <-  get(names(yi)[j])
+					xi[j]    <-  round(recFctx(Fii = Fii.f, m = mf, r = r), digits=8)
+					yi[j]    <-  round(recFcty(Fii = Fii.m, m = mm, r = r), digits=8)
+				}
+				# 2) Offspring genotype frequencies
+				O        <-  offFreq(xi,yi)
+				# 3) Mean fitness 
+				Wbar.f   <-  sum(O*Wf)
+				Wbar.m   <-  sum(O*Wm)
+				Wbar     <-  0.5 * (sum(Wbar.f)+sum(Wbar.m)) 
+				# 4) Expected frequencies
+				E.Fii.f  <-  O*Wf/Wbar.f 
+				E.Fii.m  <-  O*Wm/Wbar.m 
+				# 5) Draw random frequencies in adults
+				Fii.f    <-  as.vector(rmultinom(1, N/2, E.Fii.f)/(N/2)) 
+				Fii.m    <-  as.vector(rmultinom(1, N/2, E.Fii.m)/(N/2))
+				
+	
+				# Realized frequencies
+				InvFreq[gen+1]     <-  0.5 * (sum(Fii.f[c(5,10,15,20:24)]/2, Fii.f[25]) +  sum(Fii.m[c(5,10,15,20:24)]/2, Fii.m[25]))
+				E.InvFreq[gen+1]   <-  0.5 * (sum(E.Fii.f[c(5,10,15,20:24)]/2, E.Fii.f[25]) +  sum(E.Fii.m[c(5,10,15,20:24)]/2, Fii.m[25]))
+				W.mean[gen+1]      <-  Wbar
+				
+				#The variable below are stored specifically for the SexSpecific simulation 
+				Wf.mean[gen+1]      <-  sum(O*Wf)
+				Wm.mean[gen+1]      <-  sum(O*Wm)
+				InvFreq_f[gen+1]    <-  sum(Fii.f[c(5,10,15,20:24)]/2, Fii.f[25])
+				InvFreq_m[gen+1]    <-  sum(Fii.m[c(5,10,15,20:24)]/2, Fii.m[25])
+				E.InvFreq_f[gen+1]  <-  sum(E.Fii.f[c(5,10,15,20:24)]/2, E.Fii.f[25])
+				E.InvFreq_m[gen+1]  <-  sum(E.Fii.m[c(5,10,15,20:24)]/2, Fii.m[25])
+	
+				gen  <-  gen+1
+			}
+				
+			# Has the inversion reached threshold frequency for establishment (pcrit)? 
+			# When did it first reach pcrit?
+			if(any(InvFreq >= pcrit)) {
+				invEst      <-  1
+				invEstTime  <-  gen[InvFreq >= pcrit][1]
+			} else {	
+				invEst      <-  0
+				invEstTime  <-  NA
+			}
+		
+			# Save  simulation data
+			res  <-  list(
+					  	"InvFreq"      =  InvFreq[1:gen-1],
+					  	"E.InvFreq"    =  E.InvFreq[1:gen-1],
+					  	"Wbar"         =  W.mean[1:gen-1],
+						"Wbar_f" 	   =  Wf.mean[1:gen-1], 
+						"Wbar_m" 	   =  Wm.mean[1:gen-1],
+						"InvFreq_f"    =  InvFreq_f[1:gen-1],
+						"InvFreq_m"    =  InvFreq_m[1:gen-1], 
+						"E.InvFreq_f"  =  E.InvFreq_f[1:gen-1],
+						"E.InvFreq_m"  =  E.InvFreq_m[1:gen-1],
+						"nGen"         =  gen,
+					  	"InvEst"       =  invEst,
+					  	"InvEstTime"   =  invEstTime
+	 				 	)
+		} 
+	
+		if(!saveTrajectories) {
+			# Storage structures for individual simulation data
+			InvFreq    <-  0
+			E.InvFreq  <-  0
+			W.mean     <-  0
+			# Initial inversion frequency 
+			InvFreq    <-  0.5 * (sum(Fii.f[c(5,10,15,20:24)]/2, Fii.f[25]) +  sum(Fii.m[c(5,10,15,20:24)]/2, Fii.m[25]))
+			E.InvFreq  <-  InvFreq[1]
+			
+			## Start forward simulation with newly introduced inversion
+			gen  <-  1
+	
+			# use threshold frequency for establishment of inversion?
+			if(fastSim) {
+				while(InvFreq > 0 & InvFreq <= pcrit) {
+				}
+			if(!fastSim) {
+				while(gen < (4*N) & InvFreq[gen] > 0 ) {
+				}
+			
+				## Step through recursions:
+				# 1) Calculate gamete frequencies
+				for (j in 1:length(xi)) {
+					recFctx  <-  get(names(xi)[j])
+					recFcty  <-  get(names(yi)[j])
+					xi[j]    <-  round(recFctx(Fii = Fii.f, m = mf, r = r), digits=8)
+					yi[j]    <-  round(recFcty(Fii = Fii.m, m = mm, r = r), digits=8)
+				}
+				# 2) Offspring genotype frequencies
+				O          <-  offFreq(xi,yi) # no need of two vectors, we just apply twice selection 
+				# 3) Mean fitness 
+				Wbar.f     <-  sum(O*Wf)
+				Wbar.m     <-  sum(O*Wm)	
+				Wbar       <-  0.5 * (sum(O*Wbar.f)+sum(O*Wbar.m))		
+				# 4) Expected frequencies
+				E.Fii.f    <-  O*Wf/Wbar.f # sex specific expected freq
+				E.Fii.m    <-  O*Wm/Wbar.m # sex specific expected freq
+				# 5) Draw random frequencies in adults
+				Fii.f      <-  as.vector(rmultinom(1, N/2, E.Fii.f)/(N/2)) #IS THAT RIGHT?? or does the draw change
+				Fii.m      <-  as.vector(rmultinom(1, N/2, E.Fii.m)/(N/2)) #IS THAT RIGHT??
+				# Realized frequencies
+				InvFreq    <-  0.5 * (sum(Fii.f[c(5,10,15,20:24)]/2, Fii.f[25]) +  sum(Fii.m[c(5,10,15,20:24)]/2, Fii.m[25]))
+				E.InvFreq  <-  0.5 * (sum(E.Fii.f[c(5,10,15,20:24)]/2, E.Fii.f[25]) +  sum(E.Fii.m[c(5,10,15,20:24)]/2, Fii.m[25]))
+				W.mean     <-  Wbar
+				#The variable below are stored specifically for the SexSpecific simulation 
+				
+			}
+			
+			# Store relevant data 
+			Wf.mean      <-  sum(O*Wf)
+			Wm.mean      <-  sum(O*Wm)
+			InvFreq_f    <-  sum(Fii.f[c(5,10,15,20:24)]/2, Fii.f[25])
+			InvFreq_m    <-  sum(Fii.m[c(5,10,15,20:24)]/2, Fii.m[25])
+			E.InvFreq_f  <-  sum(E.Fii.f[c(5,10,15,20:24)]/2, E.Fii.f[25])
+			E.InvFreq_m  <-  sum(E.Fii.m[c(5,10,15,20:24)]/2, Fii.m[25])
+			gen          <-  gen+1		
+	
+			# Has the inversion reached threshold frequency for establishment (pcrit)? 
+			# When did it first reach pcrit?
+			if(InvFreq >= pcrit) {
+				invEst      <-  1
+				invEstTime  <-  gen
+			} else {	
+				invEst      <-  0
+				invEstTime  <-  NA
+			}
+			res  <-  list(
+					  	"InvFreq"      =  InvFreq,
+					  	"E.InvFreq"    =  E.InvFreq,
+					  	"Wbar"         =  sum(W.mean)/length(W.mean),
+						"Wbar_f"       =  sum(Wf.mean)/length(Wf.mean), 
+						"Wbar_m"       =  sum(Wm.mean)/length(Wm.mean),
+						"InvFreq_f"    =  InvFreq_f,
+						"InvFreq_m"    =  InvFreq_m, 
+						"E.InvFreq_f"  =  E.InvFreq_f,
+						"E.InvFreq_m"  =  E.InvFreq_m,
+						"nGen"         =  gen,
+					  	"InvEst"       =  invEst,
+					  	"InvEstTime"   =  invEstTime
+				 )
+			}
+		 	 	
+		return(res)
 		}
-
-		 	 
-return(res)
-
+	}
 }
+
 
 #' Introduce new mutant inverion genotype
 #'
@@ -454,7 +533,7 @@ introduceInversion  <-  function(newMutant, Fii.f.init, Fii.m.init, N) {
 	mutant <-newMutant[2]
 	#check for correctness of the paramer 
 	
-	if(sex!="m" &  sex!="f" &    sex!="random") 
+	if(sex!="m" &  sex!="f" & sex!="random") 
 			stop('Warning: newMutant is of wrong format')
 	if(specified & all(mutant != c(4,9,14,16:19)))
 		stop('If specifying the genotype of new inversion mutants, newMutant must take 
