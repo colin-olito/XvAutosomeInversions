@@ -283,8 +283,8 @@ autoInvFwdSim  <-  function(Fiix.init = Fiix.init, Fiiy.init = Fiiy.init, N = N,
   Fiiy  <-  Fiiy.init
   
   # Define threshold frequency for establishment of inversion
-  mbar = 1/3*(2*mf + mm)
-  pcrit  <-  2/(N*mbar)
+  mbar = 1/3*(2*mf + mm) #!!! Is this correct?
+  pcrit  <-  2/(N*mbar) #!!! Is this correct?
   
   # Storage for female gamete frequencies  
   xi         <-  rep(0, times=5)
@@ -308,6 +308,10 @@ autoInvFwdSim  <-  function(Fiix.init = Fiix.init, Fiiy.init = Fiiy.init, N = N,
     # Initial inversion frequency
     InvFreq[1]    <-  sum(Fiix[c(5,10,15,20:24)]/2, Fiix[25]) + Fiiy[5] # Sum of all inverted genotypes in females and males.
     E.InvFreq[1]  <-  InvFreq[1]
+    InvFreq_f[1]  <-  sum(Fiix[c(5,10,15,20:24)]/2, Fiix[25])
+    E.InvFreq_f[1] <- InvFreq_f[1]
+    InvFreq_m[1]  <-  Fiiy[5]
+    E.InvFreq_m[1] <- InvFreq_m[1]
     
     ## Start forward simulation with newly introduced inversion
     gen  <-  1
@@ -365,11 +369,11 @@ autoInvFwdSim  <-  function(Fiix.init = Fiix.init, Fiiy.init = Fiiy.init, N = N,
     # When did it first reach pcrit?
     if(any(InvFreq >= pcrit)) { # inversion got established
       invEst      <-  1
-      invEstTime  <-  gen[invFreq >= pcrit][1]
-    }# else {
-#       invEst      <-  0
-#       invEstTime  <-  NA
-#     }
+      invEstTime  <-  gen[InvFreq >= pcrit][1]
+    } else {
+      invEst      <-  0
+      invEstTime  <-  NA
+    }
     
     # Save  simulation data
     res  <-  list(
@@ -379,8 +383,8 @@ autoInvFwdSim  <-  function(Fiix.init = Fiix.init, Fiiy.init = Fiiy.init, N = N,
       "InvFreq_m"   =  InvFreq_m[1:gen-1],
       "E.InvFreq_f" =  E.InvFreq_f[1:gen-1],
       "E.InvFreq_m" =  E.InvFreq_m[1:gen-1],
-#!!!       "InvEst"      =  invEst,
-#!!!       "InvEstTime"  =  invEstTime,
+      "InvEst"      =  invEst,
+      "InvEstTime"  =  invEstTime,
       "W.mean"      =  W.mean[1:gen-1],
       "Wf.mean"     =  Wf.mean[1:gen-1],
       "Wm.mean"     =  Wm.mean[1:gen-1],
@@ -404,6 +408,10 @@ autoInvFwdSim  <-  function(Fiix.init = Fiix.init, Fiiy.init = Fiiy.init, N = N,
     # Initial inversion frequency 
     InvFreq    <-  sum(Fiix[c(5,10,15,20:24)]/2, Fiix[25]) + Fiiy[5]
     E.InvFreq  <-  InvFreq[1]
+    InvFreq_f  <-  sum(Fiix[c(5,10,15,20:24)]/2, Fiix[25])
+    E.InvFreq_f <- InvFreq_f[1]
+    InvFreq_m  <-  Fiiy[5]
+    E.InvFreq_m <- InvFreq_m[1]
     
     ## Start forward simulation with newly introduced inversion
     gen  <-  1
@@ -466,8 +474,8 @@ autoInvFwdSim  <-  function(Fiix.init = Fiix.init, Fiiy.init = Fiiy.init, N = N,
       "InvFreq_m"   =  InvFreq_m,
       "E.InvFreq_f" =  E.InvFreq_f,
       "E.InvFreq_m" =  E.InvFreq_m,
-#!!!       "InvEst"      =  invEst,
-#!!!       "InvEstTime"  =  invEstTime,
+      "InvEst"      =  invEst,
+      "InvEstTime"  =  invEstTime,
       "Wf.mean"     =  Wf.mean, #!!! Here the code differs from your autosomal version. There you have sum(W.mean)/length(W.mean), but here, as I understand, we're not storing it in a vector so I couldn't understand how sum() & length() would work.
       "Wm.mean"     =  Wm.mean,
       "W.mean"      =  W.mean,
@@ -656,8 +664,8 @@ runReplicateAutoInvSims  <-  function(nReps = 1000, N = 500, mm = 0.01, mf = 0.0
   finalInvFreq_m   <-  rep(0, times=nReps)
   finalE.InvFreq_f   <-  rep(0, times=nReps)
   finalE.InvFreq_m   <-  rep(0, times=nReps)
-#!!!   invEst          <-  rep(0, times=nReps)
-#!!!   invEstTime      <-  rep(0, times=nReps)
+  invEst          <-  rep(0, times=nReps)
+  invEstTime      <-  rep(0, times=nReps)
   finalW.mean     <-  rep(0, times=nReps)
   finalWf.mean     <-  rep(0, times=nReps)
   finalWm.mean     <-  rep(0, times=nReps)
@@ -716,8 +724,8 @@ runReplicateAutoInvSims  <-  function(nReps = 1000, N = 500, mm = 0.01, mf = 0.0
     finalWf.mean[i]     <-  repRes$Wf.mean
     finalWm.mean[i]     <-  repRes$Wm.mean
     nGen[i]            <-  repRes$nGen
-#!!!     invEst[i]          <-  repRes$invEst
-#!!!     invEstTime[i]      <-  repRes$invEstTime
+    invEst[i]          <-  repRes$InvEst
+    invEstTime[i]      <-  repRes$InvEstTime
     nDels[i]           <-  n.del
     
     if(saveTrajectories) {
@@ -748,8 +756,8 @@ runReplicateAutoInvSims  <-  function(nReps = 1000, N = 500, mm = 0.01, mf = 0.0
     "finalWf.mean"     =  finalWf.mean,
     "finalWm.mean"     =  finalWm.mean,
     "nGen"            =  nGen,
-#!!!     "invEst"          =  invEst,
-#!!!     "invEstTime"      =  invEstTime,
+    "invEst"          =  invEst,
+    "invEstTime"      =  invEstTime,
     "nDels"           =  nDels
   )
   if(saveTrajectories) {
