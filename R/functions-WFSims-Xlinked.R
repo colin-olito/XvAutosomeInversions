@@ -246,8 +246,6 @@ findEqFreqs  <-  function(Wf, Wm, mm, mf, r, threshold = 1e-6) {
 #findEqFreqs(Wf, Wm, mm, mf, r, threshold = 1e-6)
 # It is deterministic so everytime it must give the same result. Everytime, with the above setting, the equilibrium is reached at generation 439. 
 # If mm=mf=0.8, equilibrium is reached at generation 5.
-#!!! When changing r=0.1, it still reaches equilibrium at generation 439.
-#!!! When changing sf=sm=0.5, it still reaches equilibrium at generation 439.
 #*********************************************************************************
 
 #' Run a single Wright-Fisher Forward simulation with introduced inversion on the X chromosome
