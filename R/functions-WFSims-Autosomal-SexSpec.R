@@ -72,35 +72,35 @@ Dstar  <-  function(Fii, m, ...) {
 #' @param r   Recombination rate
 #' @export
 # Haplotype frequency equations for ovules
-x.1  <-  function(Fii=Fii.f, m=m, r=r) { 
+x.1  <-  function(Fii=Fii.f, m=m, r=rf) { 
 	((2*Fii[1] + (Fii[2] + Fii[6]) + (Fii[3] + Fii[11]) + (Fii[4] + Fii[16]) + (Fii[5] + Fii[21])) / 2)*(1 - m) - r*Dstar(Fii=Fii, m=m) + m
 } 
-x.2  <-  function(Fii=Fii.f, m=m, r=r) {
+x.2  <-  function(Fii=Fii.f, m=m, r=rf) {
 	((2*Fii[7] + (Fii[2] + Fii[6]) + (Fii[8] + Fii[12]) + (Fii[9] + Fii[17]) + (Fii[10] + Fii[22])) / 2)*(1 - m) + r*Dstar(Fii=Fii, m=m)
 }
-x.3  <-  function(Fii=Fii.f, m=m, r=r) {
+x.3  <-  function(Fii=Fii.f, m=m, r=rf) {
 	((2*Fii[13] + (Fii[3] + Fii[11]) + (Fii[8] + Fii[12]) + (Fii[14] + Fii[18]) + (Fii[15] + Fii[23])) / 2)*(1 - m) + r*Dstar(Fii=Fii, m=m)
 }
-x.4  <-  function(Fii=Fii.f, m=m, r=r) {
+x.4  <-  function(Fii=Fii.f, m=m, r=rf) {
 	((2*Fii[19] + (Fii[4] + Fii[16]) + (Fii[9] + Fii[17]) + (Fii[14] + Fii[18]) + (Fii[20] + Fii[24])) / 2)*(1 - m) - r*Dstar(Fii=Fii, m=m)
 }
-x.5  <-  function(Fii=Fii.f, m=m, r=r) {
+x.5  <-  function(Fii=Fii.f, m=m, r=rf) {
 	((2*Fii[25] + (Fii[5] + Fii[21]) + (Fii[10] + Fii[22]) + (Fii[15] + Fii[23]) + (Fii[20] + Fii[24])) / 2)*(1 - m)
 }
 # Haplotype frequency equations for sperm/pollen
-y.1  <-  function(Fii=Fii.m, m=m, r=r) {
+y.1  <-  function(Fii=Fii.m, m=m, r=rm) {
 	((2*Fii[1] + (Fii[2] + Fii[6]) + (Fii[3] + Fii[11]) + (Fii[4] + Fii[16]) + (Fii[5] + Fii[21])) / 2)*(1 - m) - r*Dstar(Fii=Fii, m=m) + m
 } 
-y.2  <-  function(Fii=Fii.m, m=m, r=r) {
+y.2  <-  function(Fii=Fii.m, m=m, r=rm) {
 	((2*Fii[7] + (Fii[2] + Fii[6]) + (Fii[8] + Fii[12]) + (Fii[9] + Fii[17]) + (Fii[10] + Fii[22])) / 2)*(1 - m) + r*Dstar(Fii=Fii, m=m)
 }
-y.3  <-  function(Fii=Fii.m, m=m, r=r) {
+y.3  <-  function(Fii=Fii.m, m=m, r=rm) {
 	((2*Fii[13] + (Fii[3] + Fii[11]) + (Fii[8] + Fii[12]) + (Fii[14] + Fii[18]) + (Fii[15] + Fii[23])) / 2)*(1 - m) + r*Dstar(Fii=Fii, m=m)
 }
-y.4  <-  function(Fii=Fii.m, m=m, r=r) {
+y.4  <-  function(Fii=Fii.m, m=m, r=rm) {
 	((2*Fii[19] + (Fii[4] + Fii[16]) + (Fii[9] + Fii[17]) + (Fii[14] + Fii[18]) + (Fii[20] + Fii[24])) / 2)*(1 - m) - r*Dstar(Fii=Fii, m=m)
 }
-y.5  <-  function(Fii=Fii.m, m=m, r=r) {
+y.5  <-  function(Fii=Fii.m, m=m, r=rm) {
 	((2*Fii[25] + (Fii[5] + Fii[21]) + (Fii[10] + Fii[22]) + (Fii[15] + Fii[23]) + (Fii[20] + Fii[24])) / 2)*(1 - m)
 }
 
@@ -144,14 +144,15 @@ offFreq  <-  function(xi,yi) {
 #' @param Wm     Vector of fitness expressions for all 25 genotypes in males
 #' @param mf     Female migration rate for locally maladaptive alleles
 #' @param mm     Male migration rate for locally maladaptive alleles
-#' @param r      Recombination rate among the two loci involved in local adaptation
+#' @param rf     Female recombination rate among the two loci involved in local adaptation
+#' @param rm     Male recombination rate among the two loci involved in local adaptation
 #' @param threshold The threshold change in genotype frequency at which the simulation
 #'                  will accept the current state as having reached equilibrium. Values
 #'                  of 1e-6 or 1e-7 have worked pretty well in the past. 
 #' @export
 #' @seealso `offFreq`, `autoInvWrightFisherSim`
 #' @author Ludovic Dutoit based on Colin Olito
-findEqFreqs  <-  function(Wf,Wm, mf, mm, r, threshold = 1e-6) {
+findEqFreqs  <-  function(Wf,Wm, mf, mm, rf, rm, threshold = 1e-6, ...) {
 	Fii.init  <-  c(1/16, 1/16, 1/16, 1/16, 0, 
 					1/16, 1/16, 1/16, 1/16, 0, 
 					1/16, 1/16, 1/16, 1/16, 0, 
@@ -184,9 +185,9 @@ findEqFreqs  <-  function(Wf,Wm, mf, mm, r, threshold = 1e-6) {
 		gen  <-  gen+1
 		for (j in 1:length(xi)) {
 			recFct  <-  get(names(xi)[j])
-			xi[j]   <-  round(recFct(Fii = E.Fii.f, m = mf, r = r), digits=3)
+			xi[j]   <-  round(recFct(Fii = E.Fii.f, m = mf, r = rf), digits=3)
 			recFct  <-  get(names(yi)[j])
-			yi[j]   <-  round(recFct(Fii = E.Fii.m, m = mm, r = r), digits=3)
+			yi[j]   <-  round(recFct(Fii = E.Fii.m, m = mm, r = rm), digits=3)
 		}
 
 	    # offspring genotype frequencies
@@ -231,14 +232,15 @@ findEqFreqs  <-  function(Wf,Wm, mf, mm, r, threshold = 1e-6) {
 #' @param Wm          Vector of fitness expressions for all 25 genotypes in males
 #' @param mm          Migration rate for locally maladaptive alleles (m =  0.01) in males
 #' @param mf          Migration rate for locally maladaptive alleles (m =  0.01) in females
-#' @param r           Recombination rate among the two loci involved in local adaptation (r = 0.1).
+#' @param rf          Female recombination rate among the two loci involved in local adaptation
+#' @param rm          Male recombination rate among the two loci involved in local adaptation
 #' @param fastSim     Logical. Use threshold frequency for establishment of inversion? 
 #' @param saveTrajectories  Save evolutionary trajectories of inversion frequencies? 
 #' @export
 #' @seealso `offFreq`, `findEqFreqs`, `x.1`, ...
 #' @author Ludovic Dutoit, based on Colin Olito
 autoInvFwdSimSexSpec  <-  function(Fii.f.init = Fii.f.init, Fii.m.init = Fii.m.init, 
-									N = N, Wf = Wf, Wm = Wm, mm = mm, mf = mf, sm = sm, sf = sf, r = r, 
+									N = N, Wf = Wf, Wm = Wm, mm = mm, mf = mf, sm = sm, sf = sf, rf = rf, rm = rm, 
 									fastSim = TRUE, saveTrajectories = FALSE, ...) {
 
 	# Use deterministic eq. initial frequencies
@@ -276,8 +278,8 @@ autoInvFwdSimSexSpec  <-  function(Fii.f.init = Fii.f.init, Fii.m.init = Fii.m.i
 			for (j in 1:length(xi)) {
 				recFctx  <-  get(names(xi)[j])
 				recFcty  <-  get(names(yi)[j])
-				xi[j]    <-  round(recFctx(Fii = Fii.f, m = mf, r = r), digits=8)
-				yi[j]    <-  round(recFcty(Fii = Fii.m, m = mm, r = r), digits=8)
+				xi[j]    <-  round(recFctx(Fii = Fii.f, m = mf, r = rf), digits=8)
+				yi[j]    <-  round(recFcty(Fii = Fii.m, m = mm, r = rm), digits=8)
 			}
 			# 2) Offspring genotype frequencies
 			O          <-  offFreq(xi,yi) # no need of two vectors, we just apply twice selection 
@@ -359,8 +361,8 @@ autoInvFwdSimSexSpec  <-  function(Fii.f.init = Fii.f.init, Fii.m.init = Fii.m.i
 				for (j in 1:length(xi)) {
 					recFctx  <-  get(names(xi)[j])
 					recFcty  <-  get(names(yi)[j])
-					xi[j]    <-  round(recFctx(Fii = Fii.f, m = mf, r = r), digits=8)
-					yi[j]    <-  round(recFcty(Fii = Fii.m, m = mm, r = r), digits=8)
+					xi[j]    <-  round(recFctx(Fii = Fii.f, m = mf, r = rf), digits=8)
+					yi[j]    <-  round(recFcty(Fii = Fii.m, m = mm, r = rm), digits=8)
 				}
 				# 2) Offspring genotype frequencies
 				O        <-  offFreq(xi,yi)
@@ -438,8 +440,8 @@ autoInvFwdSimSexSpec  <-  function(Fii.f.init = Fii.f.init, Fii.m.init = Fii.m.i
 				for (j in 1:length(xi)) {
 					recFctx  <-  get(names(xi)[j])
 					recFcty  <-  get(names(yi)[j])
-					xi[j]    <-  round(recFctx(Fii = Fii.f, m = mf, r = r), digits=8)
-					yi[j]    <-  round(recFcty(Fii = Fii.m, m = mm, r = r), digits=8)
+					xi[j]    <-  round(recFctx(Fii = Fii.f, m = mf, r = rf), digits=8)
+					yi[j]    <-  round(recFcty(Fii = Fii.m, m = mm, r = rm), digits=8)
 				}
 				# 2) Offspring genotype frequencies
 				O          <-  offFreq(xi,yi) # no need of two vectors, we just apply twice selection 
@@ -613,7 +615,8 @@ introduceInversion  <-  function(newMutant, Fii.f.init, Fii.m.init, N, ...) {
 #' @param sf     Selective advantage of locally adaptive alleles over migrant alleles (s = 0.02) in females
 #' @param sm     Selective advantage of locally adaptive alleles over migrant alleles (s = 0.02) in males
 #' @param h      Dominance coefficient for locally adaptive alleles relative to migrant alleles (h = 0.5)
-#' @param r      Recombination rate among the two loci involved in local adaptation (r = 0.1).
+#' @param rf     Female recombination rate among the two loci involved in local adaptation
+#' @param rm     Male recombination rate among the two loci involved in local adaptation
 #' @param n      Number of loci at which deleterious mutations may occur.
 #' @param u      Mutation rate (default value of u = 1e-6).
 #' @param h.del  Dominance of deleterious mutations (default value of h = 0).
@@ -629,12 +632,12 @@ introduceInversion  <-  function(newMutant, Fii.f.init, Fii.m.init, N, ...) {
 #' @seealso `offFreq`, `findEqFreqs`, `autoInvFwdSimSexSpec`
 #' @export
 #' @author Ludovic Dutoit based on Colin Olito.
-runReplicateAutoInvSimsSexSpec  <-  function(nReps = 1000, N = 500, mm = 0.01, mf = 0.01, sf = 0.1, sm = 0.1, h = 1/2, r = 0.1, 
+runReplicateAutoInvSimsSexSpec  <-  function(nReps = 1000, N = 500, mm = 0.01, mf = 0.01, sf = 0.1, sm = 0.1, h = 1/2, rf = 0.5, rm = 0.5, 
 									  		 n = 100, u = 1e-5, h.del = 0, sf.del = 1, sm.del = 1, noDel = FALSE,
 									  		 fastSim = TRUE, saveTrajectories = FALSE, newMutant = c("random","random")) {
 
 	##  Preemptive Warnings
-	if(any(c(N,mm,mf,sf,sm,h,r,n,u,h.del) < 0) | any(c(mm,mf,sf,sm,h,r,u,h.del) > 1) | r > 0.5)
+	if(any(c(N,mm,mf,sf,sm,h,rf,rm,n,u,h.del) < 0) | any(c(mm,mf,sf,sm,h,rf,rm,u,h.del) > 1) | any(c(rf,rm) > 0.5))
 		stop('The chosen parameter values fall outside of reasonable parameter space')
 
 	try({
@@ -657,7 +660,7 @@ runReplicateAutoInvSimsSexSpec  <-  function(nReps = 1000, N = 500, mm = 0.01, m
 			       0,            0,                   0,                   0,                  0)
 
 	##  Define Fitness Expressions for determining eq. frequencies in absence of inversion
-	Fii         <-  findEqFreqs(Wf.init, Wm.init, mm = mm, mf = mf, r=r, threshold = 1e-6)
+	Fii         <-  findEqFreqs(Wf.init, Wm.init, mm = mm, mf = mf, rf = rf, rm = rm, threshold = 1e-6)
 	Fii.f.init  <- Fii[1,]
 	Fii.m.init  <- Fii[2,]
 	
@@ -716,7 +719,7 @@ runReplicateAutoInvSimsSexSpec  <-  function(nReps = 1000, N = 500, mm = 0.01, m
 			 (1 + h*sm)^2,                          (1 + h*sm)*(1 + sm),                          (1 + sm)*(1 + h*sm),                          (1 + sm)^2,                          (1 + sm)^2*(1 - h.del*sm.del)^n.del,
 			 (1 + h*sm)^2*(1 - h.del*sm.del)^n.del, (1 + h*sm)*(1 + sm)*(1 - h.del*sm.del)^n.del, (1 + sm)*(1 + h*sm)*(1 - h.del*sm.del)^n.del, (1 + sm)^2*(1 - h.del*sm.del)^n.del, (1 + sm)^2*(1 - sm.del)^n.del)
 	## RUN SIMULATION
-	repRes  <-  autoInvFwdSimSexSpec(Fii.f.init = Fii.f.init, Fii.m.init = Fii.m.init, N = N, Wf = Wf, Wm = Wm, mm = mm, mf = mf, r = r, saveTrajectories = saveTrajectories)
+	repRes  <-  autoInvFwdSimSexSpec(Fii.f.init = Fii.f.init, Fii.m.init = Fii.m.init, N = N, Wf = Wf, Wm = Wm, mm = mm, mf = mf, rf = rf, rm = rm, saveTrajectories = saveTrajectories)
 
 	# save results for each replicate
 	finalInvFreq[i]      <-  repRes$InvFreq[length(repRes$InvFreq)]
@@ -789,8 +792,7 @@ runReplicateAutoInvSimsSexSpec  <-  function(nReps = 1000, N = 500, mm = 0.01, m
 
 #' Wrapper function to run replicate forward simulations for invasion
 #' of autosomal inversions in a Wright-Fisher population 
-#' USING DESIGNATED PARAMETER VALUES
-#'
+#' 
 #' @title Run replicate Wright-Fisher forward simulations for autosomal inversion under different parameter values 
 #' @param N.vals Vector of desired population sizes
 #' @param r.vals Vector of desired recombination rates among the two loci involved in local adaptation (r = 0.1).
@@ -800,7 +802,6 @@ runReplicateAutoInvSimsSexSpec  <-  function(nReps = 1000, N = 500, mm = 0.01, m
 #' @param m     Ddesired migration rates for locally maladaptive alleles 
 #' @param m.delta   the difference between selective advantage of migration rates for locally maladaptive allele in females (mf) and males (mm).
 #'				 3 models will be run, one where mm=mf=m and the two others where m is the average migration rate and mm =m + m.delta with sf =m - m.delta or the opposite: mm =m - m.delta with mf =m + m.delta
-
 #' @param h      Dominance coefficient for locally adaptive alleles relative to migrant alleles (h = 0.5)
 #' @param n      Number of loci at which deleterious mutations may occur.
 #' @param u      Mutation rate (default value of u = 1e-6).
