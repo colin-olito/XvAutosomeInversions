@@ -630,8 +630,8 @@ introduceInversion  <-  function(newMutant, Fii.f.init, Fii.m.init, N, ...) {
 #' @export
 #' @author Ludovic Dutoit based on Colin Olito.
 runReplicateAutoInvSimsSexSpec  <-  function(nReps = 1000, N = 500, mm = 0.01, mf = 0.01, sf = 0.1, sm = 0.1, h = 1/2, r = 0.1, 
-									  n = 100, u = 1e-5, h.del = 0, sf.del = 1, sm.del = 1, noDel = FALSE,
-									  fastSim = TRUE, saveTrajectories = FALSE, newMutant = c("random","random")) {
+									  		 n = 100, u = 1e-5, h.del = 0, sf.del = 1, sm.del = 1, noDel = FALSE,
+									  		 fastSim = TRUE, saveTrajectories = FALSE, newMutant = c("random","random")) {
 
 	##  Preemptive Warnings
 	if(any(c(N,mm,mf,sf,sm,h,r,n,u,h.del) < 0) | any(c(mm,mf,sf,sm,h,r,u,h.del) > 1) | r > 0.5)
@@ -684,8 +684,8 @@ runReplicateAutoInvSimsSexSpec  <-  function(nReps = 1000, N = 500, mm = 0.01, m
 		replicateTraj    <-  c()
 		InvFreqTraj      <-  c()
 		E.InvFreqTraj    <-  c()
-		Wbar_fTraj      <-  c() 
-		Wbar_mTraj      <-  c()
+		Wbar_fTraj       <-  c() 
+		Wbar_mTraj       <-  c()
 		InvFreq_fTraj    <-  c()
 		InvFreq_mTraj    <-  c() 
 		E.InvFreq_fTraj  <-  c()
@@ -738,7 +738,7 @@ runReplicateAutoInvSimsSexSpec  <-  function(nReps = 1000, N = 500, mm = 0.01, m
 			InvFreqTraj      <-  c(InvFreqTraj,repRes$InvFreq)
 			E.InvFreqTraj    <-  c(E.InvFreqTraj,repRes$E.InvFreq)
 			Wbar_fTraj       <-  c(Wbar_fTraj,repRes$Wbar_f)
-			Wbar_mTraj       <-  c(Wbar_m,repRes$Wbar_m)
+			Wbar_mTraj       <-  c(Wbar_mTraj,repRes$Wbar_m)
 			InvFreq_fTraj    <-  c(InvFreq_fTraj,repRes$InvFreq_f)
 			InvFreq_mTraj    <-  c(InvFreq_mTraj,repRes$InvFreq_m) 
 			E.InvFreq_fTraj  <-  c(E.InvFreq_fTraj,repRes$E.InvFreq_f)
