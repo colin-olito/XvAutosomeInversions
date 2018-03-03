@@ -877,7 +877,7 @@ makeReplicateInvSimsDataXlinked  <-  function(nReps = 1000, N = 5000, mm.vals = 
                         "sf.dels", "sm.dels", "sfs", "sms", "hs", "Ns", "us", "h.dels")
   
   # create file name
-  filename  <-  paste("./output/data/simResults/auto-InvSimsData", "_sf", sf, "_sm", sm, "_h", h, "_N", N, "_n", n, "_u", u, "_hdel", h.del, ".csv", sep="")
+  filename  <-  paste("./output/data/simResults/Xlinked-InvSimsData", "_sf", sf, "_sm", sm, "_h", h, "_N", N, "_n", n, "_u", u, "_hdel", h.del, ".csv", sep="")
 
   # export data as .csv to ./output/data
   write.csv(data, file=filename, row.names = FALSE)
