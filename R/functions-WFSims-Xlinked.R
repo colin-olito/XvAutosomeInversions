@@ -246,6 +246,8 @@ findEqFreqs  <-  function(Wf, Wm, mm, mf, r, threshold = 1e-6) {
 #findEqFreqs(Wf, Wm, mm, mf, r, threshold = 1e-6)
 # It is deterministic so everytime it must give the same result. Everytime, with the above setting, the equilibrium is reached at generation 439. 
 # If mm=mf=0.8, equilibrium is reached at generation 5.
+# sum(findEqFreqs(Wf, Wm, 0, 0, 0.5)[[1]]) is genotype frequencies in females and is equal to 1.
+# sum(findEqFreqs(Wf, Wm, 0, 0, 0.5)[[2]]) is genotype frequencies in males and is equal to 1. 
 #*********************************************************************************
 
 #' Run a single Wright-Fisher Forward simulation with introduced inversion on the X chromosome
