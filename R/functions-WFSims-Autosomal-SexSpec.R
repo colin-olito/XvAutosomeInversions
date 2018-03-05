@@ -72,35 +72,35 @@ Dstar  <-  function(Fii, m, ...) {
 #' @param r   Recombination rate
 #' @export
 # Haplotype frequency equations for ovules
-x.1  <-  function(Fii=Fii.f, m=m, r=rf) { 
+x.1  <-  function(Fii=Fii.f, m=mf, r=rf) { 
 	((2*Fii[1] + (Fii[2] + Fii[6]) + (Fii[3] + Fii[11]) + (Fii[4] + Fii[16]) + (Fii[5] + Fii[21])) / 2)*(1 - m) - r*Dstar(Fii=Fii, m=m) + m
 } 
-x.2  <-  function(Fii=Fii.f, m=m, r=rf) {
+x.2  <-  function(Fii=Fii.f, m=mf, r=rf) {
 	((2*Fii[7] + (Fii[2] + Fii[6]) + (Fii[8] + Fii[12]) + (Fii[9] + Fii[17]) + (Fii[10] + Fii[22])) / 2)*(1 - m) + r*Dstar(Fii=Fii, m=m)
 }
-x.3  <-  function(Fii=Fii.f, m=m, r=rf) {
+x.3  <-  function(Fii=Fii.f, m=mf, r=rf) {
 	((2*Fii[13] + (Fii[3] + Fii[11]) + (Fii[8] + Fii[12]) + (Fii[14] + Fii[18]) + (Fii[15] + Fii[23])) / 2)*(1 - m) + r*Dstar(Fii=Fii, m=m)
 }
-x.4  <-  function(Fii=Fii.f, m=m, r=rf) {
+x.4  <-  function(Fii=Fii.f, m=mf, r=rf) {
 	((2*Fii[19] + (Fii[4] + Fii[16]) + (Fii[9] + Fii[17]) + (Fii[14] + Fii[18]) + (Fii[20] + Fii[24])) / 2)*(1 - m) - r*Dstar(Fii=Fii, m=m)
 }
-x.5  <-  function(Fii=Fii.f, m=m, r=rf) {
+x.5  <-  function(Fii=Fii.f, m=mf, r=rf) {
 	((2*Fii[25] + (Fii[5] + Fii[21]) + (Fii[10] + Fii[22]) + (Fii[15] + Fii[23]) + (Fii[20] + Fii[24])) / 2)*(1 - m)
 }
 # Haplotype frequency equations for sperm/pollen
-y.1  <-  function(Fii=Fii.m, m=m, r=rm) {
+y.1  <-  function(Fii=Fii.m, m=mm, r=rm) {
 	((2*Fii[1] + (Fii[2] + Fii[6]) + (Fii[3] + Fii[11]) + (Fii[4] + Fii[16]) + (Fii[5] + Fii[21])) / 2)*(1 - m) - r*Dstar(Fii=Fii, m=m) + m
 } 
-y.2  <-  function(Fii=Fii.m, m=m, r=rm) {
+y.2  <-  function(Fii=Fii.m, m=mm, r=rm) {
 	((2*Fii[7] + (Fii[2] + Fii[6]) + (Fii[8] + Fii[12]) + (Fii[9] + Fii[17]) + (Fii[10] + Fii[22])) / 2)*(1 - m) + r*Dstar(Fii=Fii, m=m)
 }
-y.3  <-  function(Fii=Fii.m, m=m, r=rm) {
+y.3  <-  function(Fii=Fii.m, m=mm, r=rm) {
 	((2*Fii[13] + (Fii[3] + Fii[11]) + (Fii[8] + Fii[12]) + (Fii[14] + Fii[18]) + (Fii[15] + Fii[23])) / 2)*(1 - m) + r*Dstar(Fii=Fii, m=m)
 }
-y.4  <-  function(Fii=Fii.m, m=m, r=rm) {
+y.4  <-  function(Fii=Fii.m, m=mm, r=rm) {
 	((2*Fii[19] + (Fii[4] + Fii[16]) + (Fii[9] + Fii[17]) + (Fii[14] + Fii[18]) + (Fii[20] + Fii[24])) / 2)*(1 - m) - r*Dstar(Fii=Fii, m=m)
 }
-y.5  <-  function(Fii=Fii.m, m=m, r=rm) {
+y.5  <-  function(Fii=Fii.m, m=mm, r=rm) {
 	((2*Fii[25] + (Fii[5] + Fii[21]) + (Fii[10] + Fii[22]) + (Fii[15] + Fii[23]) + (Fii[20] + Fii[24])) / 2)*(1 - m)
 }
 
@@ -116,7 +116,7 @@ offFreq  <-  function(xi,yi) {
 			 (xi[2]*yi[1]), xi[2]*yi[2],  (xi[2]*yi[3]), (xi[2]*yi[4]), (xi[2]*yi[5]),
 			 (xi[3]*yi[1]), (xi[3]*yi[2]), xi[3]*yi[3], (xi[3]*yi[4]), (xi[3]*yi[5]),
 			 (xi[4]*yi[1]), (xi[4]*yi[2]), (xi[4]*yi[3]), xi[4]*yi[4], (xi[4]*yi[5]),
-			 (xi[5]*yi[1]), (xi[5]*yi[2]), (xi[5]*yi[3]), (xi[5]*yi[4]), xi[5]*yi[4]
+			 (xi[5]*yi[1]), (xi[5]*yi[2]), (xi[5]*yi[3]), (xi[5]*yi[4]), xi[5]*yi[5]
 			 )
 	O
 }
@@ -185,9 +185,9 @@ findEqFreqs  <-  function(Wf,Wm, mf, mm, rf, rm, threshold = 1e-6, ...) {
 		gen  <-  gen+1
 		for (j in 1:length(xi)) {
 			recFct  <-  get(names(xi)[j])
-			xi[j]   <-  round(recFct(Fii = E.Fii.f, m = mf, r = rf), digits=3)
+			xi[j]   <-  round(recFct(Fii = E.Fii.f, m = mf, r = rf), digits=6)
 			recFct  <-  get(names(yi)[j])
-			yi[j]   <-  round(recFct(Fii = E.Fii.m, m = mm, r = rm), digits=3)
+			yi[j]   <-  round(recFct(Fii = E.Fii.m, m = mm, r = rm), digits=6)
 		}
 
 	    # offspring genotype frequencies
@@ -200,7 +200,7 @@ findEqFreqs  <-  function(Wf,Wm, mf, mm, rf, rm, threshold = 1e-6, ...) {
 	    # difference in expected frequency (has simulation reached equilibrium yet?)
 		deltaF   <-  E.Fii.f[c(1:4,6:9,11:14,16:19)] - (O*Wf/Wfbar)[c(1:4,6:9,11:14,16:19)]
 		deltaM   <-  E.Fii.m[c(1:4,6:9,11:14,16:19)] - (O*Wm/Wmbar)[c(1:4,6:9,11:14,16:19)]
-		delta<-append(deltaF,deltaM)
+		delta    <-  append(deltaF,deltaM)
 
 		# Expected adult genotypic frequencies in next generation
 		E.Fii.f   <-  O*Wf/Wfbar
@@ -248,7 +248,7 @@ autoInvFwdSimSexSpec  <-  function(Fii.f.init = Fii.f.init, Fii.m.init = Fii.m.i
 	Fii.m  <-  Fii.m.init
 
 	# Define threshold frequency for establishment of inversion
-	pcrit  <-  2/(N*(mm+mf)/2)
+	pcrit  <-  2/(N*((mm+mf)/2))
 
 	# Storage for gamete frequencies  
 	xi         <-  rep(0, times=5)
@@ -264,7 +264,7 @@ autoInvFwdSimSexSpec  <-  function(Fii.f.init = Fii.f.init, Fii.m.init = Fii.m.i
 		E.InvFreq  <-  0
 		W.mean     <-  0
 		# Initial inversion frequency 
-		InvFreq    <-  0.5 * (sum(Fii.f[c(5,10,15,20:24)]/2, Fii.f[25]) +  sum(Fii.m[c(5,10,15,20:24)]/2, Fii.m[25]))
+		InvFreq    <-  (sum(Fii.f[c(5,10,15,20:24)]/2, Fii.f[25]) +  sum(Fii.m[c(5,10,15,20:24)]/2, Fii.m[25]))/2
 		E.InvFreq  <-  InvFreq[1]
 		
 		## Start forward simulation with newly introduced inversion
@@ -282,28 +282,28 @@ autoInvFwdSimSexSpec  <-  function(Fii.f.init = Fii.f.init, Fii.m.init = Fii.m.i
 				yi[j]    <-  round(recFcty(Fii = Fii.m, m = mm, r = rm), digits=8)
 			}
 			# 2) Offspring genotype frequencies
-			O          <-  offFreq(xi,yi) # no need of two vectors, we just apply twice selection 
+			O          <-  offFreq(xi,yi) 
 			# 3) Mean fitness 
 			Wbar.f     <-  sum(O*Wf)
-			Wbar.m     <-  sum(O*Wm)	
-			Wbar       <-  0.5 * (sum(O*Wbar.f)+sum(O*Wbar.m))		
+			Wbar.m     <-  sum(O*Wm)
+			Wbar       <-  (Wbar.f + Wbar.m)/2
 			# 4) Expected frequencies
-			E.Fii.f    <-  O*Wf/Wbar.f # sex specific expected freq
-			E.Fii.m    <-  O*Wm/Wbar.m # sex specific expected freq
+			E.Fii.f    <-  (O*Wf)/Wbar.f # sex specific expected freq
+			E.Fii.m    <-  (O*Wm)/Wbar.m # sex specific expected freq
 			# 5) Draw random frequencies in adults
-			Fii.f      <-  as.vector(rmultinom(1, N/2, E.Fii.f)/(N/2)) #IS THAT RIGHT?? or does the draw change
-			Fii.m      <-  as.vector(rmultinom(1, N/2, E.Fii.m)/(N/2)) #IS THAT RIGHT??
+			Fii.f      <-  as.vector(rmultinom(1, N/2, E.Fii.f)/(N/2))
+			Fii.m      <-  as.vector(rmultinom(1, N/2, E.Fii.m)/(N/2))
 			# Realized frequencies
-			InvFreq    <-  0.5 * (sum(Fii.f[c(5,10,15,20:24)]/2, Fii.f[25]) +  sum(Fii.m[c(5,10,15,20:24)]/2, Fii.m[25]))
-			E.InvFreq  <-  0.5 * (sum(E.Fii.f[c(5,10,15,20:24)]/2, E.Fii.f[25]) +  sum(E.Fii.m[c(5,10,15,20:24)]/2, Fii.m[25]))
+			InvFreq    <-  (sum(Fii.f[c(5,10,15,20:24)]/2, Fii.f[25]) + sum(Fii.m[c(5,10,15,20:24)]/2, Fii.m[25]))/2
+			E.InvFreq  <-  (sum(E.Fii.f[c(5,10,15,20:24)]/2, E.Fii.f[25]) + sum(E.Fii.m[c(5,10,15,20:24)]/2, Fii.m[25]))/2
 			W.mean     <-  Wbar
 			# next gen
 			gen        <-  gen + 1		
 		}
 
 		# Store relevant data 
-		Wf.mean      <-  sum(O*Wf)
-		Wm.mean      <-  sum(O*Wm)
+		Wf.mean      <-  Wbar.f
+		Wm.mean      <-  Wbar.m
 		InvFreq_f    <-  sum(Fii.f[c(5,10,15,20:24)]/2, Fii.f[25])
 		InvFreq_m    <-  sum(Fii.m[c(5,10,15,20:24)]/2, Fii.m[25])
 		E.InvFreq_f  <-  sum(E.Fii.f[c(5,10,15,20:24)]/2, E.Fii.f[25])
@@ -361,26 +361,26 @@ autoInvFwdSimSexSpec  <-  function(Fii.f.init = Fii.f.init, Fii.m.init = Fii.m.i
 				for (j in 1:length(xi)) {
 					recFctx  <-  get(names(xi)[j])
 					recFcty  <-  get(names(yi)[j])
-					xi[j]    <-  round(recFctx(Fii = Fii.f, m = mf, r = rf), digits=8)
-					yi[j]    <-  round(recFcty(Fii = Fii.m, m = mm, r = rm), digits=8)
+					xi[j]    <-  round(recFctx(Fii = Fii.f, m = mf, r = rf), digits=6)
+					yi[j]    <-  round(recFcty(Fii = Fii.m, m = mm, r = rm), digits=6)
 				}
 				# 2) Offspring genotype frequencies
 				O        <-  offFreq(xi,yi)
 				# 3) Mean fitness 
 				Wbar.f   <-  sum(O*Wf)
 				Wbar.m   <-  sum(O*Wm)
-				Wbar     <-  0.5 * (sum(Wbar.f)+sum(Wbar.m)) 
+				Wbar     <-  (sum(Wbar.f)+sum(Wbar.m))/2
 				# 4) Expected frequencies
 				E.Fii.f  <-  O*Wf/Wbar.f 
 				E.Fii.m  <-  O*Wm/Wbar.m 
 				# 5) Draw random frequencies in adults
-				Fii.f    <-  as.vector(rmultinom(1, N/2, E.Fii.f)/(N/2)) 
-				Fii.m    <-  as.vector(rmultinom(1, N/2, E.Fii.m)/(N/2))
+				Fii.f    <-  as.vector(rmultinom(1, (N/2), E.Fii.f)/(N/2)) 
+				Fii.m    <-  as.vector(rmultinom(1, (N/2), E.Fii.m)/(N/2))
 				
 	
 				# Realized frequencies
-				InvFreq[gen+1]     <-  0.5 * (sum(Fii.f[c(5,10,15,20:24)]/2, Fii.f[25]) +  sum(Fii.m[c(5,10,15,20:24)]/2, Fii.m[25]))
-				E.InvFreq[gen+1]   <-  0.5 * (sum(E.Fii.f[c(5,10,15,20:24)]/2, E.Fii.f[25]) +  sum(E.Fii.m[c(5,10,15,20:24)]/2, Fii.m[25]))
+				InvFreq[gen+1]     <-  (sum(Fii.f[c(5,10,15,20:24)]/2, Fii.f[25]) +  sum(Fii.m[c(5,10,15,20:24)]/2, Fii.m[25]))/2
+				E.InvFreq[gen+1]   <-  (sum(E.Fii.f[c(5,10,15,20:24)]/2, E.Fii.f[25]) +  sum(E.Fii.m[c(5,10,15,20:24)]/2, Fii.m[25]))/2
 				W.mean[gen+1]      <-  Wbar
 				
 				#The variable below are stored specifically for the SexSpecific simulation 
@@ -452,11 +452,11 @@ autoInvFwdSimSexSpec  <-  function(Fii.f.init = Fii.f.init, Fii.m.init = Fii.m.i
 				E.Fii.f    <-  O*Wf/Wbar.f # sex specific expected freq
 				E.Fii.m    <-  O*Wm/Wbar.m # sex specific expected freq
 				# 5) Draw random frequencies in adults
-				Fii.f      <-  as.vector(rmultinom(1, N/2, E.Fii.f)/(N/2)) #IS THAT RIGHT?? or does the draw change
-				Fii.m      <-  as.vector(rmultinom(1, N/2, E.Fii.m)/(N/2)) #IS THAT RIGHT??
+				Fii.f      <-  as.vector(rmultinom(1, N/2, E.Fii.f)/(N/2))
+				Fii.m      <-  as.vector(rmultinom(1, N/2, E.Fii.m)/(N/2))
 				# Realized frequencies
-				InvFreq    <-  0.5 * (sum(Fii.f[c(5,10,15,20:24)]/2, Fii.f[25]) +  sum(Fii.m[c(5,10,15,20:24)]/2, Fii.m[25]))
-				E.InvFreq  <-  0.5 * (sum(E.Fii.f[c(5,10,15,20:24)]/2, E.Fii.f[25]) +  sum(E.Fii.m[c(5,10,15,20:24)]/2, Fii.m[25]))
+				InvFreq    <-  (sum(Fii.f[c(5,10,15,20:24)]/2, Fii.f[25]) +  sum(Fii.m[c(5,10,15,20:24)]/2, Fii.m[25]))/2
+				E.InvFreq  <-  (sum(E.Fii.f[c(5,10,15,20:24)]/2, E.Fii.f[25]) +  sum(E.Fii.m[c(5,10,15,20:24)]/2, Fii.m[25]))/2
 				# next gen
 				gen        <-  gen + 1		
 				#The variable below are stored specifically for the SexSpecific simulation 
@@ -534,7 +534,7 @@ introduceInversion  <-  function(newMutant, Fii.f.init, Fii.m.init, N, ...) {
 
 	# First determine which sex the inversion will occur if it is random
 	if (sex == "random"){
-		sex  <-  sample(c("m","f"),1)
+		sex  <-  sample(c("m","f"), 1)
 	}
 
 	# Choose mutant genotype randomly
@@ -544,14 +544,14 @@ introduceInversion  <-  function(newMutant, Fii.f.init, Fii.m.init, N, ...) {
 			mutant              <-  c(4,9,14,16:19)[as.vector(rmultinom(1,1,probNewMutant)) == 1]
 
 			# Subtract new mutant individual from frequency of old genotype
-			Fii.f.init[mutant]  <-  Fii.f.init[mutant] - 1/(2*N)
+			Fii.f.init[mutant]  <-  Fii.f.init[mutant] - 1/(N/2)
 		}
 		if (sex == "m"){
 			probNewMutant       <-  Fii.m.init[c(4,9,14,16:19)]/sum(Fii.m.init[c(4,9,14,16:19)])
 			mutant              <-  c(4,9,14,16:19)[as.vector(rmultinom(1,1,probNewMutant)) == 1]
 
 			# Subtract new mutant individual from frequency of old genotype
-			Fii.m.init[mutant]  <-  Fii.m.init[mutant] - 1/(2*N)
+			Fii.m.init[mutant]  <-  Fii.m.init[mutant] - 1/(N/2)
 		}
 	}
 
@@ -559,46 +559,46 @@ introduceInversion  <-  function(newMutant, Fii.f.init, Fii.m.init, N, ...) {
 	if(specified) {
 		if (sex=="f"){
 			# Subtract new mutant individual from frequency of old genotype
-			Fii.f.init[mutant]  <-  Fii.f.init[mutant] -1/ (2*N)
+			Fii.f.init[mutant]  <-  Fii.f.init[mutant] - 1/(N/2)
 	    }
 		if (sex=="m"){
 			# Subtract new mutant individual from frequency of old genotype
-			Fii.m.init[mutant]  <-  Fii.m.init[mutant] -1/(2*N)
+			Fii.m.init[mutant]  <-  Fii.m.init[mutant] - 1/(N/2)
 	    }	    
 	}
 
 	# Add mutant individual to frequency of new inversion genotype
 	if (sex=="f"){
 		if(mutant == 4 | mutant == 9 | mutant == 14)
-			Fii.f.init[mutant + 1]  <-  1/(2*N)
+			Fii.f.init[mutant + 1]  <-  1/(N/2)
 		if(mutant == 16 | mutant == 17 | mutant == 18)
-			Fii.f.init[mutant + 5]  <-  1/(2*N)
+			Fii.f.init[mutant + 5]  <-  1/(N/2)
 
 		# if inversion occurs on abab genotype, choose randomly whether it occurs on
 		# the maternally or paternally inherited chromosome 
 		if(mutant == 19) {
 			if(runif(1) >= 1/2) {
-				Fii.f.init[mutant + 1]   <-  1/(2*N)
+				Fii.f.init[mutant + 1]   <-  1/(N/2)
 			}
-			else Fii.f.init[mutant + 5]  <-  1/(2*N)
+			else Fii.f.init[mutant + 5]  <-  1/(N/2)
 		}
 	}
 	if (sex=="m"){
 		if(mutant == 4 | mutant == 9 | mutant == 14)
-			Fii.m.init[mutant + 1]  <-  1/(2*N)
+			Fii.m.init[mutant + 1]  <-  1/(N/2)
 		if(mutant == 16 | mutant == 17 | mutant == 18)
-			Fii.m.init[mutant + 5]  <-  1/(2*N)
+			Fii.m.init[mutant + 5]  <-  1/(N/2)
 
 		# if inversion occurs on abab genotype, choose randomly whether it occurs on
 		# the maternally or paternally inherited chromosome 
 		if(mutant == 19) {
 			if(runif(1) >= 1/2) {
-				Fii.m.init[mutant + 1]   <-  1/(2*N)
+				Fii.m.init[mutant + 1]   <-  1/(N/2)
 			}
-			else Fii.m.init[mutant + 5]  <-  1/(2*N)
+			else Fii.m.init[mutant + 5]  <-  1/(N/2)
 		}
 	}
-	return (rbind(Fii.f.init,Fii.m.init))
+	return (rbind(Fii.f.init, Fii.m.init))
 }
 
 
@@ -632,8 +632,8 @@ introduceInversion  <-  function(newMutant, Fii.f.init, Fii.m.init, N, ...) {
 #' @seealso `offFreq`, `findEqFreqs`, `autoInvFwdSimSexSpec`
 #' @export
 #' @author Ludovic Dutoit based on Colin Olito.
-runReplicateAutoInvSimsSexSpec  <-  function(nReps = 1000, N = 500, mm = 0.01, mf = 0.01, sf = 0.1, sm = 0.1, h = 1/2, rf = 0.5, rm = 0.5, 
-									  		 n = 100, u = 1e-5, h.del = 0, sf.del = 1, sm.del = 1, noDel = FALSE,
+runReplicateAutoInvSimsSexSpec  <-  function(nReps = 1000, N = 5000, mm = 0.01, mf = 0.01, sf = 0.1, sm = 0.1, h = 1/2, rf = 0.5, rm = 0.5, 
+									  		 n = 100, u = 1e-5, h.del = 0, s.del = 1, noDel = FALSE,
 									  		 fastSim = TRUE, saveTrajectories = FALSE, newMutant = c("random","random")) {
 
 	##  Preemptive Warnings
@@ -647,7 +647,7 @@ runReplicateAutoInvSimsSexSpec  <-  function(nReps = 1000, N = 500, mm = 0.01, m
 				  memory intensive. Consider setting saveTrajectories = FALSE')
 	}, silent=FALSE)
 
-	##  Define Fitness Expressions for males and females
+	##  Define Fitness Expressions for determining eq. frequencies in absence of inversion
 	Wf.init  <-  c(1,           (1 + h*sf),          (1 + h*sf),          (1 + h*sf)^2,        0,
 			      (1 + h*sf),   (1 + sf),            (1 + h*sf)^2,        (1 + h*sf)*(1 + sf), 0,
 			      (1 + h*sf),   (1 + h*sf)^2,        (1 + sf),            (1 + sf)*(1 + h*sf), 0,
@@ -659,7 +659,7 @@ runReplicateAutoInvSimsSexSpec  <-  function(nReps = 1000, N = 500, mm = 0.01, m
 			      (1 + h*sm)^2, (1 + h*sm)*(1 + sm), (1 + sm)*(1 + h*sm), (1 + sm)^2,          0,
 			       0,            0,                   0,                   0,                  0)
 
-	##  Define Fitness Expressions for determining eq. frequencies in absence of inversion
+  	# Calculate initial frequencies
 	Fii         <-  findEqFreqs(Wf.init, Wm.init, mm = mm, mf = mf, rf = rf, rm = rm, threshold = 1e-6)
 	Fii.f.init  <- Fii[1,]
 	Fii.m.init  <- Fii[2,]
@@ -708,16 +708,17 @@ runReplicateAutoInvSimsSexSpec  <-  function(nReps = 1000, N = 500, mm = 0.01, m
 	if(noDel) {
 		s.del  <-  0
 	}
-	Wf  <-  c(1,                                    (1 + h*sf),                                   (1 + h*sf),                                   (1 + h*sf)^2,                        (1 + h*sf)^2*(1 - h.del*sf.del)^n.del,
-			 (1 + h*sf),                            (1 + sf),                                     (1 + h*sf)^2,                                 (1 + h*sf)*(1 + sf),                 (1 + h*sf)*(1 + sf)*(1 - h.del*sf.del)^n.del,
-			 (1 + h*sf),                            (1 + h*sf)^2,                                 (1 + sf),                                     (1 + sf)*(1 + h*sf),                 (1 + sf)*(1 + h*sf)*(1 - h.del*sf.del)^n.del,
-			 (1 + h*sf)^2,                          (1 + h*sf)*(1 + sf),                          (1 + sf)*(1 + h*sf),                          (1 + sf)^2,                          (1 + sf)^2*(1 - h.del*sf.del)^n.del,
-			 (1 + h*sf)^2*(1 - h.del*sf.del)^n.del, (1 + h*sf)*(1 + sf)*(1 - h.del*sf.del)^n.del, (1 + sf)*(1 + h*sf)*(1 - h.del*sf.del)^n.del, (1 + sf)^2*(1 - h.del*sf.del)^n.del, (1 + sf)^2*(1 - sf.del)^n.del)
-	Wm  <-  c(1,                                    (1 + h*sm),                                   (1 + h*sm),                                   (1 + h*sm)^2,                        (1 + h*sm)^2*(1 - h.del*sm.del)^n.del,
-			 (1 + h*sm),                            (1 + sm),                                     (1 + h*sm)^2,                                 (1 + h*sm)*(1 + sm),                 (1 + h*sm)*(1 + sm)*(1 - h.del*sm.del)^n.del,
-			 (1 + h*sm),                            (1 + h*sm)^2,                                 (1 + sm),                                     (1 + sm)*(1 + h*sm),                 (1 + sm)*(1 + h*sm)*(1 - h.del*sm.del)^n.del,
-			 (1 + h*sm)^2,                          (1 + h*sm)*(1 + sm),                          (1 + sm)*(1 + h*sm),                          (1 + sm)^2,                          (1 + sm)^2*(1 - h.del*sm.del)^n.del,
-			 (1 + h*sm)^2*(1 - h.del*sm.del)^n.del, (1 + h*sm)*(1 + sm)*(1 - h.del*sm.del)^n.del, (1 + sm)*(1 + h*sm)*(1 - h.del*sm.del)^n.del, (1 + sm)^2*(1 - h.del*sm.del)^n.del, (1 + sm)^2*(1 - sm.del)^n.del)
+	Wf  <-  c(1,                                   (1 + h*sf),                                  (1 + h*sf),                                  (1 + h*sf)^2,                       (1 + h*sf)^2*(1 - h.del*s.del)^n.del,
+			 (1 + h*sf),                           (1 + sf),                                    (1 + h*sf)^2,                                (1 + h*sf)*(1 + sf),                (1 + h*sf)*(1 + sf)*(1 - h.del*s.del)^n.del,
+			 (1 + h*sf),                           (1 + h*sf)^2,                                (1 + sf),                                    (1 + sf)*(1 + h*sf),                (1 + sf)*(1 + h*sf)*(1 - h.del*s.del)^n.del,
+			 (1 + h*sf)^2,                         (1 + h*sf)*(1 + sf),                         (1 + sf)*(1 + h*sf),                         (1 + sf)^2,                         (1 + sf)^2*(1 - h.del*s.del)^n.del,
+			 (1 + h*sf)^2*(1 - h.del*s.del)^n.del, (1 + h*sf)*(1 + sf)*(1 - h.del*s.del)^n.del, (1 + sf)*(1 + h*sf)*(1 - h.del*s.del)^n.del, (1 + sf)^2*(1 - h.del*s.del)^n.del, (1 + sf)^2*(1 - s.del)^n.del)
+	Wm  <-  c(1,                                   (1 + h*sm),                                  (1 + h*sm),                                  (1 + h*sm)^2,                       (1 + h*sm)^2*(1 - h.del*s.del)^n.del,
+			 (1 + h*sm),                           (1 + sm),                                    (1 + h*sm)^2,                                (1 + h*sm)*(1 + sm),                (1 + h*sm)*(1 + sm)*(1 - h.del*s.del)^n.del,
+			 (1 + h*sm),                           (1 + h*sm)^2,                                (1 + sm),                                    (1 + sm)*(1 + h*sm),                (1 + sm)*(1 + h*sm)*(1 - h.del*s.del)^n.del,
+			 (1 + h*sm)^2,                         (1 + h*sm)*(1 + sm),                         (1 + sm)*(1 + h*sm),                         (1 + sm)^2,                         (1 + sm)^2*(1 - h.del*s.del)^n.del,
+			 (1 + h*sm)^2*(1 - h.del*s.del)^n.del, (1 + h*sm)*(1 + sm)*(1 - h.del*s.del)^n.del, (1 + sm)*(1 + h*sm)*(1 - h.del*s.del)^n.del, (1 + sm)^2*(1 - h.del*s.del)^n.del, (1 + sm)^2*(1 - s.del)^n.del)
+	
 	## RUN SIMULATION
 	repRes  <-  autoInvFwdSimSexSpec(Fii.f.init = Fii.f.init, Fii.m.init = Fii.m.init, N = N, Wf = Wf, Wm = Wm, mm = mm, mf = mf, rf = rf, rm = rm, saveTrajectories = saveTrajectories)
 
@@ -790,6 +791,27 @@ runReplicateAutoInvSimsSexSpec  <-  function(nReps = 1000, N = 500, mm = 0.01, m
 
 
 
+#' Generate corner case values to explore equal/female-limited/male-limited cases of a parameter
+#' 
+#' @title Generate corner case values to explore equal/female-limited/male-limited cases of a parameter
+#' @param mu Vector of mean values about which corner cases are to be calucalted
+#' @seealso `makeReplicateAutoInvSimsDataSexSpec`
+#' @export
+#' @author Colin Olito
+makeCornerCaseVals  <-  function(mu = c(0.001, 0.002), delta = c(0.001, 0.002)) {
+	fVals  <-  c()
+	mVals  <-  c()
+
+	for(i in 1:length(mu)) {
+		tmp1  <-  c(mu[i], (mu[i] + delta[i]), (mu[i] - delta[i]))
+		tmp2  <-  c(mu[i], (mu[i] - delta[i]), (mu[i] + delta[i]))
+		fVals  <-  c(fVals,tmp1)
+		mVals  <-  c(mVals,tmp2)
+	}
+	return(rbind(fVals,mVals))
+}
+
+
 #' Wrapper function to run replicate forward simulations for invasion
 #' of autosomal inversions in a Wright-Fisher population 
 #' 
@@ -818,83 +840,160 @@ runReplicateAutoInvSimsSexSpec  <-  function(nReps = 1000, N = 500, mm = 0.01, m
 #' @seealso `offFreq`, `findEqFreqs`, `autoInvFwdSimSexSpec` runReplicateAutoInvSimsSexSpec
 #' @export
 #' @author Ludovic Dutoit based on Colin Olito.
-makeReplicateAutoInvSimsDataSexSpec  <-  function(nReps = 1000, N.vals = c(500, 1000), m=0.01, m.delta=0.01,
-										   s = 0.1, s.delta=0.1, r.vals = c(0.1,0.5), h = 1/2,newMutant=c("random","random"),
-										   n = 100, u = 1e-5, h.del = 0, noDel = FALSE,saveTrajectories = FALSE) {
+makeFastReplicateAutoSexSpecInvSimsData  <-  function(nReps = 1000, N = 20000, h = 1/2, 
+													  m.vals = c(0.0005, 0.001), m.deltas = NULL,
+													  s.vals = c(0.001, 0.05), s.deltas = NULL, 
+													  r.vals = seq(from = 0, to = 0.5, by = 0.025),
+													  n = 100, u = 1e-5, h.del = 0, noDel = FALSE, 
+													  fastSim = TRUE, newMutant=c("random","random"), 
+													  saveTrajectories = FALSE) {
+
+	# create empty data frame with same structure as we are going to need
+	data  <-  data.frame(matrix(ncol=9, nrow=0))
+
+	# make parameter values for equal/female-limited/male-limited cases
+	ms   <-  makeCornerCaseVals(mu = m.vals, delta = m.vals) # use delta = m.deltas for alternative sex-biased parameterizations
+	ss   <-  makeCornerCaseVals(mu = s.vals, delta = s.vals) # use delta = s.deltas for alternative sex-biased parameterizations
+	sMu  <-  colSums(ss)
+# uncomment to explore sex-limited recombination rates
+#	rfs  <-  c(r.vals, r.vals, rep(0, length=length(r.vals)))
+#	rms  <-  c(r.vals, rep(0, length=length(r.vals)), r.vals)
+	rfs  <-  r.vals
+	rms  <-  r.vals
+	rs   <-  rbind(rfs,rms)
+
+	# Convenience variables to monitor progress
+	prog  <-  0
+	tot   <-  ncol(ms)*ncol(ss)*2*length(rfs)
+	cat("\n",paste('Running simulations for parameter set ', 1, "/", tot),"\n")
+
+		for (i in 1:ncol(ms)) {
+			for (j in 1:ncol(ss)) {
+				# Simulate deleterious mutations that are either 
+				# 1) neutral
+				# 2) lethals 
+				# 3) strongly deleterious (twice the selective advantage of locally adaptive alleles)
+# uncomment to explore effects of deleterious mutations
+#				s.del.vals  <-  c(0, 1, 2*sMu[j]) 
+				s.del.vals  <-  0
+				
+				for(k in 1:length(s.del.vals)) {
+					for(l in 1:ncol(rs)) {
+
+						# Display progress in terminal
+						prog  <-  prog + 1
+						if(prog %% 100 == 0) {
+							cat("\n",paste('Running simulations for parameter set ', prog, "/", tot),"\n")
+						}
+
+						# Run simulations
+						res  <-  runReplicateAutoInvSimsSexSpec(nReps = nReps, N = N, h = h,
+																mf = ms[1,i], mm = ms[2,i], 
+																sf = ss[1,j], sm = ss[2,j],
+																n = n, u = u, h.del = h.del, s.del = s.del.vals[k], 
+																rf = rfs[l], rm = rms[l],
+																newMutant = newMutant)
+						# Append data 
+						dat   <-  c(ms[1,i], ms[2,i], ss[1,j], ss[2,j], s.del.vals[k], rfs[l], rms[l], mean(res$results$nDels), (sum(res$results.df$InvEst)/length(res$results.df$InvEst)))
+						data  <-  rbind(data, dat)
+						rm(dat,res)
+					}
+				}
+			}
+		}
+
+	# add variable names to data frame
+	colnames(data)  <-  c("mf",
+						  "mm",
+						  "sf",
+						  "sm",
+						  "s.dels",
+						  "rf",
+						  "rm",
+						  "av.nDels",
+						  "PropEst"
+						  )
+	
+	# create file name
+	filename  <-  paste("./output/data/simResults/testFast", "_N", N, "_h", h, "_n", n, "_u", u, "_nReps", nReps, ".csv", sep="")
+
+	# export data as .csv to ./output/data
+	write.csv(data, file=filename, row.names = FALSE)
+
+	#  Return results in case user wants it
+	return(data)
+	
+}
 
 
+########################################################################
+## To do:  write slow version of makeReplicateAutoSexSpecInvSimsData()
+##         that saves data from all replicate simulations, and uses 
+##         fastSim = FALSE. This will enable us to look at equilibrium 
+##         frequencies for the inversion, as well as prob of establishment. 
+##         Loops will need to be structured to explore more targeted pieces of 
+##         parameter space. 
+########################################################################
+makeReplicateAutoSexSpecInvSimsData  <-  function(nReps = 1000, N = 20000, h = 1/2, 
+													  m.vals = c(0.0005, 0.001), m.deltas = NULL,
+													  s.vals = c(0.001, 0.05), s.deltas = NULL, 
+													  r.vals = seq(from=0, to=0.5, by=0.025),
+										   			  n = 100, u = 1e-5, h.del = 0, noDel = FALSE, 
+										   			  fastSim = TRUE, newMutant=c("random","random"), saveTrajectories = FALSE) {
 
 	# create empty data frame with same structure as we are going to need
 	data  <-  data.frame(matrix(ncol=13, nrow=0))
 
+	# make parameter values for equal/female-limited/male-limited cases
+	ms          <-  makeCornerCaseVals(mu = m.vals, delta = m.vals) # use delta = m.deltas for alternative sex-biased parameterizations
+	ss          <-  makeCornerCaseVals(mu = s.vals, delta = s.vals) # use delta = s.deltas for alternative sex-biased parameterizations
+	rfs         <-  c(r.vals, r.vals, rep(0, length=length(r.vals)))
+	rms         <-  c(r.vals, rep(0, length=length(r.vals)), r.vals)
+	rs          <-  rbind(rfs,rms)
+
+
 	# Convenience variables to monitor progress
 	prog  <-  0
-	tot   <-  3*3*3*length(r.vals)*length(N.vals)
+	tot   <-  length(ms)*length(ss)*3*length(rs)
 
-	# Loop over parameter values we want to explore 
-	#CHANGE THAT FOR R AND FOR mm mf
-	#(Think of having in pair, just here)
-	for (s.case in 1:3){
-	# 3 cases
-		if (s.case ==1) {
-			sm = s
-			sf = s
-			}
-		if (s.case ==2) {
-			sm=s+s.delta
-			sf=s-s.delta
-		}
-		if (s.case == 3){
-			sm = s-s.delta
-			sf = s+s.delta
-		}
-	
-		for (m.case in 1:3){
-			if (m.case ==1) {
-				mm = m
-				mf = m
-			}
-			if (m.case ==2) {
-				mm= m+m.delta
-				mf= m -m.delta
-			}
-			if (m.case == 3){
-				mm= m-m.delta
-				mf= m+m.delta
-			}
-			for (r.case in r.vals) {
-				for (N.case in N.vals) {
-						# Simulate deleterious mutations that are either 
-						# 1) recessive lethals OR
-						# 2) recessive experiencing purifying selection
-						#    that is twice as strong as the selective 
-						#    advantage of the locally adaptive allels  
-
-						s.del.vals = c(0, 1, 2*s)
-						for(s.del.case in s.del.vals) {
-							print(paste("sm=",sm,"sf=",sf,"mm=",mm,"mf=",mf,"r.case=",r.case,"N.case=",N.case,"s.del.case=",s.del.case)	)					
+			for (i in length(ms)) {
+				for (j in length(ss)) {
+					
+					# Simulate deleterious mutations that are either 
+					# 1) neutral
+					# 2) lethals 
+					# 3) strongly deleterious (twice the selective advantage of locally adaptive alleles)
+					s.del.vals  <-  c(0, 1, 2*ss[j])
+				
+					for(k in length(s.del.vals)) {
+						for(l in length(rs)) {
 
 							# Display progress in terminal
 							prog  <-  prog + 1
 							cat("\n",paste('Running simulations for parameter set ', prog, "/", tot),"\n")
 
-							# Run simulations  
-							res  <-  runReplicateAutoInvSimsSexSpec(nReps = nReps, N = N.case, mm = mm,mf =  mf , sf = sf, sm=sm,   r = r.case, h = h,
-															 n = n, u = u, h.del = h.del, sf.del = s.del.case, sm.del=s.del.case, 
-															 noDel = noDel, saveTrajectories = FALSE,newMutant=newMutant)
-
+							# Run simulations
+							res  <-  runReplicateAutoInvSimsSexSpec(nReps = nReps, N = N, h = h,
+																	mf = ms[1,i], mm = ms[2,i], 
+																	sf = ss[1,j], sm = ss[2,j],
+																	n = n, u = u, h.del = h.del, s.del = s.del.vals[k], noDel = noDel, 
+																	rf = rfs[l], rm = rms[l],
+																	newMutant = newMutant)
+							sum(res$results.df$InvEst)
 							# Save data 
-							Ns      <-   rep(N.case, times=nrow(res$results.df))
 							mms      <-  rep(mm, times=nrow(res$results.df))
-							mfs     <-  rep(mf, times=nrow(res$results.df))
-							s.delss  <-  rep(s.del.case, times=nrow(res$results.df))
-							sfs		<-   rep(sm, times=nrow(res$results.df))
-							sms  	<-   rep(sf, times=nrow(res$results.df))
-							rs      <-  rep(r.case, times=nrow(res$results.df))
+							mfs      <-  rep(mf, times=nrow(res$results.df))
+							s.delss  <-  rep(s.del.vals[k], times=nrow(res$results.df))
+							sfs		 <-  rep(sm, times=nrow(res$results.df))
+							sms  	 <-  rep(sf, times=nrow(res$results.df))
+							rfss     <-  rep(rfs[l], times=nrow(res$results.df))
+							rmss     <-  rep(rfs[l], times=nrow(res$results.df))
+
 							# Append to data frame						
-							df      <-  cbind(res$results.df,	 Ns, mms,mfs, s.delss,sfs,sms,rs)
+							df      <-  cbind(res$results.df, N, mms, mfs, s.delss, sfs, sms, rfs, rms)
 							data    <-  rbind(data, df)
 							rm(df)
+						}
 					}
 				}
 			}
@@ -906,7 +1005,30 @@ makeReplicateAutoInvSimsDataSexSpec  <-  function(nReps = 1000, N.vals = c(500, 
 	us      <-  rep(u, times=nrow(data))
 	h.dels  <-  rep(h.del, times=nrow(data))
 	data    <-  cbind(data,  hs, rs, us, h.dels)
-	colnames(data)  <-  c("finalInvFreq" ,"finalE.InvFreq" ,"finalW.mean" ,"finalWf.mean" ,"finalWm.mean" ,"finalInvFreq_f" ,"finalInvFreq_m" ,"finalE.InvFreq_f" ,"finalE.InvFreq_m" ,"nGen" ,"InvEst" ,"InvEstTime" ,"nDels","N","mm","mf", "s.dels","sf","sm","r","h","u","h.del")
+	colnames(data)  <-  c("finalInvFreq",
+						  "finalE.InvFreq",
+						  "finalWf.mean",
+						  "finalWm.mean",
+						  "finalInvFreq_f",
+						  "finalInvFreq_m",
+						  "finalE.InvFreq_f",
+						  "finalE.InvFreq_m",
+						  "nGen",
+						  "InvEst",
+						  "InvEstTime",
+						  "nDels",
+						  "N",
+						  "mm",
+						  "mf",
+						  "s.dels",
+						  "sf",
+						  "sm",
+						  "rf",
+						  "rm",
+						  "h",
+						  "u",
+						  "h.del"
+						  )
 	
 
 	# create file name
@@ -919,13 +1041,3 @@ makeReplicateAutoInvSimsDataSexSpec  <-  function(nReps = 1000, N.vals = c(500, 
 	return(data)
 	
 }
-
-
-
-###One simple test
-#source("R/functions-WFSims-Autosomal-SexSpec.R")# from repos home folder
-#a<-makeReplicateAutoInvSimsDataSexSpec(nReps = 2, N.vals = c(100, 200), m=0.01, m.delta=0.01,
-#										   s = 0.1, s.delta=0.1, r.vals = c(0.1,0.5), h = 1/2,newMutant=c("random","random"),
-#										   n = 100, u = 1e-5, h.del = 0, noDel = FALSE,saveTrajectories = FALSE)
-
-
