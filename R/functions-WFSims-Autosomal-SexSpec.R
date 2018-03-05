@@ -934,110 +934,110 @@ makeFastReplicateAutoSexSpecInvSimsData  <-  function(nReps = 1000, N = 20000, h
 ##         Loops will need to be structured to explore more targeted pieces of 
 ##         parameter space. 
 ########################################################################
-makeReplicateAutoSexSpecInvSimsData  <-  function(nReps = 1000, N = 20000, h = 1/2, 
-													  m.vals = c(0.0005, 0.001), m.deltas = NULL,
-													  s.vals = c(0.001, 0.05), s.deltas = NULL, 
-													  r.vals = seq(from=0, to=0.5, by=0.025),
-										   			  n = 100, u = 1e-5, h.del = 0, noDel = FALSE, 
-										   			  fastSim = TRUE, newMutant=c("random","random"), saveTrajectories = FALSE) {
+#makeReplicateAutoSexSpecInvSimsData  <-  function(nReps = 1000, N = 20000, h = 1/2, 
+#													  m.vals = c(0.0005, 0.001), m.deltas = NULL,
+#													  s.vals = c(0.001, 0.05), s.deltas = NULL, 
+#													  r.vals = seq(from=0, to=0.5, by=0.025),
+#										   			  n = 100, u = 1e-5, h.del = 0, noDel = FALSE, 
+#										   			  fastSim = TRUE, newMutant=c("random","random"), saveTrajectories = FALSE) {
 
 	# create empty data frame with same structure as we are going to need
-	data  <-  data.frame(matrix(ncol=13, nrow=0))
+#	data  <-  data.frame(matrix(ncol=13, nrow=0))
 
 	# make parameter values for equal/female-limited/male-limited cases
-	ms          <-  makeCornerCaseVals(mu = m.vals, delta = m.vals) # use delta = m.deltas for alternative sex-biased parameterizations
-	ss          <-  makeCornerCaseVals(mu = s.vals, delta = s.vals) # use delta = s.deltas for alternative sex-biased parameterizations
-	rfs         <-  c(r.vals, r.vals, rep(0, length=length(r.vals)))
-	rms         <-  c(r.vals, rep(0, length=length(r.vals)), r.vals)
-	rs          <-  rbind(rfs,rms)
+#	ms          <-  makeCornerCaseVals(mu = m.vals, delta = m.vals) # use delta = m.deltas for alternative sex-biased parameterizations
+#	ss          <-  makeCornerCaseVals(mu = s.vals, delta = s.vals) # use delta = s.deltas for alternative sex-biased parameterizations
+#	rfs         <-  c(r.vals, r.vals, rep(0, length=length(r.vals)))
+#	rms         <-  c(r.vals, rep(0, length=length(r.vals)), r.vals)
+#	rs          <-  rbind(rfs,rms)
 
 
 	# Convenience variables to monitor progress
-	prog  <-  0
-	tot   <-  length(ms)*length(ss)*3*length(rs)
+#	prog  <-  0
+#	tot   <-  length(ms)*length(ss)*3*length(rs)
 
-			for (i in length(ms)) {
-				for (j in length(ss)) {
+#			for (i in length(ms)) {
+#				for (j in length(ss)) {
 					
 					# Simulate deleterious mutations that are either 
 					# 1) neutral
 					# 2) lethals 
 					# 3) strongly deleterious (twice the selective advantage of locally adaptive alleles)
-					s.del.vals  <-  c(0, 1, 2*ss[j])
+#					s.del.vals  <-  c(0, 1, 2*ss[j])
 				
-					for(k in length(s.del.vals)) {
-						for(l in length(rs)) {
+#					for(k in length(s.del.vals)) {
+#						for(l in length(rs)) {
 
 							# Display progress in terminal
-							prog  <-  prog + 1
-							cat("\n",paste('Running simulations for parameter set ', prog, "/", tot),"\n")
+#							prog  <-  prog + 1
+#							cat("\n",paste('Running simulations for parameter set ', prog, "/", tot),"\n")
 
 							# Run simulations
-							res  <-  runReplicateAutoInvSimsSexSpec(nReps = nReps, N = N, h = h,
-																	mf = ms[1,i], mm = ms[2,i], 
-																	sf = ss[1,j], sm = ss[2,j],
-																	n = n, u = u, h.del = h.del, s.del = s.del.vals[k], noDel = noDel, 
-																	rf = rfs[l], rm = rms[l],
-																	newMutant = newMutant)
-							sum(res$results.df$InvEst)
+#							res  <-  runReplicateAutoInvSimsSexSpec(nReps = nReps, N = N, h = h,
+#																	mf = ms[1,i], mm = ms[2,i], 
+#																	sf = ss[1,j], sm = ss[2,j],
+#																	n = n, u = u, h.del = h.del, s.del = s.del.vals[k], noDel = noDel, 
+#																	rf = rfs[l], rm = rms[l],
+#																	newMutant = newMutant)
+#							sum(res$results.df$InvEst)
 							# Save data 
-							mms      <-  rep(mm, times=nrow(res$results.df))
-							mfs      <-  rep(mf, times=nrow(res$results.df))
-							s.delss  <-  rep(s.del.vals[k], times=nrow(res$results.df))
-							sfs		 <-  rep(sm, times=nrow(res$results.df))
-							sms  	 <-  rep(sf, times=nrow(res$results.df))
-							rfss     <-  rep(rfs[l], times=nrow(res$results.df))
-							rmss     <-  rep(rfs[l], times=nrow(res$results.df))
+#							mms      <-  rep(mm, times=nrow(res$results.df))
+#							mfs      <-  rep(mf, times=nrow(res$results.df))
+#							s.delss  <-  rep(s.del.vals[k], times=nrow(res$results.df))
+#							sfs		 <-  rep(sm, times=nrow(res$results.df))
+#							sms  	 <-  rep(sf, times=nrow(res$results.df))
+#							rfss     <-  rep(rfs[l], times=nrow(res$results.df))
+#							rmss     <-  rep(rfs[l], times=nrow(res$results.df))
 
 							# Append to data frame						
-							df      <-  cbind(res$results.df, N, mms, mfs, s.delss, sfs, sms, rfs, rms)
-							data    <-  rbind(data, df)
-							rm(df)
-						}
-					}
-				}
-			}
-		}
-	}
+#							df      <-  cbind(res$results.df, N, mms, mfs, s.delss, sfs, sms, rfs, rms)
+#							data    <-  rbind(data, df)
+#							rm(df)
+#						}
+#					}
+#				}
+#			}
+#		}
+#	}
 
 	# Include constant variables in data frame
-	hs      <-  rep(h, times=nrow(data))
-	us      <-  rep(u, times=nrow(data))
-	h.dels  <-  rep(h.del, times=nrow(data))
-	data    <-  cbind(data,  hs, rs, us, h.dels)
-	colnames(data)  <-  c("finalInvFreq",
-						  "finalE.InvFreq",
-						  "finalWf.mean",
-						  "finalWm.mean",
-						  "finalInvFreq_f",
-						  "finalInvFreq_m",
-						  "finalE.InvFreq_f",
-						  "finalE.InvFreq_m",
-						  "nGen",
-						  "InvEst",
-						  "InvEstTime",
-						  "nDels",
-						  "N",
-						  "mm",
-						  "mf",
-						  "s.dels",
-						  "sf",
-						  "sm",
-						  "rf",
-						  "rm",
-						  "h",
-						  "u",
-						  "h.del"
-						  )
+#	hs      <-  rep(h, times=nrow(data))
+#	us      <-  rep(u, times=nrow(data))
+#	h.dels  <-  rep(h.del, times=nrow(data))
+#	data    <-  cbind(data,  hs, rs, us, h.dels)
+#	colnames(data)  <-  c("finalInvFreq",
+#						  "finalE.InvFreq",
+#						  "finalWf.mean",
+#						  "finalWm.mean",
+#						  "finalInvFreq_f",
+#						  "finalInvFreq_m",
+#						  "finalE.InvFreq_f",
+#						  "finalE.InvFreq_m",
+#						  "nGen",
+#						  "InvEst",
+#						  "InvEstTime",
+#						  "nDels",
+#						  "N",
+#						  "mm",
+#						  "mf",
+#						  "s.dels",
+#						  "sf",
+#						  "sm",
+#						  "rf",
+#						  "rm",
+#						  "h",
+#						  "u",
+#						  "h.del"
+#						  )
 	
 
 	# create file name
-	filename  <-  paste("test",  "_h", h, "_n", n, "_u", u, ".csv", sep="")
+#	filename  <-  paste("test",  "_h", h, "_n", n, "_u", u, ".csv", sep="")
 
 	# export data as .csv to ./output/data
-	write.csv(data, file=filename, row.names = FALSE)
+#	write.csv(data, file=filename, row.names = FALSE)
 
 	#  Return results in case user wants it
-	return(data)
+#	return(data)
 	
-}
+#}

@@ -52,6 +52,7 @@ makeFastReplicateAutoSexSpecInvSimsData(nReps = 30000, N = 30000, h = 1/2,
 										r.vals = seq(from = 0, to = 0.5, by = 0.05),
 										n = 100, u = 1e-5, h.del = 0, 
 										newMutant=c("random","random"))
+
 # Locally adaptive alleles dominant
 # makeFastReplicateAutoSexSpecInvSimsData(nReps = 30000, N = 30000, h = 1, 
 # 										m.vals = c(0.002, 0.004), m.deltas = NULL,
