@@ -508,7 +508,6 @@ autoInvFwdSimSexSpec  <-  function(Fii.f.init = Fii.f.init, Fii.m.init = Fii.m.i
 #'					 A 2 positions vector ("m"/"f"/"random", "numeric"/"random"). the first position specify wether the inversions come in males, 
 #'					 in females, or randomnly. The second select either a numerical position in the haplotype vector for the inversion genotype to be created
 #'					 or wether it is random.
-#'
 #' 					 See params for runReplicateAutoInvSims().
 #' @param Fii.f.init   Initial genotypic frequencies, from which to calculate probability of new 
 #' 					 mutant inversion occurring
@@ -625,10 +624,16 @@ introduceInversion  <-  function(newMutant, Fii.f.init, Fii.m.init, N, ...) {
 #' 				 the locally adaptive alleles. Setting noDel = TRUE runs the W-F simulations as if
 #' 				 there were no delterious mutations segregating in the population that are linked
 #' 		 		 to the loci involved in local adaptation. 
+#' @param fastSim     Logical. Use threshold frequency for establishment of inversion? 
 #' @param saveTrajectories  Save evolutionary trajectories of inversion frequencies? Setting this 
 #' 							to TRUE can become extremely memory intensive if you are running many
 #' 							replicate simulations (see warning).
 #' 							otherwise
+#' @param newMutant  Switch to choose whether to specify new mutant genotypes, or if they are 
+#' 					 chosen randomly, given initial genotypic frequencies (Fii.f.init and Fii.m.init). 
+#'					 A 2 positions vector ("m"/"f"/"random", "numeric"/"random"). the first position specify wether the inversions come in males, 
+#'					 in females, or randomnly. The second select either a numerical position in the haplotype vector for the inversion genotype to be created
+#'					 or wether it is random.
 #' @seealso `offFreq`, `findEqFreqs`, `autoInvFwdSimSexSpec`
 #' @export
 #' @author Ludovic Dutoit based on Colin Olito.
@@ -816,15 +821,17 @@ makeCornerCaseVals  <-  function(mu = c(0.001, 0.002), delta = c(0.001, 0.002)) 
 #' of autosomal inversions in a Wright-Fisher population 
 #' 
 #' @title Run replicate Wright-Fisher forward simulations for autosomal inversion under different parameter values 
-#' @param N.vals Vector of desired population sizes
-#' @param r.vals Vector of desired recombination rates among the two loci involved in local adaptation (r = 0.1).
-#' @param s        Desired selective advantage of locally adaptive alleles over migrant alleles
-#' @param s.delta   the difference between selective advantage of locally adaptive alleles in females (sf) and males (sm).
-#'				 3 models will be run, one where sm=sf=s and the two others where s is the average coefficient and sm =s + s.delta with sf =s - s.delta or the opposite: sm =s - s.delta with sf =s + s.delta
-#' @param m     Ddesired migration rates for locally maladaptive alleles 
-#' @param m.delta   the difference between selective advantage of migration rates for locally maladaptive allele in females (mf) and males (mm).
-#'				 3 models will be run, one where mm=mf=m and the two others where m is the average migration rate and mm =m + m.delta with sf =m - m.delta or the opposite: mm =m - m.delta with mf =m + m.delta
+#' @param nReps  Number of replicate simulations to run for each parameter set
+#' @param N      Total population size
 #' @param h      Dominance coefficient for locally adaptive alleles relative to migrant alleles (h = 0.5)
+#' @param m.vals Vector of mean migration rates for locally maladaptive alleles 
+#' @param m.deltas Vector of differences between mean and sex-biased migration rates (if m.deltas = NULL, default
+#'                 behaviour is to explore equal, female-limited, and male-limited migration)
+#' @param s.vals Vector of mean selection coefficients favouring locally adaptive alleles 
+#' @param s.deltas Vector of differences between mean and sex-biased selection coefficients (if s.deltas = NULL, default
+#'                 behaviour is to explore equal, female-limited, and male-limited expression of locally adaptive alleles)
+#' @param r.vals Vector of desired recombination rates among the two loci involved in local adaptation (r = 0.1).
+#'                (NOTE: see comments in function for instructions to explore sex-limited recombination).
 #' @param n      Number of loci at which deleterious mutations may occur.
 #' @param u      Mutation rate (default value of u = 1e-6).
 #' @param h.del  Dominance of deleterious mutations (default value of h = 0).
@@ -833,10 +840,16 @@ makeCornerCaseVals  <-  function(mu = c(0.001, 0.002), delta = c(0.001, 0.002)) 
 #' 				 the locally adaptive alleles. Setting noDel = TRUE runs the W-F simulations as if
 #' 				 there were no delterious mutations segregating in the population that are linked
 #' 				 to the loci involved in local adaptation. 
+#' @param fastSim     Logical. Use threshold frequency for establishment of inversion? 
 #' @param saveTrajectories  Save evolutionary trajectories of inversion frequencies? Setting this 
 #' 							to TRUE can become extremely memory intensive if you are running many
 #' 							replicate simulations (see warning).
 #' 							otherwise
+#' @param newMutant  Switch to choose whether to specify new mutant genotypes, or if they are 
+#' 					 chosen randomly, given initial genotypic frequencies (Fii.f.init and Fii.m.init). 
+#'					 A 2 positions vector ("m"/"f"/"random", "numeric"/"random"). the first position specify wether the inversions come in males, 
+#'					 in females, or randomnly. The second select either a numerical position in the haplotype vector for the inversion genotype to be created
+#'					 or wether it is random.
 #' @seealso `offFreq`, `findEqFreqs`, `autoInvFwdSimSexSpec` runReplicateAutoInvSimsSexSpec
 #' @export
 #' @author Ludovic Dutoit based on Colin Olito.
