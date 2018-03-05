@@ -574,11 +574,11 @@ introduceInversion  <-  function(newMutant, male = FALSE, Fiix.init, Fiiy.init, 
 # Returns a list. First element is Fiix.init and second element is Fiiy.init after
 # introducing the inversion.
 # Introduce inversion on the 4th genotype of males
-# introduceInversion(4, m = TRUE, Fiix.init, Fiiy.init, 100)
+# introduceInversion(4, male = TRUE, Fiix.init, Fiiy.init, 100)
 # Introduce inversion on the 4th genotype of females
-# introduceInversion(4, m = FALSE, Fiix.init, Fiiy.init, 100)
+# introduceInversion(4, male = FALSE, Fiix.init, Fiiy.init, 100)
 # Introduce inversion in a random genotype and sex
-# introduceInversion("random", m = FALSE, Fiix.init, Fiiy.init, N)
+# introduceInversion("random", male = FALSE, Fiix.init, Fiiy.init, N)
 #*********************************************************************************
 
 #' Wrapper function to run replicate forward simulations for invasion
