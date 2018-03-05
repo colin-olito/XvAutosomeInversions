@@ -197,8 +197,8 @@ findEqFreqs  <-  function(Wf,Wm, mf, mm, rf, rm, threshold = 1e-6, ...) {
 	    O  <-  offFreq(xi,yi)
 
 		# mean fitness 
-		Wfbar      <-  sum(O*Wf)
-		Wmbar      <-  sum(O*Wm)
+		Wfbar  <-  sum(O*Wf)
+		Wmbar  <-  sum(O*Wm)
 
 	    # difference in expected frequency (has simulation reached equilibrium yet?)
 		deltaF   <-  E.Fii.f[c(1:4,6:9,11:14,16:19)] - (O*Wf/Wfbar)[c(1:4,6:9,11:14,16:19)]
@@ -262,10 +262,6 @@ autoInvFwdSimSexSpec  <-  function(Fii.f.init = Fii.f.init, Fii.m.init = Fii.m.i
 	# use threshold frequency for establishment of inversion?
 	if(fastSim) {
 
-		# Storage structures for individual simulation data
-		InvFreq    <-  0
-		E.InvFreq  <-  0
-		W.mean     <-  0
 		# Initial inversion frequency 
 		InvFreq    <-  (sum(Fii.f[c(5,10,15,20:24)]/2, Fii.f[25]) +  sum(Fii.m[c(5,10,15,20:24)]/2, Fii.m[25]))/2
 		E.InvFreq  <-  InvFreq[1]
@@ -273,7 +269,7 @@ autoInvFwdSimSexSpec  <-  function(Fii.f.init = Fii.f.init, Fii.m.init = Fii.m.i
 		## Start forward simulation with newly introduced inversion
 		gen  <-  1
 
-		# use threshold frequency for establishment of inversion?
+		# use threshold frequency for establishment of inversion
 		while(InvFreq > 0 & InvFreq < pcrit) {		
 		
 			## Step through recursions:
@@ -299,14 +295,11 @@ autoInvFwdSimSexSpec  <-  function(Fii.f.init = Fii.f.init, Fii.m.init = Fii.m.i
 			# Realized frequencies
 			InvFreq    <-  (sum(Fii.f[c(5,10,15,20:24)]/2, Fii.f[25]) + sum(Fii.m[c(5,10,15,20:24)]/2, Fii.m[25]))/2
 			E.InvFreq  <-  (sum(E.Fii.f[c(5,10,15,20:24)]/2, E.Fii.f[25]) + sum(E.Fii.m[c(5,10,15,20:24)]/2, Fii.m[25]))/2
-			W.mean     <-  Wbar
 			# next gen
 			gen        <-  gen + 1		
 		}
 
 		# Store relevant data 
-		Wf.mean      <-  Wbar.f
-		Wm.mean      <-  Wbar.m
 		InvFreq_f    <-  sum(Fii.f[c(5,10,15,20:24)]/2, Fii.f[25])
 		InvFreq_m    <-  sum(Fii.m[c(5,10,15,20:24)]/2, Fii.m[25])
 		E.InvFreq_f  <-  sum(E.Fii.f[c(5,10,15,20:24)]/2, E.Fii.f[25])
@@ -322,19 +315,19 @@ autoInvFwdSimSexSpec  <-  function(Fii.f.init = Fii.f.init, Fii.m.init = Fii.m.i
 			invEstTime  <-  NA
 		}
 		res  <-  list(
-				  	"InvFreq"      =  InvFreq,
-				  	"E.InvFreq"    =  E.InvFreq,
-				  	"Wbar"         =  sum(W.mean)/length(W.mean),
-					"Wbar_f"       =  sum(Wf.mean)/length(Wf.mean), 
-					"Wbar_m"       =  sum(Wm.mean)/length(Wm.mean),
+					"InvFreq"      =  InvFreq,
+					"E.InvFreq"    =  E.InvFreq,
 					"InvFreq_f"    =  InvFreq_f,
-					"InvFreq_m"    =  InvFreq_m, 
 					"E.InvFreq_f"  =  E.InvFreq_f,
+					"InvFreq_m"    =  InvFreq_m, 
 					"E.InvFreq_m"  =  E.InvFreq_m,
-					"nGen"         =  gen,
-				  	"InvEst"       =  invEst,
-				  	"InvEstTime"   =  invEstTime
-			 )
+					"InvEst"       =  invEst,
+					"InvEstTime"   =  invEstTime,
+					"Wbar"         =  Wbar,
+					"Wbar_f"       =  Wbar.f, 
+					"Wbar_m"       =  Wbar.m,
+					"nGen"         =  gen
+			 		)
 	return(res)
 	}
 	else {	# Run simulations until 4N generations
@@ -380,7 +373,6 @@ autoInvFwdSimSexSpec  <-  function(Fii.f.init = Fii.f.init, Fii.m.init = Fii.m.i
 				Fii.f    <-  as.vector(rmultinom(1, (N/2), E.Fii.f)/(N/2)) 
 				Fii.m    <-  as.vector(rmultinom(1, (N/2), E.Fii.m)/(N/2))
 				
-	
 				# Realized frequencies
 				InvFreq[gen+1]     <-  (sum(Fii.f[c(5,10,15,20:24)]/2, Fii.f[25]) +  sum(Fii.m[c(5,10,15,20:24)]/2, Fii.m[25]))/2
 				E.InvFreq[gen+1]   <-  (sum(E.Fii.f[c(5,10,15,20:24)]/2, E.Fii.f[25]) +  sum(E.Fii.m[c(5,10,15,20:24)]/2, Fii.m[25]))/2
@@ -425,17 +417,13 @@ autoInvFwdSimSexSpec  <-  function(Fii.f.init = Fii.f.init, Fii.m.init = Fii.m.i
 		} 
 	
 		if(!saveTrajectories) {
-			# Storage structures for individual simulation data
-			InvFreq    <-  0
-			E.InvFreq  <-  0
-			W.mean     <-  0
+
 			# Initial inversion frequency 
-			InvFreq    <-  0.5 * (sum(Fii.f[c(5,10,15,20:24)]/2, Fii.f[25]) +  sum(Fii.m[c(5,10,15,20:24)]/2, Fii.m[25]))
+			InvFreq    <-  (sum(Fii.f[c(5,10,15,20:24)]/2, Fii.f[25]) +  sum(Fii.m[c(5,10,15,20:24)]/2, Fii.m[25]))/2
 			E.InvFreq  <-  InvFreq[1]
 			
 			## Start forward simulation with newly introduced inversion
 			gen  <-  1
-	
 			while(gen < (4*N) & InvFreq[gen] > 0 ) {
 		
 				## Step through recursions:
@@ -461,14 +449,12 @@ autoInvFwdSimSexSpec  <-  function(Fii.f.init = Fii.f.init, Fii.m.init = Fii.m.i
 				InvFreq    <-  (sum(Fii.f[c(5,10,15,20:24)]/2, Fii.f[25]) +  sum(Fii.m[c(5,10,15,20:24)]/2, Fii.m[25]))/2
 				E.InvFreq  <-  (sum(E.Fii.f[c(5,10,15,20:24)]/2, E.Fii.f[25]) +  sum(E.Fii.m[c(5,10,15,20:24)]/2, Fii.m[25]))/2
 				# next gen
-				gen        <-  gen + 1		
-				#The variable below are stored specifically for the SexSpecific simulation 
-				
+				gen        <-  gen + 1
 			}
 			
 			# Store relevant data 
-			Wf.mean      <-  sum(O*Wf)
-			Wm.mean      <-  sum(O*Wm)
+			Wf.mean      <-  Wbar.f
+			Wm.mean      <-  Wbar.m
 			InvFreq_f    <-  sum(Fii.f[c(5,10,15,20:24)]/2, Fii.f[25])
 			InvFreq_m    <-  sum(Fii.m[c(5,10,15,20:24)]/2, Fii.m[25])
 			E.InvFreq_f  <-  sum(E.Fii.f[c(5,10,15,20:24)]/2, E.Fii.f[25])
@@ -486,8 +472,8 @@ autoInvFwdSimSexSpec  <-  function(Fii.f.init = Fii.f.init, Fii.m.init = Fii.m.i
 			res  <-  list(
 						"InvFreq"      =  InvFreq,
 						"E.InvFreq"    =  E.InvFreq,
-						"Wbar_f"       =  sum(Wf.mean)/length(Wf.mean), 
-						"Wbar_m"       =  sum(Wm.mean)/length(Wm.mean),
+						"Wbar_f"       =  Wbar.f, 
+						"Wbar_m"       =  Wbar.m,
 						"InvFreq_f"    =  InvFreq_f,
 						"InvFreq_m"    =  InvFreq_m, 
 						"E.InvFreq_f"  =  E.InvFreq_f,
