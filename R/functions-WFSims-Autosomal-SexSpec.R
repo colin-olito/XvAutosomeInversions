@@ -497,7 +497,6 @@ autoInvFwdSimSexSpec  <-  function(Fii.f.init = Fii.f.init, Fii.m.init = Fii.m.i
 #'					 A 2 positions vector ("m"/"f"/"random", "numeric"/"random"). the first position specify wether the inversions come in males, 
 #'					 in females, or randomnly. The second select either a numerical position in the haplotype vector for the inversion genotype to be created
 #'					 or wether it is random.
-#' 					 See params for runReplicateAutoInvSims().
 #' @param Fii.f.init   Initial genotypic frequencies, from which to calculate probability of new 
 #' 					 mutant inversion occurring
 #' @param Fii.m.init   Initial genotypic frequencies, from which to calculate probability of new 
