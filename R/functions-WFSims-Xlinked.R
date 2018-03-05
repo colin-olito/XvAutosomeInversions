@@ -41,6 +41,21 @@ rejectionSamplerX  <-  function(n=100, Ne=100, u=1e-6, h=0, sf=0.01, sm=0.01) {
 # rejectionSamplerX(100,100,1e-6,0,0.01,0.01)
 # It returns a vector of length 100 of 0 and 1.
 #********************************************************************************************
+
+#********************************************************************************************
+# For X-linked loci:
+# Female genotypes ordered:
+# c(ABAB, ABAb, ABaB, ABab, ABba*,    c(x1y1, x1y2, x1y3, x1y4, x1y5, 
+#   AbAB, AbAb, AbaB, Abab, Abba*,      x2y1, x2y2, x2y3, x2y4, x2y5, 
+#   aBAB, aBAb, aBaB, aBab, aBba*,      x3y1, x3y2, x3y3, x3y4, x3y5, 
+#   abAB, abAb, abaB, abab, abba*,      x4y1, x4y2, x4y3, x4y4, x4y5, 
+#   baAB*, baAb*, baaB*, baab*, baba*)    x5y1, x5y2, x5y3, x5y4, x5y5)
+#
+# Male genotypes ordered:
+# c(AB, Ab, aB, ab, ba*)              c(y1, y2, y3, y4, y5)
+#********************************************************************************************
+
+
 #' Linkage Disequilibrium function for W-F recursions
 #'
 #' @title Linkage Disequilibrium (Dstar)
@@ -61,16 +76,7 @@ Dstar  <-  function(Fii=Fii, m=m, ...) {
 # Dstar(Fiix, m=0.9) return 0.00625
 # This means that migration reduces linkage disequilibrium. 
 #********************************************************************************************
-# For X-linked loci:
-# Female genotypes ordered:
-#	c(ABAB, ABAb, ABaB, ABab, ABba*,		c(x1y1, x1y2, x1y3, x1y4, x1y5, 
-#	  AbAB, AbAb, AbaB, Abab, Abba*,		  x2y1, x2y2, x2y3, x2y4, x2y5, 
-#	  aBAB, aBAb, aBaB, aBab, aBba*,		  x3y1, x3y2, x3y3, x3y4, x3y5, 
-#	  abAB, abAb, abaB, abab, abba*,		  x4y1, x4y2, x4y3, x4y4, x4y5, 
-#	  baAB*, baAb*, baaB*, baab*, baba*)	  x5y1, x5y2, x5y3, x5y4, x5y5)
 
-# Male genotypes ordered:
-# c(AB, Ab, aB, ab, ba*)              c(y1, y2, y3, y4, y5)
 
 #' Haplotype frequencies among gametes
 #' 
@@ -79,49 +85,39 @@ Dstar  <-  function(Fii=Fii, m=m, ...) {
 #' @param m   Migration rate
 #' @param r   Recombination rate
 #' @export
+#' @author Homa Papoli based on Colin Olito.
 
 #' Haplotype frequencies for X in females (XX)
-x.1  <-  function(Fii=Fii, m=m, r=r) {
+x.1  <-  function(Fii=Fii, m=mf, r=rf) {
   ((2*Fii[1] + (Fii[2] + Fii[6]) + (Fii[3] + Fii[11]) + (Fii[4] + Fii[16]) + (Fii[5] + Fii[21])) / 2)*(1 - m) - r*Dstar(Fii=Fii, m=m) + m
 } 
-x.2  <-  function(Fii=Fii, m=m, r=r) {
-  ((2*Fii[7] + (Fii[2] + Fii[6]) + (Fii[8] + Fii[12]) + (Fii[9] + Fii[17]) + (Fii[10] + Fii[22])) / 2)*(1 - m) + r*Dstar(Fii=Fii, m=m)
+x.2  <-  function(Fii=Fii, m=mf, r=rf) {
+  ((2*Fii[7] + (Fii[2] + Fii[6]) + (Fii[8] + Fii[12]) + (Fii[9] + Fii[17]) + (Fii[10] + Fii[22])) / 2)*(1 - m) + r*Dstar(Fii=Fii, m=mf)
 }
-x.3  <-  function(Fii=Fii, m=m, r=r) {
-  ((2*Fii[13] + (Fii[3] + Fii[11]) + (Fii[8] + Fii[12]) + (Fii[14] + Fii[18]) + (Fii[15] + Fii[23])) / 2)*(1 - m) + r*Dstar(Fii=Fii, m=m)
+x.3  <-  function(Fii=Fii, m=mf, r=rf) {
+  ((2*Fii[13] + (Fii[3] + Fii[11]) + (Fii[8] + Fii[12]) + (Fii[14] + Fii[18]) + (Fii[15] + Fii[23])) / 2)*(1 - m) + r*Dstar(Fii=Fii, m=mf)
 }
-x.4  <-  function(Fii=Fii, m=m, r=r) {
-  ((2*Fii[19] + (Fii[4] + Fii[16]) + (Fii[9] + Fii[17]) + (Fii[14] + Fii[18]) + (Fii[20] + Fii[24])) / 2)*(1 - m) - r*Dstar(Fii=Fii, m=m)
+x.4  <-  function(Fii=Fii, m=mf, r=rf) {
+  ((2*Fii[19] + (Fii[4] + Fii[16]) + (Fii[9] + Fii[17]) + (Fii[14] + Fii[18]) + (Fii[20] + Fii[24])) / 2)*(1 - m) - r*Dstar(Fii=Fii, m=mf)
 }
-x.5  <-  function(Fii=Fii, m=m, r=r) {
+x.5  <-  function(Fii=Fii, m=mf, r=rf) {
   ((2*Fii[25] + (Fii[5] + Fii[21]) + (Fii[10] + Fii[22]) + (Fii[15] + Fii[23]) + (Fii[20] + Fii[24])) / 2)*(1 - m)
 }
-
-#*********************************************************************************
-# Run x.1
-# Maximum r = 0.5. This means with free recombination, D is halved every generation.
-# if m = 0, with the changed Fiix as for Dstar above, x.1(Fiix, m=0, r=0.5) = 0.25.
-# ((2*Fiix[1] + (Fiix[2] + Fiix[6]) + (Fiix[3] + Fiix[11]) + (Fiix[4] + Fiix[16]) + (Fiix[5] + Fiix[21])) / 2)*(1 - 0) = 0.28125
-# Dstar(Fii=Fiix, m=0) = 0.0625 with free recombination (r=0.5), it is halved and becomes 0.03125. Finally, with no migration and
-# free recombination, x1 = 0.28125-0.03125; x1=x2=x3=x4=0.25 which is what is expected from Mendelian segregation if two loci were
-# independent, we could have x1 = 0.5*0.5 = 0.25.
-#*********************************************************************************
-
 # Haplotype frequencies for X in males (XY)
-y.1 <- function(Fii=Fii, m=m) {
-  Fii[1]*(1-m)+m
+y.1 <- function(Fii=Fii, m=mm) {
+  Fii[1]*(1 - m) + m
 } 
-y.2 <- function(Fii=Fii, m=m) {
-  Fii[2]*(1-m)
+y.2 <- function(Fii=Fii, m=mm) {
+  Fii[2]*(1 - m)
 }
-y.3 <- function(Fii=Fii, m=m) {
-  Fii[3]*(1-m)
+y.3 <- function(Fii=Fii, m=mm) {
+  Fii[3]*(1 - m)
 }
-y.4 <- function(Fii=Fii, m=m) {
-  Fii[4]*(1-m)
+y.4 <- function(Fii=Fii, m=mm) {
+  Fii[4]*(1 - m)
 }
-y.5 <- function(Fii=Fii, m=m) {
-  Fii[5]*(1-m)
+y.5 <- function(Fii=Fii, m=mm) {
+  Fii[5]*(1 - m)
 }
 
 #*********************************************************************************
