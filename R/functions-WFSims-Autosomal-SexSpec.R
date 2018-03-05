@@ -153,6 +153,9 @@ offFreq  <-  function(xi,yi) {
 #' @seealso `offFreq`, `autoInvWrightFisherSim`
 #' @author Ludovic Dutoit based on Colin Olito
 findEqFreqs  <-  function(Wf,Wm, mf, mm, rf, rm, threshold = 1e-6, ...) {
+	
+	# Arbitrarily initiate with equal frequences 
+	# for all non-inversion genotypes
 	Fii.init  <-  c(1/16, 1/16, 1/16, 1/16, 0, 
 					1/16, 1/16, 1/16, 1/16, 0, 
 					1/16, 1/16, 1/16, 1/16, 0, 
@@ -177,7 +180,7 @@ findEqFreqs  <-  function(Wf,Wm, mf, mm, rf, rm, threshold = 1e-6, ...) {
 	deltaM  <-  rep(1, times=16)
 	delta   <-  append(deltaF,deltaM)
 	
-	# Initiate generation counter 
+	# Initiate generation counter
 	gen  <-  0 
 	
 	# Simulation loop
