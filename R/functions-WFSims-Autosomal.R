@@ -316,8 +316,8 @@ autoInvFwdSim  <-  function(Fii.init = Fii.init, N = N, W = W, m = m, r = r,
 		
 		## Start forward simulation with newly introduced inversion
 		gen  <-  1
-#		while(InvFreq > 0 & InvFreq <= pcrit) {
-		while(gen < (4*N) & InvFreq > 0 ) {
+		while(InvFreq > 0 & InvFreq <= pcrit) {
+#		while(gen < (4*N) & InvFreq > 0 ) {
 		
 			## Step through recursions:
 			# 1) Calculate gamete frequencies
@@ -388,7 +388,7 @@ introduceInversion  <-  function(newMutant, Fii.init, N) {
 	# Choose mutant genotype randomly
 	if(!specifyNewMutant) {
 
-		probNewMutant     <-  Fii.init[c(4,9,14,16:19)]/sum(Fii.init[c(4,9,14,16:19)])
+		probNewMutant     <-  c(Fii.init[c(4,9,14,16:18)], Fii.init[19]*2)/sum(Fii.init[c(4,9,14,16:18)], Fii.init[19]*2)
 		newMut            <-  c(4,9,14,16:19)[as.vector(rmultinom(1,1,probNewMutant)) == 1]
 
 		# Subtract new mutant individual from frequency of old genotype
@@ -494,7 +494,7 @@ runReplicateAutoInvSims  <-  function(nReps = 1000, N = 500, m = 0.01, s = 0.1, 
 	Fii.init  <-  findEqFreqs(W=W.init, m=m, r=r, threshold=1e-7)
 
 	# Introduce rare mutant inversion
-	Fii.init  <-  introduceInversion(newMutant=newMutant, Fii.init=Fii.init, N = N)
+	Fii.init  <-  introduceInversion(newMutant=newMutant, Fii.init=Fii.init, N=N)
 
 	# Storage structures for replicate simulation data
 	finalInvFreq    <-  rep(0, times=nReps)
@@ -608,10 +608,12 @@ runReplicateAutoInvSims  <-  function(nReps = 1000, N = 500, m = 0.01, s = 0.1, 
 #' @seealso `offFreq`, `findEqFreqs`, `autoInvFwdSim`
 #' @export
 #' @author Colin Olito.
-makeReplicateAutoInvSimsData  <-  function(nReps = 1000, N = 5000, m.vals = c(0.01, 0.05), 
-										   s = 0.1, h = 1/2, r.vals = c(0.5, 0.1), 
-										   n = 100, u = 1e-5, h.del = 0, newMutant = 'random') {
-
+makeFastReplicateAutoSexSpecInvSimsData(nReps = 100, N = 20000, h = 1/2, 
+										m.vals = c(0.0005, 0.001), m.deltas = NULL,
+										s.vals = c(0.001, 0.05), s.deltas = NULL, 
+										r.vals = seq(from = 0, to = 0.5, by = 0.025),
+										n = 100, u = 1e-5, h.del = 0, noDel = FALSE, 
+										fastSim = TRUE, newMutant=c("random","random"), saveTrajectories = FALSE)
 	# Simulate deleterious mutations that are either 
 	# 1) recessive lethals OR
 	# 2) recessive experiencing purifying selection
