@@ -120,19 +120,13 @@ y.5 <- function(Fii=Fii, m=mm) {
   Fii[5]*(1 - m)
 }
 
-#*********************************************************************************
-# Run y.1
-# For male haplotype, as there's no recombination in males, it's only migration
-# that affects the haplotype frequency in males. 
-# y.1(Fiiy, 0) = 0.25
-#*********************************************************************************
 
 #' Offspring frequencies after random mating for X linked haplotypes
 #' @title Offspring frequencies after random mating
 #' @param xi Vector of haplotype frequencies among gametes (of length = 5)
 #' @export
 #' Females
-offFreq_females  <-  function(xi, yi) {
+offFreq_f  <-  function(xi, yi) {
   O  <-  c((xi[1]*yi[1]), (xi[1]*yi[2]), (xi[1]*yi[3]), (xi[1]*yi[4]), (xi[1]*yi[5]),
            (xi[2]*yi[1]), (xi[2]*yi[2]), (xi[2]*yi[3]), (xi[2]*yi[4]), (xi[2]*yi[5]),
            (xi[3]*yi[1]), (xi[3]*yi[2]), (xi[3]*yi[3]), (xi[3]*yi[4]), (xi[3]*yi[5]),
@@ -143,7 +137,7 @@ offFreq_females  <-  function(xi, yi) {
 }
 
 # Males
-offFreq_males  <-  function(xi) {
+offFreq_m  <-  function(xi) {
   O  <-  c(xi[1], xi[2], xi[3], xi[4], xi[5]
   )
   O
@@ -212,8 +206,8 @@ findEqFreqsX  <-  function(Wf, Wm, mm, mf, r, threshold = 1e-6) {
     }
     
     # offspring genotype frequencies
-    O_females  <-  offFreq_females(xi, yi)
-    O_males <- offFreq_males(xi)
+    O_females  <-  offFreq_f(xi, yi)
+    O_males <- offFreq_m(xi)
     
     # mean fitness 
     Wfbar      <-  sum(O_females*Wf) # Remember this is a normalizing factor, also known as the mean fitness of the population. Here would be the mean fitness of females. For 1 locus model: wbar = p^2w11+2pqw12+q^2w22
@@ -324,8 +318,8 @@ InvFwdSimXlinked  <-  function(Fiix.init = Fiix.init, Fiiy.init = Fiiy.init, N =
         yi[j]   <-  round(recFcty(Fii = Fiiy, m = mm), digits=8)
       }
       # 2) Offspring genotype frequencies
-      O_females     <-  offFreq_females(xi, yi)
-      O_males       <-  offFreq_males(xi)
+      O_females     <-  offFreq_f(xi, yi)
+      O_males       <-  offFreq_m(xi)
       # 3) Mean fitness 
       Wfbar   <-  sum(O_females*Wf)
       Wmbar   <-  sum(O_males*Wm)
@@ -425,8 +419,8 @@ InvFwdSimXlinked  <-  function(Fiix.init = Fiix.init, Fiiy.init = Fiiy.init, N =
         yi[j]   <-  round(recFcty(Fii = Fiiy, m = mm), digits=8)
       }
       # 2) Offspring genotype frequencies
-      O_females     <-  offFreq_females(xi, yi)
-      O_males       <-  offFreq_males(xi)
+      O_females     <-  offFreq_f(xi, yi)
+      O_males       <-  offFreq_m(xi)
       # 3) Mean fitness 
       Wfbar   <-  sum(O_females*Wf)
       Wmbar   <-  sum(O_males*Wm)
