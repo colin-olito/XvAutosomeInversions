@@ -317,7 +317,7 @@ InvFwdSimXlinked  <-  function(Fii.f.init = Fii.f.init, Fii.m.init = Fii.m.init,
       InvFreq_f    <-  sum(Fii.f[c(5,10,15,20:24)]/2, Fii.f[25])
       InvFreq_m    <-  Fii.m[5]
       E.InvFreq_f  <-  sum(E.Fii.f[c(5,10,15,20:24)]/2, E.Fii.f[25])
-      E.InvFreq_m  <-  Fii.m[5]
+      E.InvFreq_m  <-  E.Fii.m[5]
 
       # Has the inversion reached threshold frequency for establishment (pcrit)? 
       # When did it first reach pcrit?
@@ -515,84 +515,82 @@ InvFwdSimXlinked  <-  function(Fii.f.init = Fii.f.init, Fii.m.init = Fii.m.init,
     return(res)
     }
 }
-#*********************************************************************************
-# Run InvFwdSimXlinked
-# InvFwdSimXlinked(Fii.f, Fii.m, 100, Wf, Wm, 0, 0, 0.01, 0.01, 0.5, saveTrajectories = TRUE) : returns a list of 12 elements
-# InvFwdSimXlinked(Fii.f, Fii.m, 100, Wf, Wm, 0, 0, 0.01, 0.01, 0.5, saveTrajectories = FALSE) : returns a list of 12 elements
-#*********************************************************************************
+
+
 
 #' Introduce new mutant inversion genotype
 #'
 #' @title Introduce new mutant inversion genotype
 #' @param newMutant  Switch to choose whether to specify new mutant genotypes, or if they are 
-#'   				 chosen randomly, given initial genotypic frequencies (Fii.init). 
-#' 					 See params for runReplicateInvSimsXlinked().
+#'           chosen randomly, given initial genotypic frequencies (Fii.f.init and Fii.m.init). 
+#'           A 2 positions vector ("m"/"f"/"random", "numeric"/"random"). the first position specify wether the inversions come in males, 
+#'           in females, or randomnly. The second select either a numerical position in the haplotype vector for the inversion genotype to be created
+#'           or wether it is random.
 #' @param Fii.init   Initial genotypic frequencies, from which to calculate probability of new 
 #' 					 mutant inversion occurring
 #' @param N			 Population size
+introduceInversion  <-  function(newMutant, Fii.f.init, Fii.m.init, N) {
+  
+  #extract newMutant Parameters
+  sex        <-  newMutant[1]
+  specified  <-  is.numeric(newMutant[2])
+  mutant     <-  newMutant[2]
 
-# added m, which is true if the inversion is introduced into the male genotype.
-# if inversion needs to be introduced in males, set m = TRUE.
-introduceInversion  <-  function(newMutant, male = FALSE, Fii.f.init, Fii.m.init, N) {
-#' Females:
-#'    c(ABAB,  ABAb,  ABaB,  ABab,  ABba*,	c(x1y1, x1y2, x1y3, x1y4, x1y5, 
-#'		  AbAB,  AbAb,  AbaB,  Abab,  Abba*,	  x2y1, x2y2, x2y3, x2y4, x2y5, 
-#'		  aBAB,  aBAb,  aBaB,  aBab,  aBba*,	  x3y1, x3y2, x3y3, x3y4, x3y5, 
-#'		  abAB,  abAb,  abaB,  abab,  abba*,	  x4y1, x4y2, x4y3, x4y4, x4y5, 
-#'		  baAB*, baAb*, baaB*, baab*, baba*)	  x5y1, x5y2, x5y3, x5y4, x5y5)
-#'
-#'Males:
-#'    c(AB, Ab, aB, ab, ba*)                c(y1, y2, y3, y4, y5)
-  
-  # Toggle
-  specifyNewMutant  <-  is.numeric(newMutant) # it returns TRUE if newMutant is the number of a specific genotype given. 
-                                              # In this case, sex and genotype are pre-defined and are not random.
-  
+  #Preemptive warnings
+  if(sex!="m" & sex!="f" & sex!="random") 
+      stop('Warning: newMutant is of wrong format. Incorrect sex argument.')
+  if(sex=="f" & specified & all(mutant != c(4,9,14,16:19)))
+    stop('If specifying the genotype of new FEMALE inversion mutants, newMutant[2] must take 
+        one of the following values: 4,9,14,16:19')
+  if(sex=="m" & specified & mutant != 5)
+    stop('If specifying the genotype of new MALE inversion mutants, newMutant[2] must equal 5')
+  if(!specified & newMutant[2] != 'random')
+    stop('If the genotype of new inversion mutants is being chosen randomly, 
+        the parameter newMutant must equal random')
+
   # Choose mutant genotype randomly
-  if(!specifyNewMutant) {
+  if(!specified) {
     
       # Probability of new mutant occuring on X in a genotype containing ab in females and males
       # 7 genotypes in females contain ab haplotype, only one contains 2 ab, in this case, the frequency of abab is multiplied by 2. For the other genotypes, it's only 1 ab within each. 
       probNewMutantX     <-  c(Fii.f.init[c(4,9,14,16:18)], Fii.f.init[19]*2, Fii.m.init[4])/sum(Fii.f.init[c(4,9,14,16:18)], Fii.f.init[19]*2 , sum(Fii.m.init[4]))
-      newMutX            <-  c(4,9,14,16:19,100)[as.vector(rmultinom(1,1,probNewMutantX)) == 1] # In the vector c(4,9,14,16:19,100), 100 is a number that indicates the male genotype. If this is chosen by rmultinom, 
-      if(newMutX == 100) {                                                                      # then the inversion is introduced in male which is indicated by the condition if(newMutX == 100)
+      mutant            <-  c(4,9,14,16:19,100)[as.vector(rmultinom(1,1,probNewMutantX)) == 1] # In the vector c(4,9,14,16:19,100), 100 is a number that indicates the male genotype. If this is chosen by rmultinom, 
+      if(mutant == 100) {                                                                      # then the inversion is introduced in male which is indicated by the condition if(mutant == 100)
         # Subtract new mutant individual from frequency of old genotype
-        Fii.m.init[4]  <-  Fii.m.init[4] - 1/N
-        Fii.m.init[5] <- 1/N
+        Fii.m.init[4]  <-  Fii.m.init[4] - (1/(N/2))
+        Fii.m.init[5]  <- (1/(N/2))
       }
       else {
-        Fii.f.init[newMutX]  <-  Fii.f.init[newMutX] - 1/N
+        Fii.f.init[mutant]  <-  Fii.f.init[mutant] - (1/(N/2))
       }
     }
   
   # Specify mutant genotype
-  if(specifyNewMutant) {
+  if(specified) {
     # Subtract new mutant individual from frequency of old genotype
-    if(male) {
-      newMutY  <-  newMutant
-      Fii.m.init[newMutY]  <-  Fii.m.init[newMutY] - 1/N
-        Fii.m.init[5] <- 1/N
+    if(sex == "m") {
+      Fii.m.init[mutant]  <-  Fii.m.init[mutant] - (1/(N/2))
+        Fii.m.init[5]         <- (1/(N/2))
     }
     else {
-      newMutX  <-  newMutant
-      Fii.f.init[newMutX]  <-  Fii.f.init[newMutX] - 1/N
+      Fii.f.init[mutant]  <-  Fii.f.init[mutant] - (1/(N/2))
     }
   }
 
   # Add mutant individual to frequency of new inversion genotype
-  if(newMutX == 4 | newMutX == 9 | newMutX == 14)
-    Fii.f.init[newMutX + 1]  <-  1/N
-  if(newMutX == 16 | newMutX == 17 | newMutX == 18)
-    Fii.f.init[newMutX + 5]  <-  1/N
+  if(mutant == 4 | mutant == 9 | mutant == 14)
+    Fii.f.init[mutant + 1]  <-  (1/(N/2))
+  if(mutant == 16 | mutant == 17 | mutant == 18)
+    Fii.f.init[mutant + 5]  <-  (1/(N/2))
   
   
   # if inversion occurs on abab genotype, choose randomly whether it occurs on
   # the maternally or paternally inherited chromosome 
-  if(newMutX == 19) {
+  if(mutant == 19) {
     if(runif(1) >= 1/2) {
-      Fii.f.init[newMutX + 1]  <-  1/N
+      Fii.f.init[mutant + 1]  <-  (1/(N/2))
     }
-    else Fii.f.init[newMutX + 5]  <-  1/N
+    else Fii.f.init[mutant + 5]  <-  (1/(N/2))
   } 
   return (list(Fii.f.init, Fii.m.init))
 }
