@@ -595,128 +595,103 @@ introduceInversion  <-  function(newMutant, Fii.f.init, Fii.m.init, N) {
   return (list(Fii.f.init, Fii.m.init))
 }
 
-#*********************************************************************************
-# Run introduceInversion
-# Returns a list. First element is Fii.f.init and second element is Fii.m.init after
-# introducing the inversion.
-# Introduce inversion on the 4th genotype of males
-# introduceInversion(4, male = TRUE, Fii.f.init, Fii.m.init, 100)
-# Introduce inversion on the 4th genotype of females
-# introduceInversion(4, male = FALSE, Fii.f.init, Fii.m.init, 100)
-# Introduce inversion in a random genotype and sex
-# introduceInversion("random", male = FALSE, Fii.f.init, Fii.m.init, N)
-#*********************************************************************************
+
 
 #' Wrapper function to run replicate forward simulations for invasion
 #' of X-linked inversions in a Wright-Fisher population 
 #'
 #' @title Wright-Fisher forward simulation of genotypic frequencies (default parameter values in parentheses)
 #' @param nReps  Number of replicate simulations. With no deleterious mutations, and introducing 
-#' 				 a single copy of the inversion, it takes 1,600,000 replicate simulations to 
-#'				 get 10,000 where the inversion successfully establishes.
+#' 				 a single copy of the inversion.
 #' @param N      Effective population size
-#' @param mm, mf Male and female migration rate for locally maladaptive alleles (mm = mf =  0.01)
-#' @param sm, sf  Male and female selective advantage of locally adaptive alleles over migrant alleles (sm = sf = 0.02)
+#' @param mf     Migration rate for locally maladaptive alleles (m =  0.01) in females
+#' @param mm     Migration rate for locally maladaptive alleles (m =  0.01) in males
+#' @param sf     Selective advantage of locally adaptive alleles over migrant alleles (s = 0.02) in females
+#' @param sm     Selective advantage of locally adaptive alleles over migrant alleles (s = 0.02) in males
 #' @param h      Dominance coefficient for locally adaptive alleles relative to migrant alleles (h = 0.5)
 #' @param r      Recombination rate among the two loci involved in local adaptation (r = 0.1)
 #' @param n      Number of loci at which deleterious mutations may occur
 #' @param u      Mutation rate (default value of u = 1e-6)
 #' @param h.del  Dominance of deleterious mutations (default value of h = 0).
 #' @param noDel  Omit fitness effects of deleterious mutations? Default value of FALSE assumes that 
-#' 				 selection against deleterious mutations is twice as strong as selection favouring
-#' 				 the locally adaptive alleles. Setting noDel = TRUE runs the W-F simulations as if
-#' 				 there were no delterious mutations segregating in the population that are linked
-#' 				 to the loci involved in local adaptation. 
+#' 				       selection against deleterious mutations is twice as strong as selection favouring
+#' 				       the locally adaptive alleles. Setting noDel = TRUE runs the W-F simulations as if
+#' 				       there were no delterious mutations segregating in the population that are linked
+#' 				       to the loci involved in local adaptation. 
+#' @param fastSim    Logical. Use threshold frequency for establishment of inversion? 
+#' @param newMutant  Switch to choose whether to specify new mutant genotypes, or if they are 
+#'                   chosen randomly, given initial genotypic frequencies (Fii.f.init and Fii.m.init). 
+#'                   A 2 positions vector ("m"/"f"/"random", "numeric"/"random"). the first position specify wether the inversions come in males, 
+#'                   in females, or randomnly. The second select either a numerical position in the haplotype vector for the inversion genotype to be created
+#'                   or wether it is random.
 #' @param saveTrajectories  Save evolutionary trajectories of inversion frequencies? Setting this 
-#' 							to TRUE can become extremely memory intensive if you are running many
-#' 							replicate simulations (see warning).
-#' 							otherwise
+#'             							to TRUE can become extremely memory intensive if you are running many
+#'             							replicate simulations (see warning).
 #' @seealso `offFreq`, `findEqFreqsX`, `InvFwdSimXlinked`
 #' @export
 #' @author Colin Olito - Modified for X-linked by Homa Papoli
-
-runReplicateInvSimsXlinked  <-  function(nReps = 1000, N = 500, mm = 0.01, mf = 0.01, sf = 0.02, sm = 0.02,  h = 1/2, r = 0.1, 
+runReplicateInvSimsXlinked  <-  function(nReps = 1000, N = 5000, mm = 0.01, mf = 0.01, sf = 0.02, sm = 0.02,  h = 1/2, r = 0.5, 
                                       n = 100, u = 1e-5, h.del = 0, sf.del = 1, sm.del = 1, noDel = FALSE,
-                                      saveTrajectories = FALSE, newMutant = "random", male = FALSE) { # male = FALSE is for the introduceInversion function
-                                                                                                      # if new inversion should be introduced in male, set male = TRUE, otherwise, it will be introduced in female.
-                                                                                                      # if newMutant="random", set male = FALSE
+                                      fastSim = TRUE, newMutant = c("random","random"), saveTrajectories = FALSE) { 
+
   ##  Preemptive Warnings
   if(any(c(N,mm,mf,sf,sm,h,r,n,u,h.del) < 0) | any(c(mm,mf,sf,sm,h,r,u,h.del) > 1) | r > 0.5)
     stop('The chosen parameter values fall outside of reasonable parameter space')
   
-  specifyNewMutant <- is.numeric(newMutant)
-  if(specifyNewMutant & all(newMutant != c(4,9,14,16:19)))
-    stop('If specifying the genotype of new inversion mutants, newMutant must take one of the following values: 4,9,14,16:19')
-  
-  if(!specifyNewMutant & newMutant != 'random')
-    stop('If the genotype of new inversion mutants is being chosen randomly, the parameter newMutant must equal random')
-  
-  #!!! I set saveTrajectories = TRUE but I couldn't get it issue warning. It also returned error for the first try about migration.
-#   try({
-#     if(m >= s )
-#       stop('Warning: migration is stronger than selection, 
-#            adaptive alleles will be swamped by maladaptive migrants')
-#   }#, silent=FALSE)
-#   
-#   try({
-#     if(nReps > 1000 & saveTrajectories)
-#       stop('Warning: You have chosen to save evolutionary trajectories 
-#            for a large number of replicate simulations. This will be
-#            memory intensive. Consider setting saveTrajectories = FALSE')
-#   }#, silent=FALSE)
-#   
+  try({
+     if(nReps > 1000 & saveTrajectories)
+      stop('Warning: You have chosen to save evolutionary trajectories 
+          for a large number of replicate simulations. Thiss will be
+          memory intensive. Consider setting saveTrajectories = FALSE')
+  }, silent=FALSE)
 
-  ##  Define Fitness Expressions for females for determining eq. frequencies in absence of inversion
-  Wf.init  <-  c(1,          (1 + h*sf),         (1 + h*sf),         (1 + h*sf)^2,        0,
-                (1 + h*sf),   (1 + sf),           (1 + h*sf)^2,       (1 + h*sf)*(1 + sf),  0,
-                (1 + h*sf),   (1 + h*sf)^2,       (1 + sf),           (1 + sf)*(1 + h*sf),  0,
+  ##  Define Fitness Expressions for females and males for determining eq. frequencies in absence of inversion
+  Wf.init  <-  c(1,           (1 + h*sf),          (1 + h*sf),          (1 + h*sf)^2,        0,
+                (1 + h*sf),   (1 + sf),            (1 + h*sf)^2,        (1 + h*sf)*(1 + sf), 0,
+                (1 + h*sf),   (1 + h*sf)^2,        (1 + sf),            (1 + sf)*(1 + h*sf), 0,
                 (1 + h*sf)^2, (1 + h*sf)*(1 + sf), (1 + sf)*(1 + h*sf), (1 + sf)^2,          0,
-                0,           0,                 0,                 0,                  0)
-  ## Define Fitness Expressions for males for determining eq. frequencies in absence of inversion
+                 0,            0,                   0,                   0,                  0)
   Wm.init  <-  c(1, (1 + sm), (1 + sm), (1 + sm)^2, 0)
   
   ## Find deterministic equilibrium frequencies in absence of inversion in females and males
-  eq_freq <- findEqFreqsX(Wf=Wf.init, Wm=Wm.init, mm=mm, mf=mf, r=r, threshold = 1e-7)
-  Fii.f.init <- eq_freq[[1]] # First element of the list for females  
-  Fii.m.init <- eq_freq[[2]] # Second element of the list for for males
+  eq_freq    <-  findEqFreqsX(Wf=Wf.init, Wm=Wm.init, mm=mm, mf=mf, r=r, threshold = 1e-7)
+  Fii.f.init <-  eq_freq[[1]] # First element of the list for females  
+  Fii.m.init <-  eq_freq[[2]] # Second element of the list for for males
   
-  ## Introduce rare inversion mutations
-  new_inversion <- introduceInversion(newMutant=newMutant, male = male, Fii.f.init=Fii.f.init, Fii.m.init=Fii.m.init, N = N)
-  Fii.f.init <- new_inversion[[1]] # First element of the list for females 
-  Fii.m.init <- new_inversion[[2]] # Second element of the list for for males
+  ## Introduce single copy of inversion mutation
+  new_inversion  <-  introduceInversion(newMutant=newMutant, Fii.f.init=Fii.f.init, Fii.m.init=Fii.m.init, N = N)
+  Fii.f.init     <-  new_inversion[[1]] # First element of the list for females 
+  Fii.m.init     <-  new_inversion[[2]] # Second element of the list for for males
   
   # Storage structures for replicate simulation data
-  finalInvFreq    <-  rep(0, times=nReps)
-  finalE.InvFreq  <-  rep(0, times=nReps)
-  finalInvFreq_f   <-  rep(0, times=nReps)
-  finalE.InvFreq_f   <-  rep(0, times=nReps)
-  finalInvFreq_m   <-  rep(0, times=nReps)
-  finalE.InvFreq_m   <-  rep(0, times=nReps)
-  invEst          <-  rep(0, times=nReps)
-  invEstTime      <-  rep(0, times=nReps)
-  finalW.mean     <-  rep(0, times=nReps)
-  finalWf.mean     <-  rep(0, times=nReps)
-  finalWm.mean     <-  rep(0, times=nReps)
-  nGen            <-  rep(0, times=nReps)
-  nDels           <-  rep(0, times=nReps)
+  finalInvFreq      <-  rep(0, times=nReps)
+  finalE.InvFreq    <-  rep(0, times=nReps)
+  finalInvFreq_f    <-  rep(0, times=nReps)
+  finalE.InvFreq_f  <-  rep(0, times=nReps)
+  finalInvFreq_m    <-  rep(0, times=nReps)
+  finalE.InvFreq_m  <-  rep(0, times=nReps)
+  invEst            <-  rep(0, times=nReps)
+  invEstTime        <-  rep(0, times=nReps)
+  finalWbar         <-  rep(0, times=nReps)
+  finalWbar_f       <-  rep(0, times=nReps)
+  finalWbar_m       <-  rep(0, times=nReps)
+  nGen              <-  rep(0, times=nReps)
+  nDels             <-  rep(0, times=nReps)
   
   if(saveTrajectories) {
-    replicateTraj  <-  c()
-    InvFreqTraj    <-  c()
-    E.InvFreqTraj  <-  c()
-    InvFreq_fTraj   <-  c()
-    E.InvFreq_fTraj  <- c()
-    InvFreq_mTraj   <-  c()
-    E.InvFreq_mTraj  <- c()
-    W.meanTraj     <-  c()
-    Wf.meanTraj     <-  c()
-    Wm.meanTraj     <-  c()
+    replicateTraj    <-  c()
+    InvFreqTraj      <-  c()
+    E.InvFreqTraj    <-  c()
+    InvFreq_fTraj    <-  c()
+    E.InvFreq_fTraj  <-  c()
+    InvFreq_mTraj    <-  c()
+    E.InvFreq_mTraj  <-  c()
+    Wbar_Traj        <-  c()
+    Wbar_fTraj       <-  c()
+    Wbar_mTraj       <-  c()
   } 
   
-
-
   # Replicate simulation loop
-# 	print('Running Wright-Fisher Forward Simulations')
   pb   <-  txtProgressBar(min=0, max=nReps, style=3)
   setTxtProgressBar(pb, 0)
   for(i in 1:nReps) {
@@ -730,89 +705,87 @@ runReplicateInvSimsXlinked  <-  function(nReps = 1000, N = 500, mm = 0.01, mf = 
       sf.del  <-  0
       sm.del  <-  0
     }
-    Wf  <-  c(1,                                  (1 + h*sf),                                 (1 + h*sf),                                 (1 + h*sf)^2,                       (1 + h*sf)^2*(1 - h.del*sf.del)^n.del,
-             (1 + h*sf),                           (1 + sf),                                   (1 + h*sf)^2,                               (1 + h*sf)*(1 + sf),                 (1 + h*sf)*(1 + sf)*(1 - h.del*sf.del)^n.del,
-             (1 + h*sf),                           (1 + h*sf)^2,                               (1 + sf),                                   (1 + sf)*(1 + h*sf),                 (1 + sf)*(1 + h*sf)*(1 - h.del*sf.del)^n.del,
-             (1 + h*sf)^2,                         (1 + h*sf)*(1 + sf),                         (1 + sf)*(1 + h*sf),                         (1 + sf)^2,                         (1 + sf)^2*(1 - h.del*sf.del)^n.del,
+    Wf  <-  c(1,                                    (1 + h*sf),                                   (1 + h*sf),                                   (1 + h*sf)^2,                        (1 + h*sf)^2*(1 - h.del*sf.del)^n.del,
+             (1 + h*sf),                            (1 + sf),                                     (1 + h*sf)^2,                                 (1 + h*sf)*(1 + sf),                 (1 + h*sf)*(1 + sf)*(1 - h.del*sf.del)^n.del,
+             (1 + h*sf),                            (1 + h*sf)^2,                                 (1 + sf),                                     (1 + sf)*(1 + h*sf),                 (1 + sf)*(1 + h*sf)*(1 - h.del*sf.del)^n.del,
+             (1 + h*sf)^2,                          (1 + h*sf)*(1 + sf),                          (1 + sf)*(1 + h*sf),                          (1 + sf)^2,                          (1 + sf)^2*(1 - h.del*sf.del)^n.del,
              (1 + h*sf)^2*(1 - h.del*sf.del)^n.del, (1 + h*sf)*(1 + sf)*(1 - h.del*sf.del)^n.del, (1 + sf)*(1 + h*sf)*(1 - h.del*sf.del)^n.del, (1 + sf)^2*(1 - h.del*sf.del)^n.del, (1 + sf)^2*(1 - sf.del)^n.del)
-    
     Wm  <-  c(1, (1 + sm), (1 + sm), (1 + sm)^2, (1 + sm)^2*(1 - sm.del)^n.del)
 
     ## RUN SIMULATION
     repRes  <-  InvFwdSimXlinked(Fii.f.init=Fii.f.init, Fii.m.init=Fii.m.init, N=N, Wf=Wf, Wm=Wm, mm=mm, mf=mf, r=r)
     
     # save results for each replicate
-    finalInvFreq[i]    <-  repRes$InvFreq[length(repRes$InvFreq)]
-    finalE.InvFreq[i]  <-  repRes$E.InvFreq[length(repRes$E.InvFreq)]
-    finalInvFreq_f[i]  <-  repRes$InvFreq_f[length(repRes$InvFreq_f)]
-    finalE.InvFreq_f[i]  <- repRes$E.InvFreq_f[length(repRes$E.InvFreq_f)]
-    finalInvFreq_m[i]  <-  repRes$InvFreq_m[length(repRes$InvFreq_m)]
-    finalE.InvFreq_m[i]  <- repRes$E.InvFreq_m[length(repRes$E.InvFreq_m)]
-    finalW.mean[i]     <-  repRes$W.mean
-    finalWf.mean[i]     <-  repRes$Wf.mean
-    finalWm.mean[i]     <-  repRes$Wm.mean
-    nGen[i]            <-  repRes$nGen
-    invEst[i]          <-  repRes$InvEst
-    invEstTime[i]      <-  repRes$InvEstTime
-    nDels[i]           <-  n.del
+    finalInvFreq[i]      <-  repRes$InvFreq[length(repRes$InvFreq)]
+    finalE.InvFreq[i]    <-  repRes$E.InvFreq[length(repRes$E.InvFreq)]
+    finalInvFreq_f[i]    <-  repRes$InvFreq_f[length(repRes$InvFreq_f)]
+    finalE.InvFreq_f[i]  <-  repRes$E.InvFreq_f[length(repRes$E.InvFreq_f)]
+    finalInvFreq_m[i]    <-  repRes$InvFreq_m[length(repRes$InvFreq_m)]
+    finalE.InvFreq_m[i]  <-  repRes$E.InvFreq_m[length(repRes$E.InvFreq_m)]
+    finalWbar[i]         <-  repRes$Wbar
+    finalWbar_f[i]       <-  repRes$Wbar_f
+    finalWbar_m[i]       <-  repRes$Wbar_m
+    nGen[i]              <-  repRes$nGen
+    invEst[i]            <-  repRes$InvEst
+    invEstTime[i]        <-  repRes$InvEstTime
+    nDels[i]             <-  n.del
     
     
     
     if(saveTrajectories) {
-      replicateTraj  <-  c(replicateTraj, rep(i, times=length(repRes$InvFreq)))
-      InvFreqTraj    <-  c(InvFreqTraj, repRes$InvFreq)
-      E.InvFreqTraj  <-  c(E.InvFreqTraj, repRes$E.InvFreq)
-      InvFreq_fTraj  <-  c(InvFreq_fTraj, repRes$InvFreq_f)
-      InvFreq_mTraj  <-  c(InvFreq_mTraj, repRes$InvFreq_m)
-      E.InvFreq_fTraj <- c(E.InvFreq_fTraj, repRes$E.InvFreq_f)
-      E.InvFreq_mTraj <- c(E.InvFreq_mTraj, repRes$E.InvFreq_m)
-      W.meanTraj     <-  c(W.meanTraj, repRes$W.mean)
-      Wf.meanTraj     <-  c(Wf.meanTraj, repRes$Wf.mean)
-      Wm.meanTraj     <-  c(Wm.meanTraj, repRes$Wm.mean)
+      replicateTraj    <-  c(replicateTraj, rep(i, times=length(repRes$InvFreq)))
+      InvFreqTraj      <-  c(InvFreqTraj, repRes$InvFreq)
+      E.InvFreqTraj    <-  c(E.InvFreqTraj, repRes$E.InvFreq)
+      InvFreq_fTraj    <-  c(InvFreq_fTraj, repRes$InvFreq_f)
+      InvFreq_mTraj    <-  c(InvFreq_mTraj, repRes$InvFreq_m)
+      E.InvFreq_fTraj  <-  c(E.InvFreq_fTraj, repRes$E.InvFreq_f)
+      E.InvFreq_mTraj  <-  c(E.InvFreq_mTraj, repRes$E.InvFreq_m)
+      Wbar_Traj        <-  c(Wbar_Traj, repRes$Wbar)
+      Wbar_fTraj       <-  c(Wbar_fTraj, repRes$Wbar_f)
+      Wbar_mTraj       <-  c(Wbar_mTraj, repRes$Wbar_m)
     } 
-    
-    setTxtProgressBar(pb, i)
+  setTxtProgressBar(pb, i)
   }
   
   # Save results and return results as a list
   results.df  <-  data.frame(
-    "finalInvFreq"    =  finalInvFreq,
-    "finalE.InvFreq"  =  finalE.InvFreq,
-    "finalInvFreq_f"  =  finalInvFreq_f,
-    "finalE.InvFreq_f" = finalE.InvFreq_f,
-    "finalInvFreq_m"  =  finalInvFreq_m,
-    "finalE.InvFreq_m" = finalE.InvFreq_m,
-    "finalW.mean"      = finalW.mean,  
-    "finalWf.mean"     =  finalWf.mean,
-    "finalWm.mean"     =  finalWm.mean,
-    "nGen"            =  nGen,
-    "invEst"          =  invEst,
-    "invEstTime"      =  invEstTime,
-    "nDels"           =  nDels
-  )
+                             "finalInvFreq"      =  finalInvFreq,
+                             "finalE.InvFreq"    =  finalE.InvFreq,
+                             "finalInvFreq_f"    =  finalInvFreq_f,
+                             "finalE.InvFreq_f"  =  finalE.InvFreq_f,
+                             "finalInvFreq_m"    =  finalInvFreq_m,
+                             "finalE.InvFreq_m"  =  finalE.InvFreq_m,
+                             "finalWbar_f"       =  finalWbar_f,
+                             "finalWbar_m"       =  finalWbar_m,
+                             "nGen"              =  nGen,
+                             "InvEst"            =  invEst,
+                             "InvEstTime"        =  invEstTime,
+                             "nDels"             =  nDels
+                             )
 
   if(saveTrajectories) {
     traj.df  <-  data.frame(
-      "replicateTraj"  =  replicateTraj,
-      "InvFreqTraj"    =  InvFreqTraj,
-      "E.InvFreqTraj"  =  E.InvFreqTraj,
-      "InvFreq_fTraj"  = InvFreq_fTraj,
-      "E.InvFreq_fTraj" = E.InvFreq_fTraj,
-      "InvFreq_mTraj"  = InvFreq_mTraj,
-      "E.InvFreq_mTraj" = E.InvFreq_mTraj,
-      "W.meanTraj"      = W.meanTraj,
-      "Wf.meanTraj"     =  Wf.meanTraj,
-      "Wm.meanTraj"     =  Wm.meanTraj
-    )
+                            "replicateTraj"    =  replicateTraj,
+                            "InvFreqTraj"      =  InvFreqTraj,
+                            "E.InvFreqTraj"    =  E.InvFreqTraj,
+                            "InvFreq_fTraj"    =  InvFreq_fTraj,
+                            "E.InvFreq_fTraj"  =  E.InvFreq_fTraj,
+                            "InvFreq_mTraj"    =  InvFreq_mTraj,
+                            "E.InvFreq_mTraj"  =  E.InvFreq_mTraj,
+                            "Wbar_fTraj"       =  Wbar_fTraj,
+                            "Wbar_mTraj"       =  Wbar_mTraj
+                            )
   } else {
     traj.df  <-  NULL
   }
   res  <-  list(
-    "results.df"  =  results.df,
-    "traj.df"     =  traj.df
-  )
+                "results.df"  =  results.df,
+                "traj.df"     =  traj.df
+                )
   return(res)
 }   
+
+
 
 #' Wrapper function to run replicate forward simulations for invasion
 #' of X-linked inversions in a Wright-Fisher population 
@@ -899,7 +872,7 @@ makeReplicateInvSimsDataXlinked  <-  function(nReps = 1000, N = 5000, mm.vals = 
   h.dels  <-  rep(h.del, times=nrow(data))
   data    <-  cbind(data, sfs, sms, hs, Ns, us, h.dels)
   colnames(data)  <-  c("finalInvFreq", "finalE.InvFreq", "finalInvFreq_f", "finalE.InvFreq_f", "finalInvFreq_m", "finalE.InvFreq_m", 
-                        "finalW.mean", "finalWf.mean", "finalWm.mean", "nGen", "invEst", "invEstTime", "nDels", "rs", "mms", "mfs",
+                        "finalWbar", "finalWbar_f", "finalWbar_m", "nGen", "invEst", "invEstTime", "nDels", "rs", "mms", "mfs",
                         "sf.dels", "sm.dels", "sfs", "sms", "hs", "Ns", "us", "h.dels")
   
   # create file name
