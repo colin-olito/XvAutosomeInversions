@@ -787,6 +787,31 @@ runReplicateInvSimsXlinked  <-  function(nReps = 1000, N = 5000, mm = 0.01, mf =
 
 
 
+
+#' Generate corner case values to explore equal/female-limited/male-limited cases of a parameter
+#' 
+#' @title Generate corner case values to explore equal/female-limited/male-limited cases of a parameter
+#' @param mu Vector of mean values about which corner cases are to be calucalted
+#' @param delta Vector of deviations from mean for sex-biased expression. 
+#'        Note: when delta = mu, this gives sex-limited expression.
+#' @seealso `makeReplicateAutoInvSimsDataSexSpec`
+#' @export
+#' @author Colin Olito
+makeCornerCaseVals  <-  function(mu = c(0.001, 0.002), delta = c(0.001, 0.002)) {
+  fVals  <-  c()
+  mVals  <-  c()
+
+  for(i in 1:length(mu)) {
+    tmp1  <-  c(mu[i], (mu[i] + delta[i]), (mu[i] - delta[i]))
+    tmp2  <-  c(mu[i], (mu[i] - delta[i]), (mu[i] + delta[i]))
+    fVals  <-  c(fVals,tmp1)
+    mVals  <-  c(mVals,tmp2)
+  }
+  return(rbind(fVals,mVals))
+}
+
+
+
 #' Wrapper function to run replicate forward simulations for invasion
 #' of X-linked inversions in a Wright-Fisher population 
 #' USING DESIGNATED PARAMETER VALUES
