@@ -876,8 +876,8 @@ makeFastReplicateAutoSexSpecInvSimsData  <-  function(nReps = 1000, N = 20000, h
 				# 3) strongly deleterious (twice the selective advantage of locally adaptive alleles)
 # uncomment to explore effects of deleterious mutations
 #				s.del.vals  <-  c(0, 1, 2*sMu[j]) 
-				s.del.vals  <-  0
-				
+				s.del.vals <- 2*sMu[j]
+			
 				for(k in 1:length(s.del.vals)) {
 					for(l in 1:ncol(rs)) {
 
