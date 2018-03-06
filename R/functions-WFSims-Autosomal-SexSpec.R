@@ -820,6 +820,8 @@ makeCornerCaseVals  <-  function(mu = c(0.001, 0.002), delta = c(0.001, 0.002)) 
 #'                 behaviour is to explore equal, female-limited, and male-limited expression of locally adaptive alleles)
 #' @param r.vals Vector of desired recombination rates among the two loci involved in local adaptation (r = 0.1).
 #'                (NOTE: see comments in function for instructions to explore sex-limited recombination).
+#' @param s.del.opt  Option specifying fitness effects of deleterious mutations captured by inversion. 
+#'                   Can take one of three values: "none", "lethal", or "strong".
 #' @param n      Number of loci at which deleterious mutations may occur.
 #' @param u      Mutation rate (default value of u = 1e-6).
 #' @param h.del  Dominance of deleterious mutations (default value of h = 0).
@@ -844,8 +846,8 @@ makeCornerCaseVals  <-  function(mu = c(0.001, 0.002), delta = c(0.001, 0.002)) 
 makeFastReplicateAutoSexSpecInvSimsData  <-  function(nReps = 1000, N = 20000, h = 1/2, 
 													  m.vals = c(0.0005, 0.001), m.deltas = NULL,
 													  s.vals = c(0.001, 0.05), s.deltas = NULL, 
+						                              s.del.opt = "none", n = 100, u = 1e-5, h.del = 0, noDel = FALSE, 
 													  r.vals = seq(from = 0, to = 0.5, by = 0.025),
-													  n = 100, u = 1e-5, h.del = 0, noDel = FALSE, 
 													  fastSim = TRUE, newMutant=c("random","random"), 
 													  saveTrajectories = FALSE) {
 
@@ -856,6 +858,15 @@ makeFastReplicateAutoSexSpecInvSimsData  <-  function(nReps = 1000, N = 20000, h
 	ms   <-  makeCornerCaseVals(mu = m.vals, delta = m.vals) # use delta = m.deltas for alternative sex-biased parameterizations
 	ss   <-  makeCornerCaseVals(mu = s.vals, delta = s.vals) # use delta = s.deltas for alternative sex-biased parameterizations
 	sMu  <-  colSums(ss)
+
+	# Workaround for s.del options
+	if(s.del.opt == "none") {
+	    s.del.val  <-  0    
+	}
+	if(s.del.opt == "lethal") {
+	    s.del.val  <-  1    
+	}
+
 # uncomment to explore sex-limited recombination rates
 #	rfs  <-  c(r.vals, r.vals, rep(0, length=length(r.vals)))
 #	rms  <-  c(r.vals, rep(0, length=length(r.vals)), r.vals)
@@ -870,35 +881,31 @@ makeFastReplicateAutoSexSpecInvSimsData  <-  function(nReps = 1000, N = 20000, h
 
 		for (i in 1:ncol(ms)) {
 			for (j in 1:ncol(ss)) {
-				# Simulate deleterious mutations that are either 
-				# 1) neutral
-				# 2) lethals 
-				# 3) strongly deleterious (twice the selective advantage of locally adaptive alleles)
-# uncomment to explore effects of deleterious mutations
-#				s.del.vals  <-  c(0, 1, 2*sMu[j]) 
-				s.del.vals <- 2*sMu[j]
+
+				# Strong deleterious mutations (function of s.Mu, so must be inside ss loop)
+				  if(s.del.opt == "strong") {
+				      s.del.val  <-  2*sMu[j]    
+				  }
 			
-				for(k in 1:length(s.del.vals)) {
-					for(l in 1:ncol(rs)) {
+				for(k in 1:ncol(rs)) {
 
-						# Display progress in terminal
-						prog  <-  prog + 1
-						if(prog %% 100 == 0) {
-							cat("\n",paste('Running simulations for parameter set ', prog, "/", tot),"\n")
-						}
-
-						# Run simulations
-						res  <-  runReplicateAutoInvSimsSexSpec(nReps = nReps, N = N, h = h,
-																mf = ms[1,i], mm = ms[2,i], 
-																sf = ss[1,j], sm = ss[2,j],
-																n = n, u = u, h.del = h.del, s.del = s.del.vals[k], 
-																rf = rfs[l], rm = rms[l],
-																newMutant = newMutant)
-						# Append data 
-						dat   <-  c(ms[1,i], ms[2,i], ss[1,j], ss[2,j], s.del.vals[k], rfs[l], rms[l], mean(res$results$nDels), (sum(res$results.df$InvEst)/length(res$results.df$InvEst)))
-						data  <-  rbind(data, dat)
-						rm(dat,res)
+					# Display progress in terminal
+					prog  <-  prog + 1
+					if(prog %% 100 == 0) {
+						cat("\n",paste('Running simulations for parameter set ', prog, "/", tot),"\n")
 					}
+
+					# Run simulations
+					res  <-  runReplicateAutoInvSimsSexSpec(nReps = nReps, N = N, h = h,
+															mf = ms[1,i], mm = ms[2,i], 
+															sf = ss[1,j], sm = ss[2,j],
+															n = n, u = u, h.del = h.del, s.del = s.del.val, 
+															rf = rfs[k], rm = rms[k],
+															newMutant = newMutant)
+					# Append data 
+					dat   <-  c(ms[1,i], ms[2,i], ss[1,j], ss[2,j], s.del.val, rfs[k], rms[k], mean(res$results$nDels), (sum(res$results.df$InvEst)/length(res$results.df$InvEst)))
+					data  <-  rbind(data, dat)
+					rm(dat,res)
 				}
 			}
 		}
@@ -916,7 +923,7 @@ makeFastReplicateAutoSexSpecInvSimsData  <-  function(nReps = 1000, N = 20000, h
 						  )
 	
 	# create file name
-	filename  <-  paste("./output/data/simResults/SexSpecFast", "_N", N, "_h", h, "_n", n, "_u", u, "_nReps", nReps, ".csv", sep="")
+	filename  <-  paste("./output/data/simResults/SexSpecFast", "_N", N, "_h", h, "_n", n, "_u", u, "_sDel_", s.del.opt, "_nReps", nReps, ".csv", sep="")
 
 	# export data as .csv to ./output/data
 	write.csv(data, file=filename, row.names = FALSE)
