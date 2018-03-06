@@ -865,7 +865,7 @@ makeFastReplicateAutoSexSpecInvSimsData  <-  function(nReps = 1000, N = 20000, h
 
 	# Convenience variables to monitor progress
 	prog  <-  0
-	tot   <-  ncol(ms)*ncol(ss)*2*length(rfs)
+	tot   <-  ncol(ms)*ncol(ss)*1*length(rfs)
 	cat("\n",paste('Running simulations for parameter set ', 1, "/", tot),"\n")
 
 		for (i in 1:ncol(ms)) {

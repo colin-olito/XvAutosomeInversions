@@ -78,13 +78,13 @@ x.1  <-  function(Fii=Fii, m=mf, r=rf) {
   ((2*Fii[1] + (Fii[2] + Fii[6]) + (Fii[3] + Fii[11]) + (Fii[4] + Fii[16]) + (Fii[5] + Fii[21])) / 2)*(1 - m) - r*Dstar(Fii=Fii, m=m) + m
 } 
 x.2  <-  function(Fii=Fii, m=mf, r=rf) {
-  ((2*Fii[7] + (Fii[2] + Fii[6]) + (Fii[8] + Fii[12]) + (Fii[9] + Fii[17]) + (Fii[10] + Fii[22])) / 2)*(1 - m) + r*Dstar(Fii=Fii, m=mf)
+  ((2*Fii[7] + (Fii[2] + Fii[6]) + (Fii[8] + Fii[12]) + (Fii[9] + Fii[17]) + (Fii[10] + Fii[22])) / 2)*(1 - m) + r*Dstar(Fii=Fii, m=m)
 }
 x.3  <-  function(Fii=Fii, m=mf, r=rf) {
-  ((2*Fii[13] + (Fii[3] + Fii[11]) + (Fii[8] + Fii[12]) + (Fii[14] + Fii[18]) + (Fii[15] + Fii[23])) / 2)*(1 - m) + r*Dstar(Fii=Fii, m=mf)
+  ((2*Fii[13] + (Fii[3] + Fii[11]) + (Fii[8] + Fii[12]) + (Fii[14] + Fii[18]) + (Fii[15] + Fii[23])) / 2)*(1 - m) + r*Dstar(Fii=Fii, m=m)
 }
 x.4  <-  function(Fii=Fii, m=mf, r=rf) {
-  ((2*Fii[19] + (Fii[4] + Fii[16]) + (Fii[9] + Fii[17]) + (Fii[14] + Fii[18]) + (Fii[20] + Fii[24])) / 2)*(1 - m) - r*Dstar(Fii=Fii, m=mf)
+  ((2*Fii[19] + (Fii[4] + Fii[16]) + (Fii[9] + Fii[17]) + (Fii[14] + Fii[18]) + (Fii[20] + Fii[24])) / 2)*(1 - m) - r*Dstar(Fii=Fii, m=m)
 }
 x.5  <-  function(Fii=Fii, m=mf, r=rf) {
   ((2*Fii[25] + (Fii[5] + Fii[21]) + (Fii[10] + Fii[22]) + (Fii[15] + Fii[23]) + (Fii[20] + Fii[24])) / 2)*(1 - m)
@@ -109,7 +109,8 @@ y.5 <- function(Fii=Fii, m=mm) {
 
 #' Offspring frequencies after random mating for X linked haplotypes
 #' @title Offspring frequencies after random mating
-#' @param xi Vector of haplotype frequencies among gametes (of length = 5)
+#' @param xi Vector of haplotype frequencies among female gametes (of length = 5)
+#' @param yi Vector of haplotype frequencies among male gametes (of length = 5)
 #' @export
 #' Females
 offFreq_f  <-  function(xi, yi) {
@@ -159,10 +160,10 @@ findEqFreqsX  <-  function(Wf, Wm, mm, mf, r, threshold = 1e-6) {
   # Arbitrarily initiate with equal frequences 
   # for all non-inversion genotypes
   Fii.f.init  <-  c(1/16, 1/16, 1/16, 1/16, 0, 
-                  1/16, 1/16, 1/16, 1/16, 0, 
-                  1/16, 1/16, 1/16, 1/16, 0, 
-                  1/16, 1/16, 1/16, 1/16, 0, 
-                  0,    0,    0,    0, 0)
+                    1/16, 1/16, 1/16, 1/16, 0, 
+                    1/16, 1/16, 1/16, 1/16, 0, 
+                    1/16, 1/16, 1/16, 1/16, 0, 
+                    0,    0,    0,    0,    0)
 
   Fii.m.init <- c(1/4, 1/4, 1/4, 1/4, 0)
   
@@ -630,7 +631,7 @@ introduceInversion  <-  function(newMutant, Fii.f.init, Fii.m.init, N) {
 #' @seealso `offFreq`, `findEqFreqsX`, `InvFwdSimXlinked`
 #' @export
 #' @author Colin Olito - Modified for X-linked by Homa Papoli
-runReplicateInvSimsXlinked  <-  function(nReps = 1000, N = 5000, mm = 0.01, mf = 0.01, sf = 0.02, sm = 0.02,  h = 1/2, r = 0.5, 
+runReplicateInvSimsXlinked  <-  function(nReps = 1000, N = 5000, mf = 0.01, mm = 0.01, sf = 0.02, sm = 0.02, h = 1/2, r = 0.5, 
                                       n = 100, u = 1e-5, h.del = 0, sf.del = 1, sm.del = 1, noDel = FALSE,
                                       fastSim = TRUE, newMutant = c("random","random"), saveTrajectories = FALSE) { 
 
@@ -652,9 +653,9 @@ runReplicateInvSimsXlinked  <-  function(nReps = 1000, N = 5000, mm = 0.01, mf =
                 (1 + h*sf)^2, (1 + h*sf)*(1 + sf), (1 + sf)*(1 + h*sf), (1 + sf)^2,          0,
                  0,            0,                   0,                   0,                  0)
   Wm.init  <-  c(1, (1 + sm), (1 + sm), (1 + sm)^2, 0)
-  
+
   ## Find deterministic equilibrium frequencies in absence of inversion in females and males
-  eq_freq    <-  findEqFreqsX(Wf=Wf.init, Wm=Wm.init, mm=mm, mf=mf, r=r, threshold = 1e-7)
+  eq_freq    <-  findEqFreqsX(Wf=Wf.init, Wm=Wm.init, mf=mf, mm=mm, r=r, threshold = 1e-7)
   Fii.f.init <-  eq_freq[[1]] # First element of the list for females  
   Fii.m.init <-  eq_freq[[2]] # Second element of the list for for males
   
@@ -811,6 +812,122 @@ makeCornerCaseVals  <-  function(mu = c(0.001, 0.002), delta = c(0.001, 0.002)) 
 }
 
 
+#!!! EDIT FROM HERE !!!#
+
+#' Wrapper function to run replicate forward simulations for invasion
+#' of autosomal inversions in a Wright-Fisher population 
+#' 
+#' @title Run replicate Wright-Fisher forward simulations for autosomal inversion under different parameter values 
+#' @param nReps  Number of replicate simulations to run for each parameter set
+#' @param N      Total population size
+#' @param h      Dominance coefficient for locally adaptive alleles relative to migrant alleles (h = 0.5)
+#' @param m.vals Vector of mean migration rates for locally maladaptive alleles 
+#' @param m.deltas Vector of differences between mean and sex-biased migration rates (if m.deltas = NULL, default
+#'                 behaviour is to explore equal, female-limited, and male-limited migration)
+#' @param s.vals Vector of mean selection coefficients favouring locally adaptive alleles 
+#' @param s.deltas Vector of differences between mean and sex-biased selection coefficients (if s.deltas = NULL, default
+#'                 behaviour is to explore equal, female-limited, and male-limited expression of locally adaptive alleles)
+#' @param r.vals Vector of desired recombination rates among the two loci involved in local adaptation (r = 0.1).
+#'                (NOTE: see comments in function for instructions to explore sex-limited recombination).
+#' @param n      Number of loci at which deleterious mutations may occur.
+#' @param u      Mutation rate (default value of u = 1e-6).
+#' @param h.del  Dominance of deleterious mutations (default value of h = 0).
+#' @param noDel  Omit fitness effects of deleterious mutations? Defalut value of FALSE assumes that 
+#'         selection against deleterious mutations is twice as strong as selection favouring
+#'         the locally adaptive alleles. Setting noDel = TRUE runs the W-F simulations as if
+#'         there were no delterious mutations segregating in the population that are linked
+#'         to the loci involved in local adaptation. 
+#' @param fastSim     Logical. Use threshold frequency for establishment of inversion? 
+#' @param saveTrajectories  Save evolutionary trajectories of inversion frequencies? Setting this 
+#'              to TRUE can become extremely memory intensive if you are running many
+#'              replicate simulations (see warning).
+#'              otherwise
+#' @param newMutant  Switch to choose whether to specify new mutant genotypes, or if they are 
+#'           chosen randomly, given initial genotypic frequencies (Fii.f.init and Fii.m.init). 
+#'           A 2 positions vector ("m"/"f"/"random", "numeric"/"random"). the first position specify wether the inversions come in males, 
+#'           in females, or randomnly. The second select either a numerical position in the haplotype vector for the inversion genotype to be created
+#'           or wether it is random.
+#' @seealso `offFreq`, `findEqFreqs`, `autoInvFwdSimSexSpec` runReplicateAutoInvSimsSexSpec
+#' @export
+#' @author Colin Olito
+makeFastReplicateInvSimsDataXlinked  <-  function(nReps = 1000, N = 20000, h = 1/2, 
+                            m.vals = c(0.0005, 0.001), m.deltas = NULL,
+                            s.vals = c(0.001, 0.05), s.deltas = NULL, 
+                            r.vals = seq(from = 0, to = 0.5, by = 0.05),
+                            n = 100, u = 1e-5, h.del = 0, noDel = FALSE, 
+                            fastSim = TRUE, newMutant=c("random","random"), 
+                            saveTrajectories = FALSE) {
+
+  # create empty data frame with same structure as we are going to need
+  data  <-  data.frame(matrix(ncol=9, nrow=0))
+
+  # make parameter values for equal/female-limited/male-limited cases
+  ms   <-  makeCornerCaseVals(mu = m.vals, delta = m.vals) # use delta = m.deltas for alternative sex-biased parameterizations
+  ss   <-  makeCornerCaseVals(mu = s.vals, delta = s.vals) # use delta = s.deltas for alternative sex-biased parameterizations
+  sMu  <-  colSums(ss)
+
+  # Convenience variables to monitor progress
+  prog  <-  0
+  tot   <-  ncol(ms)*ncol(ss)*1*length(r.vals)
+  cat("\n",paste('Running simulations for parameter set ', 1, "/", tot),"\n")
+
+    for (i in 1:ncol(ms)) {
+      for (j in 1:ncol(ss)) {
+        # Simulate deleterious mutations that are either 
+        # 1) neutral
+        # 2) lethals 
+        # 3) strongly deleterious (twice the selective advantage of locally adaptive alleles)
+# uncomment to explore effects of deleterious mutations
+#       s.del.vals  <-  2*sMu[j] 
+        s.del.vals  <-  0
+        for(k in 1:length(s.del.vals)) {
+          for(l in 1:length(r.vals)) {
+
+            # Display progress in terminal
+            prog  <-  prog + 1
+            if(prog %% 100 == 0) {
+              cat("\n",paste('Running simulations for parameter set ', prog, "/", tot),"\n")
+            }
+
+            # Run simulations
+            res  <-  runReplicateInvSimsXlinked(nReps = nReps, N = N, h = h, newMutant = newMutant,
+                                                n = n, u = u, h.del = h.del, 
+                                                mf = ms[1,i], mm = ms[2,i], 
+                                                sf = ss[1,j], sm = ss[2,j],
+                                                sf.del = s.del.vals[k], sm.del = s.del.vals[k], 
+                                                r = r.vals[l])
+            # Append data 
+            dat   <-  c(ms[1,i], ms[2,i], ss[1,j], ss[2,j], s.del.vals[k], r.vals[l], NA, mean(res$results$nDels), (sum(res$results.df$InvEst)/length(res$results.df$InvEst)))
+            data  <-  rbind(data, dat)
+            rm(dat,res)
+          }
+        }
+      }
+    }
+
+  # add variable names to data frame
+  colnames(data)  <-  c("mf",
+                        "mm",
+                        "sf",
+                        "sm",
+                        "s.dels",
+                        "rf",
+                        "rm",
+                        "av.nDels",
+                        "PropEst"
+                        )
+  
+  # create file name
+  filename  <-  paste("./output/data/simResults/XlinkedFast", "_N", N, "_h", h, "_n", n, "_u", u, "_nReps", nReps, ".csv", sep="")
+
+  # export data as .csv to ./output/data
+  write.csv(data, file=filename, row.names = FALSE)
+
+  #  Return results in case user wants it
+  return(data)
+}
+
+
 
 #' Wrapper function to run replicate forward simulations for invasion
 #' of X-linked inversions in a Wright-Fisher population 
@@ -840,73 +957,73 @@ makeCornerCaseVals  <-  function(mu = c(0.001, 0.002), delta = c(0.001, 0.002)) 
 #' @seealso `offFreq`, `findEqFreqsX`, `InvFwdSimXlinked`
 #' @export
 #' @author Colin Olito - Modified for X-linked by Homa Papoli
-makeReplicateInvSimsDataXlinked  <-  function(nReps = 1000, N = 5000, mm.vals = c(0.01, 0.05), mf.vals = c(0.01, 0.05), 
-                                           sf = 0.1, sm = 0.1, h = 1/2, r.vals = c(0.5, 0.1), n = 100, u = 1e-5, h.del = 0, newMutant="random", male = FALSE, saveTrajectories = FALSE) {
+#makeReplicateInvSimsDataXlinked  <-  function(nReps = 1000, N = 5000, mm.vals = c(0.01, 0.05), mf.vals = c(0.01, 0.05), 
+#                                           sf = 0.1, sm = 0.1, h = 1/2, r.vals = c(0.5, 0.1), n = 100, u = 1e-5, h.del = 0, newMutant="random", male = FALSE, saveTrajectories = FALSE) {
   
   # Simulate deleterious mutations that are either 
   # 1) recessive lethals OR
   # 2) recessive experiencing purifying selection
   #    that is twice as strong as the selective 
   #    advantage of the locally adaptive allels  
-  sf.del.vals = c(0, 1, 2*sf)
-  sm.del.vals = c(0, 1, 2*sm)
+#  sf.del.vals = c(0, 1, 2*sf)
+#  sm.del.vals = c(0, 1, 2*sm)
   
   # create empty data frame with same structure as we are going to need
-  data  <-  data.frame(matrix(ncol=13, nrow=0))
+#  data  <-  data.frame(matrix(ncol=13, nrow=0))
   
   # Convenience variables to monitor progress
-  prog  <-  0
-  tot   <-  length(r.vals)*length(mm.vals)*length(sf.del.vals)
+#  prog  <-  0
+#  tot   <-  length(r.vals)*length(mm.vals)*length(sf.del.vals)
   # For single population size. Loop of population size will change with recombination rate. 
   # Loop over parameter values we want to explore 
-  for(j in 1:length(r.vals)) {
-    for(k in 1:length(mm.vals)) {
-      for(l in 1:length(sf.del.vals)) {
+#  for(j in 1:length(r.vals)) {
+#    for(k in 1:length(mm.vals)) {
+#      for(l in 1:length(sf.del.vals)) {
         
         # Display progress in terminal
-        prog  <-  prog + 1
-        cat("\n",paste('Running simulations for parameter set ', prog, "/", tot),"\n")
+#        prog  <-  prog + 1
+#        cat("\n",paste('Running simulations for parameter set ', prog, "/", tot),"\n")
         
         # Run simulations  
-        res  <-  runReplicateInvSimsXlinked(nReps = nReps, N = N, mm = mm.vals[k], mf = mf.vals[k], sf = sf, sm = sm, h = h, r = r.vals[j], 
-                                         n = n, u = u, h.del = h.del, sf.del = sf.del.vals[l], sm.del = sm.del.vals[l],
-                                         noDel = FALSE, saveTrajectories = FALSE)
+#        res  <-  runReplicateInvSimsXlinked(nReps = nReps, N = N, mm = mm.vals[k], mf = mf.vals[k], sf = sf, sm = sm, h = h, r = r.vals[j], 
+#                                         n = n, u = u, h.del = h.del, sf.del = sf.del.vals[l], sm.del = sm.del.vals[l],
+#                                         noDel = FALSE, saveTrajectories = FALSE)
         
         # Save data 
-        rs      <-  rep(r.vals[j], times=nrow(res$results.df))
-        mms      <-  rep(mm.vals[k], times=nrow(res$results.df))
-        mfs      <-  rep(mf.vals[k], times=nrow(res$results.df))
-        sf.dels  <-  rep(sf.del.vals[l], times=nrow(res$results.df))
-        sm.dels  <-  rep(sm.del.vals[l], times=nrow(res$results.df))
+#        rs      <-  rep(r.vals[j], times=nrow(res$results.df))
+#        mms      <-  rep(mm.vals[k], times=nrow(res$results.df))
+#        mfs      <-  rep(mf.vals[k], times=nrow(res$results.df))
+#        sf.dels  <-  rep(sf.del.vals[l], times=nrow(res$results.df))
+#        sm.dels  <-  rep(sm.del.vals[l], times=nrow(res$results.df))
         
         # Append to data frame
-        df      <-  cbind(res$results.df, rs, mms, mfs, sf.dels, sm.dels)
-        data    <-  rbind(data, df)
-        rm(df)
+#        df      <-  cbind(res$results.df, rs, mms, mfs, sf.dels, sm.dels)
+#        data    <-  rbind(data, df)
+#        rm(df)
         
-      }
-    }
-  }
+#      }
+#    }
+#  }
   
   # Include constant variables in data frame
-  sfs      <-  rep(sf, times=nrow(data))
-  sms      <-  rep(sm, times=nrow(data))
-  hs      <-  rep(h, times=nrow(data))
-  Ns      <-  rep(N, times=nrow(data))
-  us      <-  rep(u, times=nrow(data))
-  h.dels  <-  rep(h.del, times=nrow(data))
-  data    <-  cbind(data, sfs, sms, hs, Ns, us, h.dels)
-  colnames(data)  <-  c("finalInvFreq", "finalE.InvFreq", "finalInvFreq_f", "finalE.InvFreq_f", "finalInvFreq_m", "finalE.InvFreq_m", 
-                        "finalWbar", "finalWbar_f", "finalWbar_m", "nGen", "invEst", "invEstTime", "nDels", "rs", "mms", "mfs",
-                        "sf.dels", "sm.dels", "sfs", "sms", "hs", "Ns", "us", "h.dels")
+#  sfs      <-  rep(sf, times=nrow(data))
+#  sms      <-  rep(sm, times=nrow(data))
+#  hs      <-  rep(h, times=nrow(data))
+#  Ns      <-  rep(N, times=nrow(data))
+#  us      <-  rep(u, times=nrow(data))
+#  h.dels  <-  rep(h.del, times=nrow(data))
+#  data    <-  cbind(data, sfs, sms, hs, Ns, us, h.dels)
+#  colnames(data)  <-  c("finalInvFreq", "finalE.InvFreq", "finalInvFreq_f", "finalE.InvFreq_f", "finalInvFreq_m", "finalE.InvFreq_m", 
+#                        "finalWbar", "finalWbar_f", "finalWbar_m", "nGen", "invEst", "invEstTime", "nDels", "rs", "mms", "mfs",
+#                        "sf.dels", "sm.dels", "sfs", "sms", "hs", "Ns", "us", "h.dels")
   
   # create file name
-  filename  <-  paste("./output/data/simResults/Xlinked-InvSimsData", "_sf", sf, "_sm", sm, "_h", h, "_N", N, "_n", n, "_u", u, "_hdel", h.del, ".csv", sep="")
+#  filename  <-  paste("./output/data/simResults/Xlinked-InvSimsData", "_sf", sf, "_sm", sm, "_h", h, "_N", N, "_n", n, "_u", u, "_hdel", h.del, ".csv", sep="")
 
   # export data as .csv to ./output/data
-  write.csv(data, file=filename, row.names = FALSE)
+#  write.csv(data, file=filename, row.names = FALSE)
   
   #  Return results in case user wants it
-  return(data)
+#  return(data)
   
-}    
+#}    
