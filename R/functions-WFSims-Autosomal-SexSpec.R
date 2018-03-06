@@ -594,8 +594,7 @@ introduceInversion  <-  function(newMutant, Fii.f.init, Fii.m.init, N, ...) {
 #'
 #' @title Wright-Fisher forward simulation of genotypic frequencies (default parameter values in parentheses)
 #' @param nReps  Number of replicate simulations. With no deleterious mutations, and introducing 
-#' 				 a single copy of the inversion, it takes 1,600,000 replicate simulations to 
-#'				 get 10,000 where the inversion successfully establishes.
+#' 				 a single copy of the inversion.
 #' @param N      Effective population size
 #' @param mf     Migration rate for locally maladaptive alleles (m =  0.01) in females
 #' @param mm     Migration rate for locally maladaptive alleles (m =  0.01) in males
@@ -616,7 +615,6 @@ introduceInversion  <-  function(newMutant, Fii.f.init, Fii.m.init, N, ...) {
 #' @param saveTrajectories  Save evolutionary trajectories of inversion frequencies? Setting this 
 #' 							to TRUE can become extremely memory intensive if you are running many
 #' 							replicate simulations (see warning).
-#' 							otherwise
 #' @param newMutant  Switch to choose whether to specify new mutant genotypes, or if they are 
 #' 					 chosen randomly, given initial genotypic frequencies (Fii.f.init and Fii.m.init). 
 #'					 A 2 positions vector ("m"/"f"/"random", "numeric"/"random"). the first position specify wether the inversions come in males, 
@@ -749,12 +747,12 @@ runReplicateAutoInvSimsSexSpec  <-  function(nReps = 1000, N = 5000, mm = 0.01, 
 	results.df  <-  data.frame(
 							  	"finalInvFreq"     =  finalInvFreq,
 								"finalE.InvFreq"   =  finalE.InvFreq,
+								"finalInvFreq_f"   =  finalInvFreq_f,
+								"finalE.InvFreq_f" =  finalE.InvFreq_f,
+								"finalInvFreq_m"   =  finalInvFreq_m,
+								"finalE.InvFreq_m" =  finalE.InvFreq_m,
 								"finalWbar_f"      =  finalWbar_f,
 								"finalWbar_m"      =  finalWbar_m,
-								"finalInvFreq_f"   =  finalInvFreq_f,
-								"finalInvFreq_m"   =  finalInvFreq_m,
-								"finalE.InvFreq_f" =  finalE.InvFreq_f,
-								"finalE.InvFreq_m" =  finalE.InvFreq_m,
 								"nGen"             =  nGen,
 								"InvEst"           =  InvEst,
 								"InvEstTime"       =  InvEstTime,
@@ -765,12 +763,12 @@ runReplicateAutoInvSimsSexSpec  <-  function(nReps = 1000, N = 5000, mm = 0.01, 
 								"replicateTraj"   =  replicateTraj,
 								"InvFreqTraj"     =  InvFreqTraj,
 								"E.InvFreqTraj"   =  E.InvFreqTraj,
-								"Wbar_fTraj"      =  Wbar_fTraj,
-								"Wbar_mTraj"      =  Wbar_mTraj,
 								"InvFreq_fTraj"   =  InvFreq_fTraj,
-								"InvFreq_mTraj"   =  InvFreq_mTraj,
 								"E.InvFreq_fTraj" =  E.InvFreq_fTraj, 
-								"E.InvFreq_mTraj" =  E.InvFreq_mTraj
+								"InvFreq_mTraj"   =  InvFreq_mTraj,
+								"E.InvFreq_mTraj" =  E.InvFreq_mTraj,
+								"Wbar_fTraj"      =  Wbar_fTraj,
+								"Wbar_mTraj"      =  Wbar_mTraj
 								)
 	} else {
 		traj.df  <-  NULL
@@ -787,7 +785,9 @@ runReplicateAutoInvSimsSexSpec  <-  function(nReps = 1000, N = 5000, mm = 0.01, 
 #' Generate corner case values to explore equal/female-limited/male-limited cases of a parameter
 #' 
 #' @title Generate corner case values to explore equal/female-limited/male-limited cases of a parameter
-#' @param mu Vector of mean values about which corner cases are to be calucalted
+#' @param mu    Vector of mean values about which corner cases are to be calucalted
+#' @param delta Vector of deviations from mean for sex-biased expression. 
+#' 				Note: when delta = mu, this gives sex-limited expression.
 #' @seealso `makeReplicateAutoInvSimsDataSexSpec`
 #' @export
 #' @author Colin Olito
@@ -916,7 +916,7 @@ makeFastReplicateAutoSexSpecInvSimsData  <-  function(nReps = 1000, N = 20000, h
 						  )
 	
 	# create file name
-	filename  <-  paste("./output/data/simResults/testFast", "_N", N, "_h", h, "_n", n, "_u", u, "_nReps", nReps, ".csv", sep="")
+	filename  <-  paste("./output/data/simResults/SexSpecFast", "_N", N, "_h", h, "_n", n, "_u", u, "_nReps", nReps, ".csv", sep="")
 
 	# export data as .csv to ./output/data
 	write.csv(data, file=filename, row.names = FALSE)
