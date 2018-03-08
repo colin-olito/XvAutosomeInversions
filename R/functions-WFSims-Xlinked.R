@@ -879,7 +879,7 @@ makeFastReplicateInvSimsDataXlinked  <-  function(nReps = 1000, N = 20000, h = 1
 
           # Display progress in terminal
           prog  <-  prog + 1
-          if(prog %% 100 == 0) {
+          if(prog %% 10 == 0) {
             cat("\n",paste('Running simulations for parameter set ', prog, "/", tot),"\n")
           }
 
