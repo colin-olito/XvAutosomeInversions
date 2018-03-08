@@ -624,7 +624,7 @@ introduceInversion  <-  function(newMutant, Fii.f.init, Fii.m.init, N, ...) {
 #' @export
 #' @author Ludovic Dutoit based on Colin Olito.
 runReplicateAutoInvSimsSexSpec  <-  function(nReps = 1000, N = 5000, mm = 0.01, mf = 0.01, sf = 0.1, sm = 0.1, h = 1/2, rf = 0.5, rm = 0.5, 
-									  		 n = 100, u = 1e-5, h.del = 0, s.del = 1, noDel = FALSE,
+									  		 n = 100, u = 1e-5, h.del = 0, s.del = 0, noDel = FALSE,
 									  		 fastSim = TRUE, saveTrajectories = FALSE, newMutant = c("random","random")) {
 
 	##  Preemptive Warnings
@@ -692,13 +692,13 @@ runReplicateAutoInvSimsSexSpec  <-  function(nReps = 1000, N = 5000, mm = 0.01, 
 	for(i in 1:nReps) {
 
 	## Sample stationary distribution of deleterious alleles
-	delMutFreq  <-  rejectionSampler(n = n, Ne = N, u = u)
-	n.del       <-  sum(delMutFreq > runif(n=n))
-
-	# Define fitness expressions, including fitness effects of deleterious mutations
 	if(noDel) {
 		s.del  <-  0
 	}
+	delMutFreq  <-  rejectionSampler(n = n, Ne = N, u = u, s = s.del, h = h.del)
+	n.del       <-  sum(delMutFreq > runif(n=n))
+
+	# Define fitness expressions, including fitness effects of deleterious mutations
 	Wf  <-  c(1,                                   (1 + h*sf),                                  (1 + h*sf),                                  (1 + h*sf)^2,                       (1 + h*sf)^2*(1 - h.del*s.del)^n.del,
 			 (1 + h*sf),                           (1 + sf),                                    (1 + h*sf)^2,                                (1 + h*sf)*(1 + sf),                (1 + h*sf)*(1 + sf)*(1 - h.del*s.del)^n.del,
 			 (1 + h*sf),                           (1 + h*sf)^2,                                (1 + sf),                                    (1 + sf)*(1 + h*sf),                (1 + sf)*(1 + h*sf)*(1 - h.del*s.del)^n.del,

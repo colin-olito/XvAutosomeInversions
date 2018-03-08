@@ -118,15 +118,7 @@ offFreq_f  <-  function(xi, yi) {
            (xi[2]*yi[1]), (xi[2]*yi[2]), (xi[2]*yi[3]), (xi[2]*yi[4]), (xi[2]*yi[5]),
            (xi[3]*yi[1]), (xi[3]*yi[2]), (xi[3]*yi[3]), (xi[3]*yi[4]), (xi[3]*yi[5]),
            (xi[4]*yi[1]), (xi[4]*yi[2]), (xi[4]*yi[3]), (xi[4]*yi[4]), (xi[4]*yi[5]),
-           (xi[5]*yi[1]), (xi[5]*yi[2]), (xi[5]*yi[3]), (xi[5]*yi[4]), (xi[5]*yi[5])
-  )
-  O
-}
-
-# Males
-offFreq_m  <-  function(xi) {
-  O  <-  c(xi[1], xi[2], xi[3], xi[4], xi[5]
-  )
+           (xi[5]*yi[1]), (xi[5]*yi[2]), (xi[5]*yi[3]), (xi[5]*yi[4]), (xi[5]*yi[5]))
   O
 }
 
@@ -201,18 +193,17 @@ findEqFreqsX  <-  function(Wf, Wm, mm, mf, r, threshold = 1e-6) {
     
     # offspring genotype frequencies
     O_f  <-  offFreq_f(xi, yi)
-    O_m  <- offFreq_m(xi)
-    
+        
     # mean fitness 
     Wbar_f  <-  sum(O_f*Wf) 
-    Wbar_m  <-  sum(O_m*Wm)
+    Wbar_m  <-  sum(xi*Wm)
     
     # difference in expected frequency (has simulation reached equilibrium yet?)
     deltaF   <-  E.Fii.f[c(1:4,6:9,11:14,16:19)] - (O_f*Wf/Wbar_f)[c(1:4,6:9,11:14,16:19)]
-    deltaM   <-  E.Fii.m[c(1:4)] - (O_m*Wm/Wbar_m)[c(1:4)]
+    deltaM   <-  E.Fii.m[c(1:4)] - (xi*Wm/Wbar_m)[c(1:4)]
     delta    <- append(deltaF, deltaM)
     E.Fii.f  <-  O_f*Wf/Wbar_f
-    E.Fii.m  <-  O_m*Wm/Wbar_m
+    E.Fii.m  <-  xi*Wm/Wbar_m
   }
   
   names(E.Fii.f)  <-  NULL
@@ -253,7 +244,7 @@ findEqFreqsX  <-  function(Wf, Wm, mm, mf, r, threshold = 1e-6) {
 InvFwdSimXlinked  <-  function(Fii.f.init = Fii.f.init, Fii.m.init = Fii.m.init, 
                                N = N, Wf = Wf, Wm = Wm, mm = mm, mf = mf, sm = sm, sf = sf, r = r, 
                                fastSim = TRUE, saveTrajectories = FALSE, ...) {
-  
+
   # Use deterministic eq. initial frequencies
   Fii.f  <-  Fii.f.init
   Fii.m  <-  Fii.m.init
@@ -282,7 +273,7 @@ InvFwdSimXlinked  <-  function(Fii.f.init = Fii.f.init, Fii.m.init = Fii.m.init,
       ## Start forward simulation with newly introduced inversion
       gen  <-  1
       # use threshold frequency for establishment of inversion
-      while(InvFreq > 0 & InvFreq <= pcrit) {
+      while(InvFreq > 0 & InvFreq < pcrit) {
       
           ## Step through recursions:
           # 1) Calculate gamete frequencies
@@ -294,22 +285,19 @@ InvFwdSimXlinked  <-  function(Fii.f.init = Fii.f.init, Fii.m.init = Fii.m.init,
           }
           # 2) Offspring genotype frequencies
           O_f        <-  offFreq_f(xi, yi)
-          O_m        <-  offFreq_m(xi)
           # 3) Mean fitness 
           Wbar_f     <-  sum(O_f*Wf)
-          Wbar_m     <-  sum(O_m*Wm)
+          Wbar_m     <-  sum(xi*Wm)
           Wbar       <-  (Wbar_f + Wbar_m)/2 
           # 4) Expected frequencies
           E.Fii.f    <-  O_f*Wf/Wbar_f
-          E.Fii.m    <-  O_m*Wm/Wbar_m
+          E.Fii.m    <-  xi*Wm/Wbar_m
           # 5) Draw random frequencies in adults
           Fii.f      <-  as.vector(rmultinom(1, N/2, E.Fii.f)/(N/2))
           Fii.m      <-  as.vector(rmultinom(1, N/2, E.Fii.m)/(N/2))
-      
           # Realized frequencies
           InvFreq    <-  (sum(Fii.f[c(5,10,15,20:24)]/2, Fii.f[25]) + Fii.m[5])/2
           E.InvFreq  <-  (sum(Fii.f[c(5,10,15,20:24)]/2, Fii.f[25]) + Fii.m[5])/2
-      
           # next generation
           gen  <-  gen+1
       }
@@ -362,7 +350,7 @@ InvFwdSimXlinked  <-  function(Fii.f.init = Fii.f.init, Fii.m.init = Fii.m.init,
         Wm.mean      <-  rep(0, times=(4*N+1))
     
         # Initial inversion frequency
-        InvFreq[1]      <-  (sum(Fii.f[c(5,10,15,20:24)]/2, Fii.f[25]) + Fii.m[5])/2 #!!! Sum of all inverted genotypes in females and males.
+        InvFreq[1]      <-  (sum(Fii.f[c(5,10,15,20:24)]/2, Fii.f[25]) + Fii.m[5])/2 
         E.InvFreq[1]    <-  InvFreq[1]
         InvFreq_f[1]    <-  sum(Fii.f[c(5,10,15,20:24)]/2, Fii.f[25])
         E.InvFreq_f[1]  <-  InvFreq_f[1]
@@ -383,14 +371,13 @@ InvFwdSimXlinked  <-  function(Fii.f.init = Fii.f.init, Fii.m.init = Fii.m.init,
             }
             # 2) Offspring genotype frequencies
             O_f        <-  offFreq_f(xi, yi)
-            O_m        <-  offFreq_m(xi)
             # 3) Mean fitness 
             Wbar_f     <-  sum(O_f*Wf)
-            Wbar_m     <-  sum(O_m*Wm)
-            Wbar       <-  (Wbar_f+Wbar_m)/2 #!!! Mean fitness of the population. If Nm=Nf, then it seems division by 2 would be right.
+            Wbar_m     <-  sum(xi*Wm)
+            Wbar       <-  (Wbar_f+Wbar_m)/2 
             # 4) Expected frequencies
             E.Fii.f    <-  O_f*Wf/Wbar_f
-            E.Fii.m    <-  O_m*Wm/Wbar_m
+            E.Fii.m    <-  xi*Wm/Wbar_m
             # In deterministic case, E.Fii.f, that is the expected frequency would become the Fii.f for the next round. Here, however, we draw from the multinomial distribution
             # using the expected frequency to get the Fii.f for the new round. In this way, we generate stochasticity in the sampling of genotypes. 
             # 5) Draw random frequencies in adults
@@ -461,14 +448,13 @@ InvFwdSimXlinked  <-  function(Fii.f.init = Fii.f.init, Fii.m.init = Fii.m.init,
               }
               # 2) Offspring genotype frequencies
               O_f        <-  offFreq_f(xi, yi)
-              O_m        <-  offFreq_m(xi)
               # 3) Mean fitness 
               Wbar_f     <-  sum(O_f*Wf)
-              Wbar_m     <-  sum(O_m*Wm)
+              Wbar_m     <-  sum(xi*Wm)
               Wbar       <-  (Wbar_f+Wbar_m)/2 
               # 4) Expected frequencies
               E.Fii.f    <-  O_f*Wf/Wbar_f
-              E.Fii.m    <-  O_m*Wm/Wbar_m
+              E.Fii.m    <-  xi*Wm/Wbar_m
               # 5) Draw random frequencies in adults
               Fii.f      <-  as.vector(rmultinom(1, N/2, E.Fii.f)/(N/2))
               Fii.m      <-  as.vector(rmultinom(1, N/2, E.Fii.m)/(N/2))
@@ -632,7 +618,7 @@ introduceInversion  <-  function(newMutant, Fii.f.init, Fii.m.init, N) {
 #' @export
 #' @author Colin Olito - Modified for X-linked by Homa Papoli
 runReplicateInvSimsXlinked  <-  function(nReps = 1000, N = 5000, mf = 0.01, mm = 0.01, sf = 0.02, sm = 0.02, h = 1/2, r = 0.5, 
-                                      n = 100, u = 1e-5, h.del = 0, sf.del = 1, sm.del = 1, noDel = FALSE,
+                                      n = 100, u = 1e-5, h.del = 0, sf.del = 0, sm.del = 0, noDel = FALSE,
                                       fastSim = TRUE, newMutant = c("random","random"), saveTrajectories = FALSE) { 
 
   ##  Preemptive Warnings
@@ -698,14 +684,14 @@ runReplicateInvSimsXlinked  <-  function(nReps = 1000, N = 5000, mf = 0.01, mm =
   for(i in 1:nReps) {
     
     ## Sample stationary distribution of deleterious alleles
-    delMutFreq  <-  rejectionSamplerX(n=n, Ne=N, u=u)
-    n.del       <-  sum(delMutFreq > runif(n=n))
-    
-    # Define fitness expressions, including fitness effects of deleterious mutations for females and males
     if(noDel) {
       sf.del  <-  0
       sm.del  <-  0
     }
+    delMutFreq  <-  rejectionSamplerX(n=n, Ne=N, u=u, sf = sf.del, sm = sm.del, h = h.del)
+    n.del       <-  sum(delMutFreq > runif(n=n))
+    
+    # Define fitness expressions, including fitness effects of deleterious mutations for females and males
     Wf  <-  c(1,                                    (1 + h*sf),                                   (1 + h*sf),                                   (1 + h*sf)^2,                        (1 + h*sf)^2*(1 - h.del*sf.del)^n.del,
              (1 + h*sf),                            (1 + sf),                                     (1 + h*sf)^2,                                 (1 + h*sf)*(1 + sf),                 (1 + h*sf)*(1 + sf)*(1 - h.del*sf.del)^n.del,
              (1 + h*sf),                            (1 + h*sf)^2,                                 (1 + sf),                                     (1 + sf)*(1 + h*sf),                 (1 + sf)*(1 + h*sf)*(1 - h.del*sf.del)^n.del,
@@ -903,7 +889,7 @@ makeFastReplicateInvSimsDataXlinked  <-  function(nReps = 1000, N = 20000, h = 1
                                               mf = ms[1,i], mm = ms[2,i], 
                                               sf = ss[1,j], sm = ss[2,j],
                                               sf.del = s.del.val, sm.del = s.del.val, 
-                                              r = r.vals[k])
+                                              r = r.vals[k], fastSim=TRUE, saveTrajectories=FALSE)
           # Append data 
           dat   <-  c(ms[1,i], ms[2,i], ss[1,j], ss[2,j], s.del.val, r.vals[k], NA, mean(res$results$nDels), (sum(res$results.df$InvEst)/length(res$results.df$InvEst)))
           data  <-  rbind(data, dat)
