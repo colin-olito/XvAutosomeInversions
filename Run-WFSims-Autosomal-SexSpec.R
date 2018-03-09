@@ -42,7 +42,7 @@ source('R/functions-WFSims-Autosomal-SexSpec.R')
 #	makeFastReplicateAutoSexSpecInvSimsData(nReps = 30000, N = 30000, h = 0, 
 #											m.vals = c(0.002, 0.004), m.deltas = NULL,
 #											s.vals = c(0.05, 0.1), s.deltas = NULL, 
-#											s.del.opt = "strong", n = 100, u = 1e-5, h.del = 0, 
+#											s.del.opt = "none", n = 100, u = 1e-5, h.del = 0, 
 #											r.vals = seq(from = 0, to = 0.5, by = 0.05),
 #											newMutant=c("random","random"))
 
@@ -67,7 +67,7 @@ source('R/functions-WFSims-Autosomal-SexSpec.R')
 	makeFastReplicateAutoSexSpecInvSimsData(nReps = 30000, N = 30000, h = 1/2, 
 											m.vals = c(0.002, 0.004), m.deltas = NULL,
 											s.vals = c(0.05, 0.1), s.deltas = NULL, 
-											s.del.opt = "strong", n = 100, u = 1e-5, h.del = 0, 
+											s.del.opt = "none", n = 100, u = 1e-5, h.del = 0, 
 											r.vals = seq(from = 0, to = 0.5, by = 0.05),
 											newMutant=c("random","random"))
 
@@ -94,7 +94,7 @@ source('R/functions-WFSims-Autosomal-SexSpec.R')
 #	makeFastReplicateAutoSexSpecInvSimsData(nReps = 30000, N = 30000, h = 1, 
 #											m.vals = c(0.002, 0.004), m.deltas = NULL,
 #											s.vals = c(0.05, 0.1), s.deltas = NULL, 
-#											s.del.opt = "strong", n = 100, u = 1e-5, h.del = 0, 
+#											s.del.opt = "none", n = 100, u = 1e-5, h.del = 0, 
 #											r.vals = seq(from = 0, to = 0.5, by = 0.05),
 #											newMutant=c("random","random"))
 
