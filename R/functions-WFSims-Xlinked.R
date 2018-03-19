@@ -798,7 +798,6 @@ makeCornerCaseVals  <-  function(mu = c(0.001, 0.002), delta = c(0.001, 0.002)) 
 }
 
 
-#!!! EDIT FROM HERE !!!#
 
 #' Wrapper function to run replicate forward simulations for invasion
 #' of autosomal inversions in a Wright-Fisher population 
@@ -922,6 +921,90 @@ makeFastReplicateInvSimsDataXlinked  <-  function(nReps = 1000, N = 20000, h = 1
 
 
 
+
+#' SLIGHT MODIFICATION OF THE ABOVE FUNCTION TO GENERATE 
+#' DATA-SETS FOR PLOTTING A SINGLE PARAMETER SET ACROSS
+#' A RECOMBINATION GRADIENT
+makeFigReplicateInvSimsDataXlinked  <-  function(nReps = 50000, N = 30000, h = 1/2, 
+                                                 m.vals = c(0.002), m.deltas = NULL,
+                                                 s.vals = c(0.05), s.deltas = NULL, 
+                                                 s.del.opt = "none", n = 100, u = 1e-5, h.del = 0, noDel = FALSE, 
+                                                 r.vals = seq(from = 0, to = 0.5, by = 0.05),
+                                                 fastSim = TRUE, newMutant=c("random","random"), 
+                                                 saveTrajectories = FALSE) {
+
+  # create empty data frame with same structure as we are going to need
+  data  <-  data.frame(matrix(ncol=9, nrow=0))
+
+  # make parameter values for equal/female-limited/male-limited cases
+#  ms   <-  makeCornerCaseVals(mu = m.vals, delta = m.vals) # use delta = m.deltas for alternative sex-biased parameterizations
+#  ss   <-  makeCornerCaseVals(mu = s.vals, delta = s.vals) # use delta = s.deltas for alternative sex-biased parameterizations
+  ms   <-  m.vals
+  ss   <-  s.vals
+  sMu  <-  ss
+
+  # Workaround for s.del options
+  if(s.del.opt == "none") {
+      s.del.val  <-  0    
+  }
+  if(s.del.opt == "lethal") {
+      s.del.val  <-  1    
+  }
+
+  # Convenience variables to monitor progress
+  prog  <-  0
+  tot   <-  length(ms)*length(ss)*length(r.vals)
+
+    for (i in 1:length(ms)) {
+      for (j in 1:length(ss)) {
+
+        # Strong deleterious mutations (function of s.Mu, so must be inside ss loop)
+          if(s.del.opt == "strong") {
+              s.del.val  <-  2*sMu[j]    
+          }
+
+        for(k in 1:length(r.vals)) {
+
+          # Display progress in terminal
+          prog  <-  prog + 1
+            cat("\n",paste('Running simulations for parameter set ', prog, "/", tot),"\n")
+
+          # Run simulations
+          res  <-  runReplicateInvSimsXlinked(nReps = nReps, N = N, h = h, newMutant = newMutant,
+                                              n = n, u = u, h.del = h.del, 
+                                              mf = ms, mm = ms, 
+                                              sf = ss, sm = ss,
+                                              sf.del = s.del.val, sm.del = s.del.val, 
+                                              r = r.vals[k])
+          # Append data 
+          dat   <-  c(ms, ms, ss, ss, s.del.val, r.vals[k], NA, mean(res$results$nDels), (sum(res$results.df$InvEst)/length(res$results.df$InvEst)))
+          data  <-  rbind(data, dat)
+          rm(dat,res)
+        }
+      }
+    }
+
+  # add variable names to data frame
+  colnames(data)  <-  c("mf",
+                        "mm",
+                        "sf",
+                        "sm",
+                        "s.dels",
+                        "rf",
+                        "rm",
+                        "av.nDels",
+                        "PropEst"
+                        )
+  
+  # create file name
+  filename  <-  paste("./output/data/simResults/XlinkedFig", "_N", N, "_h", h, "_n", n, "_u", u, "_sDel_", s.del.opt, "_nReps", nReps, ".csv", sep="")
+
+  # export data as .csv to ./output/data
+  write.csv(data, file=filename, row.names = FALSE)
+
+  #  Return results in case user wants it
+  return(data)
+}
 #' Wrapper function to run replicate forward simulations for invasion
 #' of X-linked inversions in a Wright-Fisher population 
 #' USING DESIGNATED PARAMETER VALUES
