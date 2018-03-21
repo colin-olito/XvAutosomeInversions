@@ -25,7 +25,8 @@ rejectionSampler  <-  function(n=100, Ne=100, u=1e-6, h=0, s=0.01) {
 	for(i in 1:n) {
 		accept  <-  FALSE
 		while(accept == FALSE) {
-			x  <-  rbeta(1, shape1=4*Ne*u, shape2=4*Ne*u)
+#			x  <-  rbeta(1, shape1=4*Ne*u, shape2=4*Ne*u)
+			x  <-  runif(1)
 			U  <-  runif(1)
 			if(U < exp(2*Ne*(-2*(1-x)*x*h*s - (x^2)*s))) {
 				qi[i]   <-  rbinom(1,Ne,x)/Ne
@@ -34,6 +35,26 @@ rejectionSampler  <-  function(n=100, Ne=100, u=1e-6, h=0, s=0.01) {
 		}
 	}
 	qi
+}
+
+
+#' Draw random number of recessive deleterious mutations captured by inversion
+#' using deterministic equilibrium frequencies
+#'
+#' @title Deleterious allele sampler using deterministic equilibrium frequencies
+#' @param n  Number of loci to sample.
+#' @param Ne Effective population size.
+#' @param u  Mutation rate (default value of u = 1e-6).
+#' @param s  Selection against deleterious mutations.
+#' @export
+nDelEquilib  <-  function(n=100, Ne=5000, u=1e-6, s=0.005) {
+	
+	# Use approximate equilibrium for small population sizes
+		qbar  <-  (u/s)^(1/2)
+	
+	# Draw random deleterious alleles randomly given qbar
+	U  <-  runif(n)
+	sum(U <= qbar)
 }
 
 
@@ -695,8 +716,9 @@ runReplicateAutoInvSimsSexSpec  <-  function(nReps = 1000, N = 5000, mm = 0.01, 
 	if(noDel) {
 		s.del  <-  0
 	}
-	delMutFreq  <-  rejectionSampler(n = n, Ne = N, u = u, s = s.del, h = h.del)
-	n.del       <-  sum(delMutFreq > runif(n=n))
+#	delMutFreq  <-  rejectionSampler(n = n, Ne = N, u = u, s = s.del, h = h.del)
+#	n.del       <-  sum(delMutFreq > runif(n=n))
+	n.del       <-  nDelEquilib(n=n, Ne=N, u=u, s=s.del)
 
 	# Define fitness expressions, including fitness effects of deleterious mutations
 	Wf  <-  c(1,                                   (1 + h*sf),                                  (1 + h*sf),                                  (1 + h*sf)^2,                       (1 + h*sf)^2*(1 - h.del*s.del)^n.del,

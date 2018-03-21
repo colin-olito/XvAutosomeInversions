@@ -26,7 +26,8 @@ rejectionSamplerX  <-  function(n=100, Ne=100, u=1e-6, h=0, sf=0.01, sm=0.01) {
 	for(i in 1:n) {
 		accept  <-  FALSE
 		while(accept == FALSE) {
-			x  <-  rbeta(1, shape1=4*Ne*u, shape2=4*Ne*u)
+#			x  <-  rbeta(1, shape1=4*Ne*u, shape2=4*Ne*u)
+      x  <-  runif(1)
 			U  <-  runif(1)
 			if(U < exp((4/3)*Ne*x*(2*h*sf*(x-1)-x*sf-sm))) {
 				qi[i]   <-  rbinom(1,Ne,x)/Ne
@@ -35,6 +36,26 @@ rejectionSamplerX  <-  function(n=100, Ne=100, u=1e-6, h=0, sf=0.01, sm=0.01) {
 		}
 	}
 	qi
+}
+
+
+#' Draw random number of recessive deleterious mutations captured by inversion
+#' using deterministic equilibrium frequencies
+#'
+#' @title Deleterious allele sampler using deterministic equilibrium frequencies
+#' @param n  Number of loci to sample.
+#' @param Ne Effective population size.
+#' @param u  Mutation rate (default value of u = 1e-6).
+#' @param s  Selection against deleterious mutations.
+#' @export
+nDelEquilibX  <-  function(n=100, Ne=5000, u=1e-6, sf=0.005, sm = 0.005) {
+  
+  # Use approximate equilibrium for small population sizes
+    qbar  <-  (3*u/(2*sf.del + sm.del))
+  
+  # Draw random deleterious alleles randomly given qbar
+  U  <-  runif(n)
+  sum(U <= qbar)
 }
 
 
@@ -688,8 +709,9 @@ runReplicateInvSimsXlinked  <-  function(nReps = 1000, N = 5000, mf = 0.01, mm =
       sf.del  <-  0
       sm.del  <-  0
     }
-    delMutFreq  <-  rejectionSamplerX(n=n, Ne=N, u=u, sf = sf.del, sm = sm.del, h = h.del)
-    n.del       <-  sum(delMutFreq > runif(n=n))
+#    delMutFreq  <-  rejectionSamplerX(n=n, Ne=N, u=u, sf = sf.del, sm = sm.del, h = h.del)
+#    n.del       <-  sum(delMutFreq > runif(n=n))
+    n.del       <-  nDelEquilibX(n=n, Ne=N, u=u, sf=sf.del, sm = sm.del)
     
     # Define fitness expressions, including fitness effects of deleterious mutations for females and males
     Wf  <-  c(1,                                    (1 + h*sf),                                   (1 + h*sf),                                   (1 + h*sf)^2,                        (1 + h*sf)^2*(1 - h.del*sf.del)^n.del,
