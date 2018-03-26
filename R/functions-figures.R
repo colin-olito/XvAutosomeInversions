@@ -287,8 +287,68 @@ autoVsXEqFreqs  <-  function() {
         # Plot labels etc.
         proportionalLabel( 0.05,  1.075, expression(paste(bold(D))), cex=1.2, adj=c(0.5, 0.5), xpd=NA)
         proportionalLabel( 0.5,  -0.3,   expression(paste(italic(s))), cex=1.5, adj=c(0.5, 0.5), xpd=NA)
-
-
-
-
 } 
+
+
+
+
+###########################################################################################
+#' Fig. 4 -- Enrichment of fixed vs. polymorphic inversions
+#' @title Fig. 4
+#' @author Colin Olito
+#' @export
+Fig4  <-  function() {
+
+  # Import data from supplementary tables S1 & S2
+  fixDat   <-  read.csv("./data/TableS1-plotting.csv", header=TRUE)
+  polyDat  <-  read.csv("./data/TableS2-plotting.csv", header=TRUE)
+
+  # Exclude species w/ fewer than 10 known inversions
+  fixDat   <-  fixDat[(fixDat$nAinv+fixDat$nXinv) >= 10,]
+  polyDat  <-  polyDat[(polyDat$nAinv+polyDat$nXinv) >= 10,]
+
+  # Make plot
+  par(omi=rep(0.5, 4), mar = c(3.5,3.5,2,2), bty='o', xaxt='s', yaxt='s')
+  plot(NA, axes=FALSE, type='n', main='',xlim = c(0,4), ylim = c(0,6), ylab='', xlab='', cex.lab=1.2)
+  usr  <-  par('usr')
+  rect(usr[1], usr[3], usr[2], usr[4], col='white', border=NA)
+  plotGrid(lineCol='grey80')
+  box()
+  # Equilibrium frequencies for different 
+  hist(fixDat$foldEnrich, breaks=18, col=transparentColor('tomato', opacity=0.5), add=TRUE)
+  hist(polyDat$foldEnrich, breaks=7, col=transparentColor('dodgerblue', opacity=0.5), add=TRUE)
+  abline(v=1, lty=2, lwd=3)
+  # axes
+  axis(1, las=1)
+  axis(2, las=1)
+  proportionalLabel(0.5, -0.15, expression(paste("#"~X~inversions/"#"~Autosomal~inversions)), cex=1.2, adj=c(0.5, 0.5), xpd=NA)
+  proportionalLabel(-0.15, 0.5, expression(paste(Count)), cex=1.2, adj=c(0.5, 0.5), xpd=NA, srt=90)
+#  proportionalLabel(0.75, 0.9, expression(paste(Inversion~type)), cex=1.2, adj=c(0.5, 0.5), xpd=NA, srt=0)
+  #legend
+  legend(
+        x       =  usr[2]*0.975,
+        y       =  usr[4]*0.975,
+        legend  =  c(
+                    expression(paste("Fixed")),
+                    expression(paste("Polymorphic"))),
+        fill    =  c(transparentColor('tomato', opacity=0.5),
+                     transparentColor('dodgerblue', opacity=0.5)),
+        cex     =  1.2,
+        xjust   =  1,
+        yjust   =  1,
+        bty     =  'n',
+        border  =  NA
+        )
+}
+
+
+
+
+
+
+
+
+
+
+
+

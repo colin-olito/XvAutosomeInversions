@@ -113,3 +113,13 @@ source('R/functions-WFSims-Autosomal-SexSpec.R')
 #											s.del.opt = "strong", n = 100, u = 1e-5, h.del = 0, 
 #											r.vals = seq(from = 0, to = 0.5, by = 0.05),
 #											newMutant=c("random","random"))
+
+
+###############################################
+# Sims for Fig. 1 etc.
+makeFigReplicateAutoSexSpecInvSimsData(nReps = 1000000, N = 500000, h = 1/2, 
+									   m.vals = c(0.0002), m.deltas = NULL,
+										s.vals = c(0.005), s.deltas = NULL, 
+										s.del.opt = "strong", n = 100, u = 1e-5, h.del = 0, 
+										r.vals = seq(from = 0, to = 0.5, by = 0.05),
+										newMutant=c("random","random"))

@@ -51,7 +51,7 @@ rejectionSamplerX  <-  function(n=100, Ne=100, u=1e-6, h=0, sf=0.01, sm=0.01) {
 nDelEquilibX  <-  function(n=100, Ne=5000, u=1e-6, sf=0.005, sm = 0.005) {
   
   # Use approximate equilibrium for small population sizes
-    qbar  <-  (3*u/(2*sf.del + sm.del))
+    qbar  <-  (3*u/(2*sf + sm))
   
   # Draw random deleterious alleles randomly given qbar
   U  <-  runif(n)

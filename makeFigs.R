@@ -44,6 +44,10 @@ source('R/functions-figures.R')
 #             figPath(name='Fig3Alt.pdf'), width=7, height=7)
 # embed_fonts(figPath(name='Fig3Alt.pdf'))
 
+toPdf(Fig4(), 
+            figPath(name='Fig4.pdf'), width=7, height=7)
+embed_fonts(figPath(name='Fig4.pdf'))
+
 
 
 ########################
