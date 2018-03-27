@@ -39,87 +39,58 @@ source('R/functions-WFSims-Autosomal-SexSpec.R')
 
 # Locally adaptive alleles recessive
 	# No deleterious mutations
-#	makeFastReplicateAutoSexSpecInvSimsData(nReps = 30000, N = 30000, h = 0, 
+#	makeFastReplicateAutoSexSpecInvSimsData(nReps = 1000000, N = 500000, h = 0, 
 #											m.vals = c(0.002, 0.004), m.deltas = NULL,
 #											s.vals = c(0.05, 0.1), s.deltas = NULL, 
 #											s.del.opt = "none", n = 100, u = 1e-5, h.del = 0, 
-#											r.vals = seq(from = 0, to = 0.5, by = 0.05),
-#											newMutant=c("random","random"))
-
-	# Lethal deleterious mutations
-#	makeFastReplicateAutoSexSpecInvSimsData(nReps = 30000, N = 30000, h = 0, 
-#											m.vals = c(0.002, 0.004), m.deltas = NULL,
-#											s.vals = c(0.05, 0.1), s.deltas = NULL, 
-#											s.del.opt = "lethal", n = 100, u = 1e-5, h.del = 0, 
-#											r.vals = seq(from = 0, to = 0.5, by = 0.05),
-#											newMutant=c("random","random"))
-
-	# Strongly deleterious mutations
-#	makeFastReplicateAutoSexSpecInvSimsData(nReps = 30000, N = 30000, h = 0, 
-#											m.vals = c(0.002, 0.004), m.deltas = NULL,
-#											s.vals = c(0.05, 0.1), s.deltas = NULL, 
-#											s.del.opt = "strong", n = 100, u = 1e-5, h.del = 0, 
 #											r.vals = seq(from = 0, to = 0.5, by = 0.05),
 #											newMutant=c("random","random"))
 
 # Additive fitness effects
 	# No deleterious mutations
-	makeFastReplicateAutoSexSpecInvSimsData(nReps = 30000, N = 30000, h = 1/2, 
-											m.vals = c(0.002, 0.004), m.deltas = NULL,
-											s.vals = c(0.05, 0.1), s.deltas = NULL, 
-											s.del.opt = "none", n = 100, u = 1e-5, h.del = 0, 
-											r.vals = seq(from = 0, to = 0.5, by = 0.05),
-											newMutant=c("random","random"))
-
-	# Lethal deleterious mutations
-#	makeFastReplicateAutoSexSpecInvSimsData(nReps = 30000, N = 30000, h = 1/2, 
-#											m.vals = c(0.002, 0.004), m.deltas = NULL,
-#											s.vals = c(0.05, 0.1), s.deltas = NULL, 
-#											s.del.opt = "lethal", n = 100, u = 1e-5, h.del = 0, 
-#											r.vals = seq(from = 0, to = 0.5, by = 0.05),
-#											newMutant=c("random","random"))
-
-	# Strongly deleterious mutations
-#	makeFastReplicateAutoSexSpecInvSimsData(nReps = 30000, N = 30000, h = 1/2, 
-#											m.vals = c(0.002, 0.004), m.deltas = NULL,
-#											s.vals = c(0.05, 0.1), s.deltas = NULL, 
-#											s.del.opt = "strong", n = 100, u = 1e-5, h.del = 0, 
-#											r.vals = seq(from = 0, to = 0.5, by = 0.05),
-#											newMutant=c("random","random"))
-
-
-
-# Locally adaptive alleles dominant
-	# No deleterious mutations
-#	makeFastReplicateAutoSexSpecInvSimsData(nReps = 30000, N = 30000, h = 1, 
-#											m.vals = c(0.002, 0.004), m.deltas = NULL,
-#											s.vals = c(0.05, 0.1), s.deltas = NULL, 
+#	makeFastReplicateAutoSexSpecInvSimsData(nReps = 1000000, N = 500000, h = 1/2, 
+#											m.vals = c(0.0002, 0.0004), m.deltas = NULL,
+#											s.vals = c(0.005, 0.01), s.deltas = NULL, 
 #											s.del.opt = "none", n = 100, u = 1e-5, h.del = 0, 
 #											r.vals = seq(from = 0, to = 0.5, by = 0.05),
 #											newMutant=c("random","random"))
 
-	# Lethal deleterious mutations
-#	makeFastReplicateAutoSexSpecInvSimsData(nReps = 30000, N = 30000, h = 1, 
-#											m.vals = c(0.002, 0.004), m.deltas = NULL,
-#											s.vals = c(0.05, 0.1), s.deltas = NULL, 
-#											s.del.opt = "lethal", n = 100, u = 1e-5, h.del = 0, 
-#											r.vals = seq(from = 0, to = 0.5, by = 0.05),
-#											newMutant=c("random","random"))
-
-	# Strongly deleterious mutations
-#	makeFastReplicateAutoSexSpecInvSimsData(nReps = 30000, N = 30000, h = 1, 
-#											m.vals = c(0.002, 0.004), m.deltas = NULL,
-#											s.vals = c(0.05, 0.1), s.deltas = NULL, 
-#											s.del.opt = "strong", n = 100, u = 1e-5, h.del = 0, 
+# Locally adaptive alleles dominant
+	# No deleterious mutations
+#	makeFastReplicateAutoSexSpecInvSimsData(nReps = 1000000, N = 500000, h = 1, 
+#											m.vals = c(0.0002, 0.0004), m.deltas = NULL,
+#											s.vals = c(0.005, 0.01), s.deltas = NULL, 
+#											s.del.opt = "none", n = 100, u = 1e-5, h.del = 0, 
 #											r.vals = seq(from = 0, to = 0.5, by = 0.05),
 #											newMutant=c("random","random"))
 
 
 ###############################################
 # Sims for Fig. 1 etc.
-makeFigReplicateAutoSexSpecInvSimsData(nReps = 1000000, N = 500000, h = 1/2, 
-									   m.vals = c(0.0002), m.deltas = NULL,
-										s.vals = c(0.005), s.deltas = NULL, 
-										s.del.opt = "strong", n = 100, u = 1e-5, h.del = 0, 
-										r.vals = seq(from = 0, to = 0.5, by = 0.05),
-										newMutant=c("random","random"))
+
+# Locally adaptive alleles recessive
+	# No deleterious mutations
+	makeFigReplicateAutoSexSpecInvSimsData(nReps = 1000000, N = 500000, h = 0, 
+										   m.vals = c(0.0002), m.deltas = NULL,
+											s.vals = c(0.005), s.deltas = NULL, 
+											s.del.opt = "none", n = 100, u = 1e-5, h.del = 0, 
+											r.vals = seq(from = 0, to = 0.5, by = 0.05),
+											newMutant=c("random","random"))
+
+# Additive fitness effects
+	# No deleterious mutations
+#	makeFigReplicateAutoSexSpecInvSimsData(nReps = 1000000, N = 500000, h = 1/2, 
+#										   m.vals = c(0.0002), m.deltas = NULL,
+#											s.vals = c(0.005), s.deltas = NULL, 
+#											s.del.opt = "none", n = 100, u = 1e-5, h.del = 0, 
+#											r.vals = seq(from = 0, to = 0.5, by = 0.05),
+#											newMutant=c("random","random"))
+
+# Locally adaptive alleles dominant
+	# No deleterious mutations
+	makeFigReplicateAutoSexSpecInvSimsData(nReps = 1000000, N = 500000, h = 1, 
+										   m.vals = c(0.0002), m.deltas = NULL,
+											s.vals = c(0.005), s.deltas = NULL, 
+											s.del.opt = "none", n = 100, u = 1e-5, h.del = 0, 
+											r.vals = seq(from = 0, to = 0.5, by = 0.05),
+											newMutant=c("random","random"))

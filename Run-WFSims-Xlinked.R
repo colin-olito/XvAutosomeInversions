@@ -38,75 +38,59 @@ source('R/functions-WFSims-Xlinked.R')
 
 # Locally adaptive alleles recessive
 	# No deleterious recessive mutations
-#	makeFastReplicateInvSimsDataXlinked(nReps = 30000, N = 30000, h = 0, 
+#	makeFastReplicateInvSimsDataXlinked(nReps = 1000000, N = 500000, h = 0, 
 #										m.vals = c(0.002, 0.004), m.deltas = NULL,
 #										s.vals = c(0.05, 0.1), s.deltas = NULL, 
 #										s.del.opt = "none", n = 100, u = 1e-5, h.del = 0, 
 #										r.vals = seq(from = 0, to = 0.5, by = 0.05),
 #										newMutant=c("random","random"))
 
-	# Lethal deleterious recessive mutations
-#	makeFastReplicateInvSimsDataXlinked(nReps = 30000, N = 30000, h = 0, 
-#										m.vals = c(0.002, 0.004), m.deltas = NULL,
-#										s.vals = c(0.05, 0.1), s.deltas = NULL, 
-#										s.del.opt = "lethal", n = 100, u = 1e-5, h.del = 0, 
-#										r.vals = seq(from = 0, to = 0.5, by = 0.05),
-#										newMutant=c("random","random"))
-
-	# Strongly deleterious recessive mutations
-#	makeFastReplicateInvSimsDataXlinked(nReps = 30000, N = 30000, h = 0, 
-#										m.vals = c(0.002, 0.004), m.deltas = NULL,
-#										s.vals = c(0.05, 0.1), s.deltas = NULL, 
-#										s.del.opt = "strong", n = 100, u = 1e-5, h.del = 0, 
-#										r.vals = seq(from = 0, to = 0.5, by = 0.05),
-#										newMutant=c("random","random"))
 
 # Additive fitness effects
 	# No deleterious recessive mutations
-	makeFastReplicateInvSimsDataXlinked(nReps = 30000, N = 30000, h = 1/2, 
-										m.vals = c(0.002, 0.004), m.deltas = NULL,
-										s.vals = c(0.05, 0.1), s.deltas = NULL, 
-										s.del.opt = "none", n = 100, u = 1e-5, h.del = 0, 
-										r.vals = seq(from = 0, to = 0.5, by = 0.05),
-										newMutant=c("random","random"))
-
-	# Lethal deleterious recessive mutations
-#	makeFastReplicateInvSimsDataXlinked(nReps = 30000, N = 30000, h = 1/2, 
-#										m.vals = c(0.002, 0.004), m.deltas = NULL,
-#										s.vals = c(0.05, 0.1), s.deltas = NULL, 
-#										s.del.opt = "lethal", n = 100, u = 1e-5, h.del = 0, 
-#										r.vals = seq(from = 0, to = 0.5, by = 0.05),
-#										newMutant=c("random","random"))
-
-	# Strongly deleterious recessive mutations
-#	makeFastReplicateInvSimsDataXlinked(nReps = 30000, N = 30000, h = 1/2, 
-#										m.vals = c(0.002, 0.004), m.deltas = NULL,
-#										s.vals = c(0.05, 0.1), s.deltas = NULL, 
-#										s.del.opt = "strong", n = 100, u = 1e-5, h.del = 0, 
-#										r.vals = seq(from = 0, to = 0.5, by = 0.05),
-#										newMutant=c("random","random"))
-
-
-# Locally adaptive alleles dominant
-#	makeFastReplicateInvSimsDataXlinked(nReps = 30000, N = 30000, h = 1, 
-#										m.vals = c(0.002, 0.004), m.deltas = NULL,
-#										s.vals = c(0.05, 0.1), s.deltas = NULL, 
+#	makeFastReplicateInvSimsDataXlinked(nReps = 1000000, N = 500000, h = 1/2, 
+#										m.vals = c(0.0002, 0.0004), m.deltas = NULL,
+#										s.vals = c(0.005, 0.01), s.deltas = NULL, 
 #										s.del.opt = "none", n = 100, u = 1e-5, h.del = 0, 
 #										r.vals = seq(from = 0, to = 0.5, by = 0.05),
 #										newMutant=c("random","random"))
 
-	# Lethal deleterious recessive mutations
-#	makeFastReplicateInvSimsDataXlinked(nReps = 30000, N = 30000, h = 1, 
-#										m.vals = c(0.002, 0.004), m.deltas = NULL,
-#										s.vals = c(0.05, 0.1), s.deltas = NULL, 
-#										s.del.opt = "lethal", n = 100, u = 1e-5, h.del = 0, 
+# Locally adaptive alleles dominant
+	# No deleterious recessive mutations
+#	makeFastReplicateInvSimsDataXlinked(nReps = 1000000, N = 500000, h = 1, 
+#										m.vals = c(0.0002, 0.0004), m.deltas = NULL,
+#										s.vals = c(0.005, 0.01), s.deltas = NULL, 
+#										s.del.opt = "none", n = 100, u = 1e-5, h.del = 0, 
 #										r.vals = seq(from = 0, to = 0.5, by = 0.05),
 #										newMutant=c("random","random"))
 
-	# Strongly deleterious recessive mutations
-#	makeFastReplicateInvSimsDataXlinked(nReps = 30000, N = 30000, h = 1, 
-#										m.vals = c(0.002, 0.004), m.deltas = NULL,
-#										s.vals = c(0.05, 0.1), s.deltas = NULL, 
-#										s.del.opt = "strong", n = 100, u = 1e-5, h.del = 0, 
-#										r.vals = seq(from = 0, to = 0.5, by = 0.05),
-#										newMutant=c("random","random"))
+
+###############################################
+# Sims for Fig. 1 etc.
+
+# Locally adaptive alleles recessive
+	# No deleterious recessive mutations
+	makeFigReplicateInvSimsDataXlinked(nReps = 1000000, N = 500000, h = 0, 
+									m.vals = c(0.0002), m.deltas = NULL,
+									s.vals = c(0.005), s.deltas = NULL, 
+									s.del.opt = "none", n = 100, u = 1e-5, h.del = 0, 
+									r.vals = seq(from = 0, to = 0.5, by = 0.05),
+									newMutant=c("random","random"))
+
+# Additive fitness effects
+	# No deleterious recessive mutations
+#	makeFigReplicateInvSimsDataXlinked(nReps = 1000000, N = 500000, h = 1/2, 
+#									m.vals = c(0.0002), m.deltas = NULL,
+#									s.vals = c(0.005), s.deltas = NULL, 
+#									s.del.opt = "none", n = 100, u = 1e-5, h.del = 0, 
+#									r.vals = seq(from = 0, to = 0.5, by = 0.05),
+#									newMutant=c("random","random"))
+
+# Locally adaptive alleles dominant
+# No deleterious recessive mutations
+	makeFigReplicateInvSimsDataXlinked(nReps = 1000000, N = 500000, h = 1, 
+									m.vals = c(0.0002), m.deltas = NULL,
+									s.vals = c(0.005), s.deltas = NULL, 
+									s.del.opt = "none", n = 100, u = 1e-5, h.del = 0, 
+									r.vals = seq(from = 0, to = 0.5, by = 0.05),
+									newMutant=c("random","random"))
