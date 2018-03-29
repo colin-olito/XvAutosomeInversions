@@ -309,19 +309,19 @@ Fig4  <-  function() {
 
   # Make plot
   par(omi=rep(0.5, 4), mar = c(3.5,3.5,2,2), bty='o', xaxt='s', yaxt='s')
-  plot(NA, axes=FALSE, type='n', main='',xlim = c(0,4), ylim = c(0,6), ylab='', xlab='', cex.lab=1.2)
+  plot(NA, axes=FALSE, type='n', main='',xlim = c(0,3.5), ylim = c(0,6), ylab='', xlab='', cex.lab=1.2)
   usr  <-  par('usr')
   rect(usr[1], usr[3], usr[2], usr[4], col='white', border=NA)
   plotGrid(lineCol='grey80')
   box()
   # Equilibrium frequencies for different 
-  hist(fixDat$foldEnrich, breaks=18, col=transparentColor('tomato', opacity=0.5), add=TRUE)
-  hist(polyDat$foldEnrich, breaks=7, col=transparentColor('dodgerblue', opacity=0.5), add=TRUE)
+  hist(fixDat$enrichX, breaks=15, col=transparentColor('tomato', opacity=0.5), add=TRUE)
+  hist(polyDat$enrichX, breaks=7, col=transparentColor('dodgerblue', opacity=0.5), add=TRUE)
   abline(v=1, lty=2, lwd=3)
   # axes
   axis(1, las=1)
   axis(2, las=1)
-  proportionalLabel(0.5, -0.15, expression(paste("#"~X~inversions/"#"~Autosomal~inversions)), cex=1.2, adj=c(0.5, 0.5), xpd=NA)
+  proportionalLabel(0.5, -0.15, expression(paste("Enrichment on the X")), cex=1.2, adj=c(0.5, 0.5), xpd=NA)
   proportionalLabel(-0.15, 0.5, expression(paste(Count)), cex=1.2, adj=c(0.5, 0.5), xpd=NA, srt=90)
 #  proportionalLabel(0.75, 0.9, expression(paste(Inversion~type)), cex=1.2, adj=c(0.5, 0.5), xpd=NA, srt=0)
   #legend
