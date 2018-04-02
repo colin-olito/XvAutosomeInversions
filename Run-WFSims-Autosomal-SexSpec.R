@@ -79,12 +79,12 @@ source('R/functions-WFSims-Autosomal-SexSpec.R')
 
 # Additive fitness effects
 	# No deleterious mutations
-#	makeFigReplicateAutoSexSpecInvSimsData(nReps = 1000000, N = 500000, h = 1/2, 
-#										   m.vals = c(0.0002), m.deltas = NULL,
-#											s.vals = c(0.005), s.deltas = NULL, 
-#											s.del.opt = "none", n = 100, u = 1e-5, h.del = 0, 
-#											r.vals = seq(from = 0, to = 0.5, by = 0.05),
-#											newMutant=c("random","random"))
+	makeFigReplicateAutoSexSpecInvSimsData(nReps = 1000000, N = 30000, h = 1/2, 
+										   m.vals = c(0.002), m.deltas = NULL,
+											s.vals = c(0.05), s.deltas = NULL, 
+											s.del.opt = "none", n = 100, u = 1e-5, h.del = 0, 
+											r.vals = seq(from = 0, to = 0.5, by = 0.05),
+											newMutant=c("random","random"))
 
 # Locally adaptive alleles dominant
 	# No deleterious mutations
@@ -94,3 +94,14 @@ source('R/functions-WFSims-Autosomal-SexSpec.R')
 											s.del.opt = "none", n = 100, u = 1e-5, h.del = 0, 
 											r.vals = seq(from = 0, to = 0.5, by = 0.05),
 											newMutant=c("random","random"))
+
+
+###############################################
+# Sims to 4N generations
+makeFigReplicateAutoSexSpecInvSimsData4N(nReps = 100, N = 30000, h = 1/2, 
+										 mf = c(0.002), mm = c(0.002),
+										 sf = c(0.05),  sm = c(0.05),
+										 s.del.opt = "none", n = 100, u = 1e-5, h.del = 0, 
+										 rf.vals = seq(from = 0, to = 0.5, by = 0.05),
+										 rm.vals = seq(from = 0, to = 0.5, by = 0.05),
+										 fastSim=FALSE, newMutant=c("random","random"))
