@@ -259,13 +259,12 @@ findEqFreqs  <-  function(Wf,Wm, mf, mm, rf, rm, threshold = 1e-6, ...) {
 #' @param rf          Female recombination rate among the two loci involved in local adaptation
 #' @param rm          Male recombination rate among the two loci involved in local adaptation
 #' @param fastSim     Logical. Use threshold frequency for establishment of inversion? 
-#' @param saveTrajectories  Save evolutionary trajectories of inversion frequencies? 
 #' @export
 #' @seealso `offFreq`, `findEqFreqs`, `x.1`, ...
 #' @author Ludovic Dutoit, based on Colin Olito
 autoInvFwdSimSexSpec  <-  function(Fii.f.init = Fii.f.init, Fii.m.init = Fii.m.init, 
 									N = N, Wf = Wf, Wm = Wm, mm = mm, mf = mf, sm = sm, sf = sf, rf = rf, rm = rm, 
-									fastSim = TRUE, saveTrajectories = FALSE, ...) {
+									fastSim = TRUE, ...) {
 
 	# Use deterministic eq. initial frequencies
 	Fii.f  <-  Fii.f.init 
@@ -547,9 +546,6 @@ introduceInversion  <-  function(newMutant, Fii.f.init, Fii.m.init, N, ...) {
 #' 				 there were no delterious mutations segregating in the population that are linked
 #' 		 		 to the loci involved in local adaptation. 
 #' @param fastSim     Logical. Use threshold frequency for establishment of inversion? 
-#' @param saveTrajectories  Save evolutionary trajectories of inversion frequencies? Setting this 
-#' 							to TRUE can become extremely memory intensive if you are running many
-#' 							replicate simulations (see warning).
 #' @param newMutant  Switch to choose whether to specify new mutant genotypes, or if they are 
 #' 					 chosen randomly, given initial genotypic frequencies (Fii.f.init and Fii.m.init). 
 #'					 A 2 positions vector ("m"/"f"/"random", "numeric"/"random"). the first position specify wether the inversions come in males, 
@@ -560,18 +556,11 @@ introduceInversion  <-  function(newMutant, Fii.f.init, Fii.m.init, N, ...) {
 #' @author Ludovic Dutoit based on Colin Olito.
 runReplicateAutoInvSimsSexSpec  <-  function(nReps = 1000, N = 5000, mf = 0.01, mm = 0.01, sf = 0.1, sm = 0.1, h = 1/2, rf = 0.5, rm = 0.5, 
 									  		 n = 100, u = 1e-5, h.del = 0, s.del = 0, noDel = FALSE,
-									  		 fastSim = TRUE, saveTrajectories = FALSE, newMutant = c("random","random")) {
+									  		 fastSim = TRUE, newMutant = c("random","random")) {
 
 	##  Preemptive Warnings
 	if(any(c(N,mm,mf,sf,sm,h,rf,rm,n,u,h.del) < 0) | any(c(mm,mf,sf,sm,h,rf,rm,u,h.del) > 1) | any(c(rf,rm) > 0.5))
 		stop('The chosen parameter values fall outside of reasonable parameter space')
-
-	try({
-		 if(nReps > 1000 & saveTrajectories)
-			stop('Warning: You have chosen to save evolutionary trajectories 
-				  for a large number of replicate simulations. Thiss will be
-				  memory intensive. Consider setting saveTrajectories = FALSE')
-	}, silent=FALSE)
 
 	##  Define Fitness Expressions for determining eq. frequencies in absence of inversion
 	Wf.init  <-  c(1,           (1 + h*sf),          (1 + h*sf),          (1 + h*sf)^2,        0,
@@ -609,18 +598,6 @@ runReplicateAutoInvSimsSexSpec  <-  function(nReps = 1000, N = 5000, mf = 0.01, 
 	InvEstTime        <-  rep(0, times=nReps)
 	nDels             <-  rep(0, times=nReps)
 	
-	if(saveTrajectories) {
-		replicateTraj    <-  c()
-		InvFreqTraj      <-  c()
-		E.InvFreqTraj    <-  c()
-		Wbar_fTraj       <-  c() 
-		Wbar_mTraj       <-  c()
-		InvFreq_fTraj    <-  c()
-		InvFreq_mTraj    <-  c() 
-		E.InvFreq_fTraj  <-  c()
-		E.InvFreq_mTraj  <-  c()
-	} 
-
 	# Replicate simulation loop
 	pb   <-  txtProgressBar(min=0, max=nReps, style=3)
 	setTxtProgressBar(pb, 0)
@@ -647,7 +624,7 @@ runReplicateAutoInvSimsSexSpec  <-  function(nReps = 1000, N = 5000, mf = 0.01, 
 			 (1 + h*sm)^2*(1 - h.del*s.del)^n.del, (1 + h*sm)*(1 + sm)*(1 - h.del*s.del)^n.del, (1 + sm)*(1 + h*sm)*(1 - h.del*s.del)^n.del, (1 + sm)^2*(1 - h.del*s.del)^n.del, (1 + sm)^2*(1 - s.del)^n.del)
 	
 	## RUN SIMULATION
-	repRes  <-  autoInvFwdSimSexSpec(Fii.f.init = Fii.f.init, Fii.m.init = Fii.m.init, N = N, Wf = Wf, Wm = Wm, mm = mm, mf = mf, rf = rf, rm = rm, fastSim=fastSim, saveTrajectories = saveTrajectories)
+	repRes  <-  autoInvFwdSimSexSpec(Fii.f.init = Fii.f.init, Fii.m.init = Fii.m.init, N = N, Wf = Wf, Wm = Wm, mm = mm, mf = mf, rf = rf, rm = rm, fastSim=fastSim)
 
 	# save results for each replicate
 	finalInvFreq[i]      <-  repRes$InvFreq[length(repRes$InvFreq)]
@@ -663,19 +640,6 @@ runReplicateAutoInvSimsSexSpec  <-  function(nReps = 1000, N = 5000, mf = 0.01, 
   	InvEstTime[i]        <-  repRes$InvEstTime
 	nDels[i]             <-  n.del
 
-		if(saveTrajectories) {
-				
-			replicateTraj    <-  c(replicateTraj,rep(i, times=length(repRes$InvFreq)))
-			InvFreqTraj      <-  c(InvFreqTraj,repRes$InvFreq)
-			E.InvFreqTraj    <-  c(E.InvFreqTraj,repRes$E.InvFreq)
-			Wbar_fTraj       <-  c(Wbar_fTraj,repRes$Wbar_f)
-			Wbar_mTraj       <-  c(Wbar_mTraj,repRes$Wbar_m)
-			InvFreq_fTraj    <-  c(InvFreq_fTraj,repRes$InvFreq_f)
-			InvFreq_mTraj    <-  c(InvFreq_mTraj,repRes$InvFreq_m) 
-			E.InvFreq_fTraj  <-  c(E.InvFreq_fTraj,repRes$E.InvFreq_f)
-			E.InvFreq_mTraj  <-  c(E.InvFreq_mTraj,repRes$E.InvFreq_m)
-
-			} 	
 	setTxtProgressBar(pb, i)
 	}
 
@@ -694,25 +658,7 @@ runReplicateAutoInvSimsSexSpec  <-  function(nReps = 1000, N = 5000, mf = 0.01, 
 								"InvEstTime"       =  InvEstTime,
 								"nDels"            =  nDels
 							   )
-	if(saveTrajectories) {
-		traj.df  <-  data.frame(
-								"replicateTraj"   =  replicateTraj,
-								"InvFreqTraj"     =  InvFreqTraj,
-								"E.InvFreqTraj"   =  E.InvFreqTraj,
-								"InvFreq_fTraj"   =  InvFreq_fTraj,
-								"E.InvFreq_fTraj" =  E.InvFreq_fTraj, 
-								"InvFreq_mTraj"   =  InvFreq_mTraj,
-								"E.InvFreq_mTraj" =  E.InvFreq_mTraj,
-								"Wbar_fTraj"      =  Wbar_fTraj,
-								"Wbar_mTraj"      =  Wbar_mTraj
-								)
-	} else {
-		traj.df  <-  NULL
-	}
-	res  <-  list(
-				  "results.df"  =  results.df,
-				  "traj.df"     =  traj.df
-				  )
+	res  <-  list("results.df" = results.df)
 	return(res)
 }
 
@@ -742,9 +688,9 @@ makeCornerCaseVals  <-  function(mu = c(0.001, 0.002), delta = c(0.001, 0.002)) 
 
 
 #' Wrapper function to run replicate forward simulations for invasion
-#' of autosomal inversions in a Wright-Fisher population 
+#' of autosomal inversions in a Wright-Fisher population to make Figure. 1B 
 #' 
-#' @title Run replicate Wright-Fisher forward simulations for autosomal inversion under different parameter values 
+#' @title Run replicate Wright-Fisher forward simulations for autosomal inversion under different parameter values for plotting
 #' @param nReps  Number of replicate simulations to run for each parameter set
 #' @param N      Total population size
 #' @param h      Dominance coefficient for locally adaptive alleles relative to migrant alleles (h = 0.5)
@@ -756,6 +702,8 @@ makeCornerCaseVals  <-  function(mu = c(0.001, 0.002), delta = c(0.001, 0.002)) 
 #'                 behaviour is to explore equal, female-limited, and male-limited expression of locally adaptive alleles)
 #' @param r.vals Vector of desired recombination rates among the two loci involved in local adaptation (r = 0.1).
 #'                (NOTE: see comments in function for instructions to explore sex-limited recombination).
+#' @param r.deltas NOTE!!!:Logical. If FALSE, equal recombination between sexes. If TRUE, uses Sex-Specific recombination rates
+#' 					similar to m.deltas and s.deltas.
 #' @param s.del.opt  Option specifying fitness effects of deleterious mutations captured by inversion. 
 #'                   Can take one of three values: "none", "lethal", or "strong".
 #' @param n      Number of loci at which deleterious mutations may occur.
@@ -767,10 +715,6 @@ makeCornerCaseVals  <-  function(mu = c(0.001, 0.002), delta = c(0.001, 0.002)) 
 #' 				 there were no delterious mutations segregating in the population that are linked
 #' 				 to the loci involved in local adaptation. 
 #' @param fastSim     Logical. Use threshold frequency for establishment of inversion? 
-#' @param saveTrajectories  Save evolutionary trajectories of inversion frequencies? Setting this 
-#' 							to TRUE can become extremely memory intensive if you are running many
-#' 							replicate simulations (see warning).
-#' 							otherwise
 #' @param newMutant  Switch to choose whether to specify new mutant genotypes, or if they are 
 #' 					 chosen randomly, given initial genotypic frequencies (Fii.f.init and Fii.m.init). 
 #'					 A 2 positions vector ("m"/"f"/"random", "numeric"/"random"). the first position specify wether the inversions come in males, 
@@ -779,21 +723,40 @@ makeCornerCaseVals  <-  function(mu = c(0.001, 0.002), delta = c(0.001, 0.002)) 
 #' @seealso `offFreq`, `findEqFreqs`, `autoInvFwdSimSexSpec` runReplicateAutoInvSimsSexSpec
 #' @export
 #' @author Ludovic Dutoit based on Colin Olito.
-makeFastReplicateAutoSexSpecInvSimsData  <-  function(nReps = 1000, N = 20000, h = 1/2, 
-													  m.vals = c(0.0005, 0.001), m.deltas = NULL,
-													  s.vals = c(0.001, 0.05), s.deltas = NULL, 
-						                              s.del.opt = "none", n = 100, u = 1e-5, h.del = 0, noDel = FALSE, 
-													  r.vals = seq(from = 0, to = 0.5, by = 0.025),
-													  fastSim = TRUE, newMutant=c("random","random"), 
-													  saveTrajectories = FALSE) {
+makeFigReplicateAutoSexSpecInvSimsData  <-  function(nReps = 500000, N = 30000, h = 1/2, 
+													 m.vals = c(0.002), m.deltas = NULL,
+													 s.vals = c(0.05), s.deltas = NULL, 
+													 r.vals = seq(from = 0, to = 0.5, by = 0.025), r.deltas = FALSE, 
+													 s.del.opt = "none", n = 100, u = 1e-5, h.del = 0, noDel = FALSE, 
+													 fastSim = TRUE, newMutant=c("random","random")) {
 
 	# create empty data frame with same structure as we are going to need
 	data  <-  data.frame(matrix(ncol=9, nrow=0))
 
 	# make parameter values for equal/female-limited/male-limited cases
-	ms   <-  makeCornerCaseVals(mu = m.vals, delta = m.vals) # use delta = m.deltas for alternative sex-biased parameterizations
-	ss   <-  makeCornerCaseVals(mu = s.vals, delta = s.vals) # use delta = s.deltas for alternative sex-biased parameterizations
-	sMu  <-  colSums(ss)
+	equalM  <-  is.null(m.deltas)
+	equalS  <-  is.null(s.deltas)
+	if(equalM) {
+	  ms   <-  rbind(m.vals, m.vals)
+	}
+	if(!equalM) {
+	  ms   <-  makeCornerCaseVals(mu = m.vals, delta = m.vals) # use delta = m.deltas for alternative sex-biased parameterizations
+	}
+	if(equalS) {
+	  ss   <-  rbind(s.vals, s.vals)
+	  sMu  <-  colMeans(ss)
+	}
+	if(!equalS) {
+	  ss   <-  makeCornerCaseVals(mu = s.vals, delta = s.vals) # use delta = s.deltas for alternative sex-biased parameterizations 
+	  sMu  <-  colSums(ss)
+	}
+	if(!r.deltas) {
+	  rs   <-  rbind(r.vals, r.vals)
+	}
+	if(r.deltas) {
+	rs   <-  rbind(c(r.vals, r.vals, rep(0, length=length(r.vals))),
+				   c(r.vals, rep(0, length=length(r.vals)), r.vals))
+	}
 
 	# Workaround for s.del options
 	if(s.del.opt == "none") {
@@ -803,17 +766,9 @@ makeFastReplicateAutoSexSpecInvSimsData  <-  function(nReps = 1000, N = 20000, h
 	    s.del.val  <-  1    
 	}
 
-# uncomment to explore sex-limited recombination rates
-#	rfs  <-  c(r.vals, r.vals, rep(0, length=length(r.vals)))
-#	rms  <-  c(r.vals, rep(0, length=length(r.vals)), r.vals)
-	rfs  <-  r.vals
-	rms  <-  r.vals
-	rs   <-  rbind(rfs,rms)
-
 	# Convenience variables to monitor progress
 	prog  <-  0
-	tot   <-  ncol(ms)*ncol(ss)*1*length(rfs)
-	cat("\n",paste('Running simulations for parameter set ', 1, "/", tot),"\n")
+	tot   <-  ncol(ms)*ncol(ss)*ncol(rs)
 
 		for (i in 1:ncol(ms)) {
 			for (j in 1:ncol(ss)) {
@@ -827,19 +782,17 @@ makeFastReplicateAutoSexSpecInvSimsData  <-  function(nReps = 1000, N = 20000, h
 
 					# Display progress in terminal
 					prog  <-  prog + 1
-					if(prog %% 10 == 0) {
 						cat("\n",paste('Running simulations for parameter set ', prog, "/", tot),"\n")
-					}
 
 					# Run simulations
 					res  <-  runReplicateAutoInvSimsSexSpec(nReps = nReps, N = N, h = h,
 															mf = ms[1,i], mm = ms[2,i], 
 															sf = ss[1,j], sm = ss[2,j],
 															n = n, u = u, h.del = h.del, s.del = s.del.val, 
-															rf = rfs[k], rm = rms[k],
+															rf = rs[1,k], rm = rs[2,k],
 															newMutant = newMutant)
 					# Append data 
-					dat   <-  c(ms[1,i], ms[2,i], ss[1,j], ss[2,j], s.del.val, rfs[k], rms[k], mean(res$results$nDels), (sum(res$results.df$InvEst)/length(res$results.df$InvEst)))
+					dat   <-  c(ms[1,i], ms[2,i], ss[1,j], ss[2,j], s.del.val, rs[1,k], rs[2,k], mean(res$results.df$nDels), (sum(res$results.df$InvEst)/length(res$results.df$InvEst)))
 					data  <-  rbind(data, dat)
 					rm(dat,res)
 				}
@@ -857,132 +810,19 @@ makeFastReplicateAutoSexSpecInvSimsData  <-  function(nReps = 1000, N = 20000, h
 						  "av.nDels",
 						  "PropEst"
 						  )
-	
 	# create file name
-	filename  <-  paste("./output/data/simResults/SexSpecFast", "_N", N, "_h", h, "_n", n, "_u", u, "_sDel_", s.del.opt, "_nReps", nReps, ".csv", sep="")
-
-	# export data as .csv to ./output/data
-	write.csv(data, file=filename, row.names = FALSE)
-
-	#  Return results in case user wants it
-	return(data)
-	
-}
-
-
-
-
-#' SLIGHT MODIFICATION OF THE ABOVE FUNCTION TO GENERATE 
-#' DATA-SETS FOR PLOTTING A SINGLE PARAMETER SET ACROSS
-#' A RECOMBINATION GRADIENT
-makeFigReplicateAutoSexSpecInvSimsData  <-  function(nReps = 500000, N = 30000, h = 1/2, 
-													 m.vals = c(0.002), m.deltas = NULL,
-													 s.vals = c(0.05), s.deltas = NULL, 
-													 s.del.opt = "none", n = 100, u = 1e-5, h.del = 0, noDel = FALSE, 
-													 r.vals = seq(from = 0, to = 0.5, by = 0.025),
-													 fastSim = TRUE, newMutant=c("random","random"), 
-													 saveTrajectories = FALSE) {
-
-	# create empty data frame with same structure as we are going to need
-	data  <-  data.frame(matrix(ncol=9, nrow=0))
-
-	# make parameter values for equal/female-limited/male-limited cases
-	equalM  <-  is.null(m.deltas)
-	equalS  <-  is.null(s.deltas)
-	if(equalM) {
-	  ms   <-  m.vals
-	}
-	if(!equalM) {
-	  ms   <-  makeCornerCaseVals(mu = m.vals, delta = m.vals) # use delta = m.deltas for alternative sex-biased parameterizations
-	}
-	if(equalS) {
-	  ss   <-  s.vals
-	  sMu  <-  ss
-	}
-	if(!equalS) {
-	  ss   <-  makeCornerCaseVals(mu = s.vals, delta = s.vals) # use delta = s.deltas for alternative sex-biased parameterizations 
-	  sMu  <-  colSums(ss)
-	}
-
-	# Workaround for s.del options
-	if(s.del.opt == "none") {
-	    s.del.val  <-  0    
-	}
-	if(s.del.opt == "lethal") {
-	    s.del.val  <-  1    
-	}
-
-# uncomment to explore sex-limited recombination rates
-#	rfs  <-  c(r.vals, r.vals, rep(0, length=length(r.vals)))
-#	rms  <-  c(r.vals, rep(0, length=length(r.vals)), r.vals)
-	rfs  <-  r.vals
-	rms  <-  r.vals
-	rs   <-  rbind(rfs,rms)
-
-	# Convenience variables to monitor progress
-	prog  <-  0
-	tot   <-  length(ms)*length(ss)*1*length(rfs)
-
-		for (i in 1:length(ms)) {
-			for (j in 1:length(ss)) {
-
-				# Strong deleterious mutations (function of s.Mu, so must be inside ss loop)
-				  if(s.del.opt == "strong") {
-				      s.del.val  <-  2*sMu[j]    
-				  }
-			
-				for(k in 1:ncol(rs)) {
-
-					# Display progress in terminal
-					prog  <-  prog + 1
-						cat("\n",paste('Running simulations for parameter set ', prog, "/", tot),"\n")
-
-					# Run simulations
-					res  <-  runReplicateAutoInvSimsSexSpec(nReps = nReps, N = N, h = h,
-															mf = ms, mm = ms, 
-															sf = ss, sm = ss,
-															n = n, u = u, h.del = h.del, s.del = s.del.val, 
-															rf = rfs[k], rm = rms[k],
-															newMutant = newMutant)
-					# Append data 
-					dat   <-  c(ms, ms, ss, ss, s.del.val, rfs[k], rms[k], mean(res$results$nDels), (sum(res$results.df$InvEst)/length(res$results.df$InvEst)))
-					data  <-  rbind(data, dat)
-					rm(dat,res)
-				}
-			}
-		}
-
-	# add variable names to data frame
-	colnames(data)  <-  c("mf",
-						  "mm",
-						  "sf",
-						  "sm",
-						  "s.dels",
-						  "rf",
-						  "rm",
-						  "av.nDels",
-						  "PropEst"
-						  )
-	
-	# create file name
-	if(mf == mm)
-		mType  <-  "equalM"
-	if(mf>mm)
-		mType  <-  "MfLim"
-	if(mf<mm)
-		mType  <-  "MmLim"
-	if(sf == sm)
-		sType  <-  "equalS"
-	if(sf>sm)
-		sType  <-  "SfLim"
-	if(sf<sm)
-		sType  <-  "SmLim"	
-	if(any(rf == rm))
-		rType  <-  "equalR"
-	if(any(rf>rm))
-		rType  <-  "RfLim"
-	if(any(rf<rm))
-		rType  <-  "RmLim"  
+	if(all(ms[1,] == ms[2,]))
+		mType  <-  "_equalM"
+	if(any(ms[1,] != ms[2,]))
+		mType  <-  "_sexspM"
+	if(all(ss[1,] == ss[2,]))
+		sType  <-  "_equalS"
+	if(any(ss[1,] != ss[2,]))
+		sType  <-  "_sexspS"
+	if(all(rs[1,k] == rs[2,k]))
+		rType  <-  "_equalR"
+	if(any(rs[1,k] != rs[2,k]))
+		rType  <-  "_sexspR"
 	filename  <-  paste("./output/data/simResults/SexSpecFig", mType, sType, rType, "_N", N, "_h", h, "_n", n, "_u", u, "_sDel_", s.del.opt, "_nReps", nReps, ".csv", sep="")
 
 	# export data as .csv to ./output/data
@@ -996,21 +836,46 @@ makeFigReplicateAutoSexSpecInvSimsData  <-  function(nReps = 500000, N = 30000, 
 
 
 
-########################################################################
-## To do:  write slow version of makeReplicateAutoSexSpecInvSimsData()
-##         that saves data from all replicate simulations, and uses 
-##         fastSim = FALSE. This will enable us to look at equilibrium 
-##         frequencies for the inversion, as well as prob of establishment. 
-##         Loops will need to be structured to explore more targeted pieces of 
-##         parameter space. 
-########################################################################
-
+#' Run replicate forward simulations for invasion of autosomal inversions until loss of inversion,
+#' or 4*N generations in a Wright-Fisher population.
+#' 
+#' @title Run replicate Wright-Fisher forward simulations for autosomal inversion under different parameter values for plotting
+#' @param nReps  Number of replicate simulations to run for each parameter set
+#' @param N      Total population size
+#' @param h      Dominance coefficient for locally adaptive alleles relative to migrant alleles (h = 0.5)
+#' @param mf 		Numeric (single value) female migration rate
+#' @param mm 		Numeric (single value) male migration rate
+#' @param sf 		Numeric (single value) female selection favouring locally adaptive alleles rate
+#' @param sm 		Numeric (single value) male selection favouring locally adaptive alleles rate
+#' @param rf.vals	Vector of female recombination rates among the two loci involved in local adaptation (r = 0.1).
+#'                (NOTE: see comments in function for instructions to explore sex-limited recombination).
+#' @param rm.vals	Vector of male recombination rates among the two loci involved in local adaptation (r = 0.1).
+#'                (NOTE: see comments in function for instructions to explore sex-limited recombination).
+#' @param s.del.opt  Option specifying fitness effects of deleterious mutations captured by inversion. 
+#'                   Can take one of three values: "none", "lethal", or "strong".
+#' @param n      Number of loci at which deleterious mutations may occur.
+#' @param u      Mutation rate (default value of u = 1e-6).
+#' @param h.del  Dominance of deleterious mutations (default value of h = 0).
+#' @param noDel  Omit fitness effects of deleterious mutations? Defalut value of FALSE assumes that 
+#' 				 selection against deleterious mutations is twice as strong as selection favouring
+#' 				 the locally adaptive alleles. Setting noDel = TRUE runs the W-F simulations as if
+#' 				 there were no delterious mutations segregating in the population that are linked
+#' 				 to the loci involved in local adaptation. 
+#' @param fastSim     Logical. Use threshold frequency for establishment of inversion? 
+#' @param newMutant  Switch to choose whether to specify new mutant genotypes, or if they are 
+#' 					 chosen randomly, given initial genotypic frequencies (Fii.f.init and Fii.m.init). 
+#'					 A 2 positions vector ("m"/"f"/"random", "numeric"/"random"). the first position specify wether the inversions come in males, 
+#'					 in females, or randomnly. The second select either a numerical position in the haplotype vector for the inversion genotype to be created
+#'					 or wether it is random.
+#' @seealso `offFreq`, `findEqFreqs`, `autoInvFwdSimSexSpec` runReplicateAutoInvSimsSexSpec
+#' @export
+#' @author Ludovic Dutoit based on Colin Olito.
 makeFigReplicateAutoSexSpecInvSimsData4N  <-  function(nReps = 500000, N = 30000, h = 1/2, 
                                                 	   mf = c(0.002), mm = c(0.002),
                                                 	   sf = c(0.05),  sm = c(0.05),
-													   s.del.opt = "none", n = 100, u = 1e-5, h.del = 0, noDel = FALSE, 
 													   rf.vals = seq(from = 0, to = 0.5, by = 0.05),
 													   rm.vals = seq(from = 0, to = 0.5, by = 0.05),
+													   s.del.opt = "none", n = 100, u = 1e-5, h.del = 0, noDel = FALSE, 
 													   fastSim = FALSE, newMutant=c("random","random")) {
 	# create empty data frame with same structure as we are going to need
 	data  <-  data.frame(matrix(ncol=9, nrow=0))
@@ -1067,7 +932,7 @@ makeFigReplicateAutoSexSpecInvSimsData4N  <-  function(nReps = 500000, N = 30000
 	hs      <-  rep(h, times=nrow(data))
 	us      <-  rep(u, times=nrow(data))
 	h.dels  <-  rep(h.del, times=nrow(data))
-	data    <-  cbind(data,  hs, rfs,rms, us, h.dels)
+	data    <-  cbind(data,  hs, us, h.dels)
 	colnames(data)  <-  c("finalInvFreq",
 						  "finalE.InvFreq",
 						  "finalWf.mean",
@@ -1081,8 +946,8 @@ makeFigReplicateAutoSexSpecInvSimsData4N  <-  function(nReps = 500000, N = 30000
 						  "InvEstTime",
 						  "nDels",
 						  "N",
-						  "mm",
 						  "mf",
+						  "mm",
 						  "s.dels",
 						  "sf",
 						  "sm",
@@ -1095,23 +960,23 @@ makeFigReplicateAutoSexSpecInvSimsData4N  <-  function(nReps = 500000, N = 30000
 	
 	# create file name
 	if(mf == mm)
-		mType  <-  "_equalM_"
+		mType  <-  "_equalM"
 	if(mf>mm)
-		mType  <-  "_MfLim_"
+		mType  <-  "_MfLim"
 	if(mf<mm)
-		mType  <-  "_MmLim_"
+		mType  <-  "_MmLim"
 	if(sf == sm)
-		sType  <-  "equalS_"
+		sType  <-  "_equalS"
 	if(sf>sm)
-		sType  <-  "SfLim_"
+		sType  <-  "_SfLim"
 	if(sf<sm)
-		sType  <-  "SmLim_"	
+		sType  <-  "_SmLim"	
 	if(any(rf.vals == rm.vals))
-		rType  <-  "equalR_"
+		rType  <-  "_equalR"
 	if(any(rf.vals > rm.vals))
-		rType  <-  "RfLim_"
+		rType  <-  "_RfLim"
 	if(any(rf.vals < rm.vals))
-		rType  <-  "RmLim_"  
+		rType  <-  "_RmLim"  
 	filename  <-  paste("./output/data/simResults/SexSpecFig4N", mType, sType, rType, "_N", N, "_h", h, "_n", n, "_u", u, "_sDel_", s.del.opt, "_nReps", nReps, ".csv", sep="")
 
 	# export data as .csv to ./output/data
