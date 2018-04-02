@@ -672,6 +672,8 @@ makeCornerCaseVals  <-  function(mu = c(0.001, 0.002), delta = c(0.001, 0.002)) 
 
 
 
+
+
 #' Wrapper function to run replicate forward simulations for invasion
 #' of autosomal inversions in a Wright-Fisher population 
 #' 
@@ -706,93 +708,6 @@ makeCornerCaseVals  <-  function(mu = c(0.001, 0.002), delta = c(0.001, 0.002)) 
 #' @seealso `offFreq`, `findEqFreqs`, `autoInvFwdSimSexSpec` runReplicateAutoInvSimsSexSpec
 #' @export
 #' @author Colin Olito
-makeFastReplicateInvSimsDataXlinked  <-  function(nReps = 1000, N = 20000, h = 1/2, 
-                            m.vals = c(0.0005, 0.001), m.deltas = NULL,
-                            s.vals = c(0.001, 0.05), s.deltas = NULL, 
-                            s.del.opt = "none", n = 100, u = 1e-5, h.del = 0, noDel = FALSE, 
-                            r.vals = seq(from = 0, to = 0.5, by = 0.05),
-                            fastSim = TRUE, newMutant=c("random","random")) {
-
-  # create empty data frame with same structure as we are going to need
-  data  <-  data.frame(matrix(ncol=9, nrow=0))
-
-  # make parameter values for equal/female-limited/male-limited cases
-  ms   <-  makeCornerCaseVals(mu = m.vals, delta = m.vals) # use delta = m.deltas for alternative sex-biased parameterizations
-  ss   <-  makeCornerCaseVals(mu = s.vals, delta = s.vals) # use delta = s.deltas for alternative sex-biased parameterizations
-  sMu  <-  colSums(ss)
-
-  # Workaround for s.del options
-  if(s.del.opt == "none") {
-      s.del.val  <-  0    
-  }
-  if(s.del.opt == "lethal") {
-      s.del.val  <-  1    
-  }
-
-  # Convenience variables to monitor progress
-  prog  <-  0
-  tot   <-  ncol(ms)*ncol(ss)*length(r.vals)
-  cat("\n",paste('Running simulations for parameter set ', 1, "/", tot),"\n")
-
-    for (i in 1:ncol(ms)) {
-      for (j in 1:ncol(ss)) {
-
-        # Strong deleterious mutations (function of s.Mu, so must be inside ss loop)
-          if(s.del.opt == "strong") {
-              s.del.val  <-  2*sMu[j]    
-          }
-
-        for(k in 1:length(r.vals)) {
-
-          # Display progress in terminal
-          prog  <-  prog + 1
-          if(prog %% 10 == 0) {
-            cat("\n",paste('Running simulations for parameter set ', prog, "/", tot),"\n")
-          }
-
-          # Run simulations
-          res  <-  runReplicateInvSimsXlinked(nReps = nReps, N = N, h = h, newMutant = newMutant,
-                                              n = n, u = u, h.del = h.del, 
-                                              mf = ms[1,i], mm = ms[2,i], 
-                                              sf = ss[1,j], sm = ss[2,j],
-                                              sf.del = s.del.val, sm.del = s.del.val, 
-                                              r = r.vals[k], fastSim=TRUE)
-          # Append data 
-          dat   <-  c(ms[1,i], ms[2,i], ss[1,j], ss[2,j], s.del.val, r.vals[k], NA, mean(res$results$nDels), (sum(res$results.df$InvEst)/length(res$results.df$InvEst)))
-          data  <-  rbind(data, dat)
-          rm(dat,res)
-        }
-      }
-    }
-
-  # add variable names to data frame
-  colnames(data)  <-  c("mf",
-                        "mm",
-                        "sf",
-                        "sm",
-                        "s.dels",
-                        "rf",
-                        "rm",
-                        "av.nDels",
-                        "PropEst"
-                        )
-  
-  # create file name
-  filename  <-  paste("./output/data/simResults/XlinkedFast", "_N", N, "_h", h, "_n", n, "_u", u, "_sDel_", s.del.opt, "_nReps", nReps, ".csv", sep="")
-
-  # export data as .csv to ./output/data
-  write.csv(data, file=filename, row.names = FALSE)
-
-  #  Return results in case user wants it
-  return(data)
-}
-
-
-
-
-#' SLIGHT MODIFICATION OF THE ABOVE FUNCTION TO GENERATE 
-#' DATA-SETS FOR PLOTTING A SINGLE PARAMETER SET ACROSS
-#' A RECOMBINATION GRADIENT
 makeFigReplicateInvSimsDataXlinked  <-  function(nReps = 50000, N = 30000, h = 1/2, 
                                                  m.vals = c(0.002), m.deltas = NULL,
                                                  s.vals = c(0.05), s.deltas = NULL, 
@@ -803,18 +718,18 @@ makeFigReplicateInvSimsDataXlinked  <-  function(nReps = 50000, N = 30000, h = 1
   # create empty data frame with same structure as we are going to need
   data  <-  data.frame(matrix(ncol=9, nrow=0))
 
-  # make parameter values for equal or sex-specific migration/seleciton
+  # make parameter values for equal/female-limited/male-limited cases
   equalM  <-  is.null(m.deltas)
   equalS  <-  is.null(s.deltas)
   if(equalM) {
-    ms   <-  m.vals
+    ms   <-  rbind(m.vals, m.vals)
   }
   if(!equalM) {
     ms   <-  makeCornerCaseVals(mu = m.vals, delta = m.vals) # use delta = m.deltas for alternative sex-biased parameterizations
   }
   if(equalS) {
-    ss   <-  s.vals
-    sMu  <-  ss
+    ss   <-  rbind(s.vals, s.vals)
+    sMu  <-  colMeans(ss)
   }
   if(!equalS) {
     ss   <-  makeCornerCaseVals(mu = s.vals, delta = s.vals) # use delta = s.deltas for alternative sex-biased parameterizations 
@@ -831,10 +746,10 @@ makeFigReplicateInvSimsDataXlinked  <-  function(nReps = 50000, N = 30000, h = 1
 
   # Convenience variables to monitor progress
   prog  <-  0
-  tot   <-  length(ms)*length(ss)*length(r.vals)
+  tot   <-  ncol(ms)*ncol(ss)*length(r.vals)
 
-    for (i in 1:length(ms)) {
-      for (j in 1:length(ss)) {
+    for (i in 1:ncol(ms)) {
+      for (j in 1:ncol(ss)) {
 
         # Strong deleterious mutations (function of s.Mu, so must be inside ss loop)
           if(s.del.opt == "strong") {
@@ -849,14 +764,13 @@ makeFigReplicateInvSimsDataXlinked  <-  function(nReps = 50000, N = 30000, h = 1
 
           # Run simulations
           res  <-  runReplicateInvSimsXlinked(nReps = nReps, N = N, h = h,
-                                              mf = ms, mm = ms, 
-                                              sf = ss, sm = ss,
+                                              mf = ms[1,i], mm = ms[2,i], 
+                                              sf = ss[1,j], sm = ss[2,j],
                                               n = n, u = u, h.del = h.del, sf.del = s.del.val, sm.del = s.del.val, 
                                               r = r.vals[k],
                                               newMutant = newMutant)
           # Append data 
-print((sum(res$results.df$InvEst)/length(res$results.df$InvEst)))
-          dat   <-  c(ms, ms, ss, ss, s.del.val, r.vals[k], NA, mean(res$results$nDels), (sum(res$results.df$InvEst)/length(res$results.df$InvEst)))
+          dat   <-  c(ms[1,i], ms[2,i], ss[1,j], ss[2,j], s.del.val, r.vals[k], NA, mean(res$results.df$nDels), (sum(res$results.df$InvEst)/length(res$results.df$InvEst)))
           data  <-  rbind(data, dat)
           rm(dat,res)
         }
@@ -876,25 +790,15 @@ print((sum(res$results.df$InvEst)/length(res$results.df$InvEst)))
                         )
   
   # create file name
-  if(mf == mm)
-    mType  <-  "equalM"
-  if(mf>mm)
-    mType  <-  "MfLim"
-  if(mf<mm)
-    mType  <-  "MmLim"
-  if(sf == sm)
-    sType  <-  "equalS"
-  if(sf>sm)
-    sType  <-  "SfLim"
-  if(sf<sm)
-    sType  <-  "SmLim"
-  if(any(rf == rm))
-    rType  <-  "equalR"
-  if(any(rf>rm))
-    rType  <-  "RfLim"
-  if(any(rf<rm))
-    rType  <-  "RmLim"  
-  filename  <-  paste("./output/data/simResults/XlinkedFig", mType, sType, rType, "_N", N, "_h", h, "_n", n, "_u", u, "_sDel_", s.del.opt, "_nReps", nReps, ".csv", sep="")
+  if(all(ms[1,] == ms[2,]))
+    mType  <-  "_equalM"
+  if(any(ms[1,] != ms[2,]))
+    mType  <-  "_sexspM"
+  if(all(ss[1,] == ss[2,]))
+    sType  <-  "_equalS"
+  if(any(ss[1,] != ss[2,]))
+    sType  <-  "_sexspecS"
+  filename  <-  paste("./output/data/simResults/XlinkedFig", mType, sType, "_N", N, "_h", h, "_n", n, "_u", u, "_sDel_", s.del.opt, "_nReps", nReps, ".csv", sep="")
 
   # export data as .csv to ./output/data
   write.csv(data, file=filename, row.names = FALSE)

@@ -36,61 +36,38 @@ source('R/functions-WFSims-Xlinked.R')
 ######################
 ##  Run Simulations
 
+######################################
+##	Small population Size (N = 30k)	##
+##	no deleterious mutations       	##
+##	m = 0.002, s = 0.05				##
+######################################
+nReps  <-  1000000
+N      <-  30000
+m      <-  0.002
+s      <-  0.05
 # Locally adaptive alleles recessive
 	# No deleterious recessive mutations
-#	makeFastReplicateInvSimsDataXlinked(nReps = 1000000, N = 500000, h = 0, 
-#										m.vals = c(0.002, 0.004), m.deltas = NULL,
-#										s.vals = c(0.05, 0.1), s.deltas = NULL, 
-#										s.del.opt = "none", n = 100, u = 1e-5, h.del = 0, 
-#										r.vals = seq(from = 0, to = 0.5, by = 0.05),
-#										newMutant=c("random","random"))
-
-
-# Additive fitness effects
-	# No deleterious recessive mutations
-#	makeFastReplicateInvSimsDataXlinked(nReps = 1000000, N = 500000, h = 1/2, 
-#										m.vals = c(0.0002, 0.0004), m.deltas = NULL,
-#										s.vals = c(0.005, 0.01), s.deltas = NULL, 
-#										s.del.opt = "none", n = 100, u = 1e-5, h.del = 0, 
-#										r.vals = seq(from = 0, to = 0.5, by = 0.05),
-#										newMutant=c("random","random"))
-
-# Locally adaptive alleles dominant
-	# No deleterious recessive mutations
-#	makeFastReplicateInvSimsDataXlinked(nReps = 1000000, N = 500000, h = 1, 
-#										m.vals = c(0.0002, 0.0004), m.deltas = NULL,
-#										s.vals = c(0.005, 0.01), s.deltas = NULL, 
-#										s.del.opt = "none", n = 100, u = 1e-5, h.del = 0, 
-#										r.vals = seq(from = 0, to = 0.5, by = 0.05),
-#										newMutant=c("random","random"))
-
-
-###############################################
-# Sims for Fig. 1 etc.
-
-# Locally adaptive alleles recessive
-	# No deleterious recessive mutations
-	makeFigReplicateInvSimsDataXlinked(nReps = 1000000, N = 500000, h = 0, 
-									m.vals = c(0.0002), m.deltas = NULL,
-									s.vals = c(0.005), s.deltas = NULL, 
+	makeFigReplicateInvSimsDataXlinked(nReps = nReps, N = N, h = 0, 
+									m.vals = m, m.deltas = m,
+									s.vals = s, s.deltas = s, 
 									s.del.opt = "none", n = 100, u = 1e-5, h.del = 0, 
 									r.vals = seq(from = 0, to = 0.5, by = 0.05),
 									newMutant=c("random","random"))
 
 # Additive fitness effects
 	# No deleterious recessive mutations
-	makeFigReplicateInvSimsDataXlinked(nReps = 1000000, N = 30000, h = 1/2, 
-									m.vals = c(0.002), m.deltas = NULL,
-									s.vals = c(0.05), s.deltas = NULL, 
+	makeFigReplicateInvSimsDataXlinked(nReps = nReps, N = N, h = 1/2, 
+									m.vals = m, m.deltas = m,
+									s.vals = s, s.deltas = s, 
 									s.del.opt = "none", n = 100, u = 1e-5, h.del = 0, 
 									r.vals = seq(from = 0, to = 0.5, by = 0.05),
 									newMutant=c("random","random"))
 
 # Locally adaptive alleles dominant
 # No deleterious recessive mutations
-	makeFigReplicateInvSimsDataXlinked(nReps = 1000000, N = 30000, h = 1, 
-									m.vals = c(0.002), m.deltas = NULL,
-									s.vals = c(0.05), s.deltas = NULL, 
+	makeFigReplicateInvSimsDataXlinked(nReps = nReps, N = N, h = 1, 
+									m.vals = m, m.deltas = m,
+									s.vals = s, s.deltas = s, 
 									s.del.opt = "none", n = 100, u = 1e-5, h.del = 0, 
 									r.vals = seq(from = 0, to = 0.5, by = 0.05),
 									newMutant=c("random","random"))
@@ -98,11 +75,107 @@ source('R/functions-WFSims-Xlinked.R')
 
 
 
-###############################################
-# Sims to 4N generations
-makeFigReplicateInvSimsDataXlinked4N(nReps = 100, N = 30000, h = 1/2, 
-                                     mf = c(0.002), mm = c(0.002),
-                                     sf = c(0.05),  sm = c(0.05),
-                                     s.del.opt = "none", n = 100, u = 1e-5, h.del = 0, noDel = FALSE, 
+######################################
+##	Large population Size (N = 500k)##
+##	no deleterious mutations       	##
+##	m = 0.0002, s = 0.005			##
+######################################
+nReps  <-  1000000
+N      <-  500000
+m      <-  0.0002
+s      <-  0.005
+# Locally adaptive alleles recessive
+	# No deleterious recessive mutations
+	makeFigReplicateInvSimsDataXlinked(nReps = nReps, N = N, h = 0, 
+									m.vals = m, m.deltas = m,
+									s.vals = s, s.deltas = s, 
+									r.vals = seq(from = 0, to = 0.5, by = 0.05),
+									s.del.opt = "none", n = 100, u = 1e-5, h.del = 0,
+									newMutant=c("random","random"))
+
+# Additive fitness effects
+	# No deleterious recessive mutations
+	makeFigReplicateInvSimsDataXlinked(nReps = nReps, N = N, h = 1/2, 
+									m.vals = m, m.deltas = m,
+									s.vals = s, s.deltas = s, 
+									r.vals = seq(from = 0, to = 0.5, by = 0.05),
+									s.del.opt = "none", n = 100, u = 1e-5, h.del = 0, 
+									newMutant=c("random","random"))
+
+# Locally adaptive alleles dominant
+# No deleterious recessive mutations
+	makeFigReplicateInvSimsDataXlinked(nReps = nReps, N = N, h = 1, 
+									m.vals = m, m.deltas = m,
+									s.vals = s, s.deltas = s, 
+									s.del.opt = "none", n = 100, u = 1e-5, h.del = 0, 
+									r.vals = seq(from = 0, to = 0.5, by = 0.05),
+									newMutant=c("random","random"))
+
+
+##############################################################################################
+##############################################################################################
+# Run sims until loss of inversion or 4N generations, retain final frequencies
+
+######################################
+##	Small population Size (N = 30k)	##
+##	equal m, s:	m = 0.002, s = 0.05	##
+######################################
+nReps  <-  50000
+N      <-  30000
+m      <-  0.002
+s      <-  0.05
+
+# No Deleterious Mutations
+makeFigReplicateInvSimsDataXlinked4N(nReps = nReps, N = N, h = 1/2, 
+                                     mf = m, mm = m,
+                                     sf = s,  sm = s,
                                      r.vals = seq(from = 0, to = 0.5, by = 0.05),
+                                     s.del.opt = "none", n = 100, u = 1e-5, h.del = 0,
                                      newMutant=c("random","random"))
+# Strong Deleterious Mutations
+makeFigReplicateInvSimsDataXlinked4N(nReps = nReps, N = N, h = 1/2, 
+                                     mf = m, mm = m,
+                                     sf = s,  sm = s,
+                                     r.vals = seq(from = 0, to = 0.5, by = 0.05),
+                                     s.del.opt = "strong", n = 100, u = 1e-5, h.del = 0,
+                                     newMutant=c("random","random"))
+# Lethal Deleterious Mutations
+makeFigReplicateInvSimsDataXlinked4N(nReps = nReps, N = N, h = 1/2, 
+                                     mf = m, mm = m,
+                                     sf = s,  sm = s,
+                                     r.vals = seq(from = 0, to = 0.5, by = 0.05),
+                                     s.del.opt = "lethal", n = 100, u = 1e-5, h.del = 0,
+                                     newMutant=c("random","random"))
+
+
+##########################################
+##	Large population Size (N = 500k)	##
+##	equal m, s:	m = 0.0002, s = 0.005	##
+##########################################
+nReps  <-  500000
+N      <-  500000
+m      <-  0.0002
+s      <-  0.005
+
+# No Deleterious Mutations
+makeFigReplicateInvSimsDataXlinked4N(nReps = nReps, N = N, h = 1/2, 
+                                     mf = m, mm = m,
+                                     sf = s,  sm = s,
+                                     r.vals = seq(from = 0, to = 0.5, by = 0.05),
+                                     s.del.opt = "none", n = 100, u = 1e-5, h.del = 0,
+                                     newMutant=c("random","random"))
+# Strong Deleterious Mutations
+makeFigReplicateInvSimsDataXlinked4N(nReps = nReps, N = N, h = 1/2, 
+                                     mf = m, mm = m,
+                                     sf = s,  sm = s,
+                                     r.vals = seq(from = 0, to = 0.5, by = 0.05),
+                                     s.del.opt = "strong", n = 100, u = 1e-5, h.del = 0,
+                                     newMutant=c("random","random"))
+# Lethal Deleterious Mutations
+makeFigReplicateInvSimsDataXlinked4N(nReps = nReps, N = N, h = 1/2, 
+                                     mf = m, mm = m,
+                                     sf = s,  sm = s,
+                                     r.vals = seq(from = 0, to = 0.5, by = 0.05),
+                                     s.del.opt = "lethal", n = 100, u = 1e-5, h.del = 0,
+                                     newMutant=c("random","random"))
+
