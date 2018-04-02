@@ -259,13 +259,12 @@ findEqFreqsX  <-  function(Wf, Wm, mm, mf, r, threshold = 1e-6) {
 #' @param mf          Migration rate for locally maladaptive alleles (m =  0.01) in females
 #' @param r           Recombination rate among the two loci involved in local adaptation in females (r = 0.1).
 #' @param fastSim     Logical. Use threshold frequency for establishment of inversion? 
-#' @param saveTrajectories  Save evolutionary trajectories of inversion frequencies? 
 #' @export
 #' @seealso `offFreq`, `findEqFreqsX`, `x.1`, ...
 #' @author Colin Olito - Modified for X-linked by Homa Papoli
 InvFwdSimXlinked  <-  function(Fii.f.init = Fii.f.init, Fii.m.init = Fii.m.init, 
                                N = N, Wf = Wf, Wm = Wm, mm = mm, mf = mf, sm = sm, sf = sf, r = r, 
-                               fastSim = TRUE, saveTrajectories = FALSE, ...) {
+                               fastSim = TRUE, ...) {
 
   # Use deterministic eq. initial frequencies
   Fii.f  <-  Fii.f.init
@@ -537,27 +536,17 @@ introduceInversion  <-  function(newMutant, Fii.f.init, Fii.m.init, N) {
 #'                   A 2 positions vector ("m"/"f"/"random", "numeric"/"random"). the first position specify wether the inversions come in males, 
 #'                   in females, or randomnly. The second select either a numerical position in the haplotype vector for the inversion genotype to be created
 #'                   or wether it is random.
-#' @param saveTrajectories  Save evolutionary trajectories of inversion frequencies? Setting this 
-#'             							to TRUE can become extremely memory intensive if you are running many
-#'             							replicate simulations (see warning).
 #' @seealso `offFreq`, `findEqFreqsX`, `InvFwdSimXlinked`
 #' @export
 #' @author Colin Olito - Modified for X-linked by Homa Papoli
 runReplicateInvSimsXlinked  <-  function(nReps = 1000, N = 5000, mf = 0.01, mm = 0.01, sf = 0.02, sm = 0.02, h = 1/2, r = 0.5, 
                                       n = 100, u = 1e-5, h.del = 0, sf.del = 0, sm.del = 0, noDel = FALSE,
-                                      fastSim = TRUE, newMutant = c("random","random"), saveTrajectories = FALSE) { 
+                                      fastSim = TRUE, newMutant = c("random","random")) { 
 
   ##  Preemptive Warnings
   if(any(c(N,mm,mf,sf,sm,h,r,n,u,h.del) < 0) | any(c(mm,mf,sf,sm,h,r,u,h.del) > 1) | r > 0.5)
     stop('The chosen parameter values fall outside of reasonable parameter space')
   
-  try({
-     if(nReps > 1000 & saveTrajectories)
-      stop('Warning: You have chosen to save evolutionary trajectories 
-          for a large number of replicate simulations. Thiss will be
-          memory intensive. Consider setting saveTrajectories = FALSE')
-  }, silent=FALSE)
-
   ##  Define Fitness Expressions for females and males for determining eq. frequencies in absence of inversion
   Wf.init  <-  c(1,           (1 + h*sf),          (1 + h*sf),          (1 + h*sf)^2,        0,
                 (1 + h*sf),   (1 + sf),            (1 + h*sf)^2,        (1 + h*sf)*(1 + sf), 0,
@@ -590,19 +579,6 @@ runReplicateInvSimsXlinked  <-  function(nReps = 1000, N = 5000, mf = 0.01, mm =
   finalWbar_m       <-  rep(0, times=nReps)
   nGen              <-  rep(0, times=nReps)
   nDels             <-  rep(0, times=nReps)
-  
-  if(saveTrajectories) {
-    replicateTraj    <-  c()
-    InvFreqTraj      <-  c()
-    E.InvFreqTraj    <-  c()
-    InvFreq_fTraj    <-  c()
-    E.InvFreq_fTraj  <-  c()
-    InvFreq_mTraj    <-  c()
-    E.InvFreq_mTraj  <-  c()
-    Wbar_Traj        <-  c()
-    Wbar_fTraj       <-  c()
-    Wbar_mTraj       <-  c()
-  } 
   
   # Replicate simulation loop
   pb   <-  txtProgressBar(min=0, max=nReps, style=3)
@@ -644,20 +620,6 @@ runReplicateInvSimsXlinked  <-  function(nReps = 1000, N = 5000, mf = 0.01, mm =
     invEstTime[i]        <-  repRes$InvEstTime
     nDels[i]             <-  n.del
     
-    
-    
-    if(saveTrajectories) {
-      replicateTraj    <-  c(replicateTraj, rep(i, times=length(repRes$InvFreq)))
-      InvFreqTraj      <-  c(InvFreqTraj, repRes$InvFreq)
-      E.InvFreqTraj    <-  c(E.InvFreqTraj, repRes$E.InvFreq)
-      InvFreq_fTraj    <-  c(InvFreq_fTraj, repRes$InvFreq_f)
-      InvFreq_mTraj    <-  c(InvFreq_mTraj, repRes$InvFreq_m)
-      E.InvFreq_fTraj  <-  c(E.InvFreq_fTraj, repRes$E.InvFreq_f)
-      E.InvFreq_mTraj  <-  c(E.InvFreq_mTraj, repRes$E.InvFreq_m)
-      Wbar_Traj        <-  c(Wbar_Traj, repRes$Wbar)
-      Wbar_fTraj       <-  c(Wbar_fTraj, repRes$Wbar_f)
-      Wbar_mTraj       <-  c(Wbar_mTraj, repRes$Wbar_m)
-    } 
   setTxtProgressBar(pb, i)
   }
   
@@ -677,24 +639,8 @@ runReplicateInvSimsXlinked  <-  function(nReps = 1000, N = 5000, mf = 0.01, mm =
                              "nDels"             =  nDels
                              )
 
-  if(saveTrajectories) {
-    traj.df  <-  data.frame(
-                            "replicateTraj"    =  replicateTraj,
-                            "InvFreqTraj"      =  InvFreqTraj,
-                            "E.InvFreqTraj"    =  E.InvFreqTraj,
-                            "InvFreq_fTraj"    =  InvFreq_fTraj,
-                            "E.InvFreq_fTraj"  =  E.InvFreq_fTraj,
-                            "InvFreq_mTraj"    =  InvFreq_mTraj,
-                            "E.InvFreq_mTraj"  =  E.InvFreq_mTraj,
-                            "Wbar_fTraj"       =  Wbar_fTraj,
-                            "Wbar_mTraj"       =  Wbar_mTraj
-                            )
-  } else {
-    traj.df  <-  NULL
-  }
   res  <-  list(
-                "results.df"  =  results.df,
-                "traj.df"     =  traj.df
+                "results.df"  =  results.df
                 )
   return(res)
 }   
@@ -752,10 +698,6 @@ makeCornerCaseVals  <-  function(mu = c(0.001, 0.002), delta = c(0.001, 0.002)) 
 #' @param r.vals Vector of desired recombination rates among the two loci involved in local adaptation (r = 0.1).
 #'                (NOTE: see comments in function for instructions to explore sex-limited recombination).
 #' @param fastSim     Logical. Use threshold frequency for establishment of inversion? 
-#' @param saveTrajectories  Save evolutionary trajectories of inversion frequencies? Setting this 
-#'              to TRUE can become extremely memory intensive if you are running many
-#'              replicate simulations (see warning).
-#'              otherwise
 #' @param newMutant  Switch to choose whether to specify new mutant genotypes, or if they are 
 #'           chosen randomly, given initial genotypic frequencies (Fii.f.init and Fii.m.init). 
 #'           A 2 positions vector ("m"/"f"/"random", "numeric"/"random"). the first position specify wether the inversions come in males, 
@@ -769,8 +711,7 @@ makeFastReplicateInvSimsDataXlinked  <-  function(nReps = 1000, N = 20000, h = 1
                             s.vals = c(0.001, 0.05), s.deltas = NULL, 
                             s.del.opt = "none", n = 100, u = 1e-5, h.del = 0, noDel = FALSE, 
                             r.vals = seq(from = 0, to = 0.5, by = 0.05),
-                            fastSim = TRUE, newMutant=c("random","random"), 
-                            saveTrajectories = FALSE) {
+                            fastSim = TRUE, newMutant=c("random","random")) {
 
   # create empty data frame with same structure as we are going to need
   data  <-  data.frame(matrix(ncol=9, nrow=0))
@@ -815,7 +756,7 @@ makeFastReplicateInvSimsDataXlinked  <-  function(nReps = 1000, N = 20000, h = 1
                                               mf = ms[1,i], mm = ms[2,i], 
                                               sf = ss[1,j], sm = ss[2,j],
                                               sf.del = s.del.val, sm.del = s.del.val, 
-                                              r = r.vals[k], fastSim=TRUE, saveTrajectories=FALSE)
+                                              r = r.vals[k], fastSim=TRUE)
           # Append data 
           dat   <-  c(ms[1,i], ms[2,i], ss[1,j], ss[2,j], s.del.val, r.vals[k], NA, mean(res$results$nDels), (sum(res$results.df$InvEst)/length(res$results.df$InvEst)))
           data  <-  rbind(data, dat)
@@ -857,8 +798,7 @@ makeFigReplicateInvSimsDataXlinked  <-  function(nReps = 50000, N = 30000, h = 1
                                                  s.vals = c(0.05), s.deltas = NULL, 
                                                  s.del.opt = "none", n = 100, u = 1e-5, h.del = 0, noDel = FALSE, 
                                                  r.vals = seq(from = 0, to = 0.5, by = 0.05),
-                                                 fastSim = TRUE, newMutant=c("random","random"), 
-                                                 saveTrajectories = FALSE) {
+                                                 fastSim = TRUE, newMutant=c("random","random")) {
 
   # create empty data frame with same structure as we are going to need
   data  <-  data.frame(matrix(ncol=9, nrow=0))
@@ -1065,11 +1005,11 @@ makeFigReplicateInvSimsDataXlinked4N  <-  function(nReps = 50000, N = 30000, h =
   
   # create file name
   if(mf == mm)
-    mType  <-  "equalM_"
+    mType  <-  "_equalM_"
   if(mf>mm)
-    mType  <-  "MfLim_"
+    mType  <-  "_MfLim_"
   if(mf<mm)
-    mType  <-  "MmLim_"
+    mType  <-  "_MmLim_"
   if(sf == sm)
     sType  <-  "equalS_"
   if(sf>sm)
