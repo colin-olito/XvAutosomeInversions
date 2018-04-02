@@ -16,15 +16,6 @@
 #			Two major constraints on parameter values. 
 #			1) initial freq. of maladaptive alleles should be low ((2*m)/s < 0.1) &
 #			2) To avoid nearly neutral dynamics, N*m >~ 100.
-#		
-#			BUT... computation slows dramatically once N > 30,000. The chosen values
-#			for N, m, and s are an attempt to optimize these tradeoffs while still 
-#			keeping the computation time down to a reasonable duration. They are still
-#			not perfect. For example, with s = 0.05 and m = 0.002, N*m = 60; or with
-#			s = 0.05, m=0.004, the initial p = 0.16. However, for other parameter 
-#			combinations, we satisfy the conditions reasonably well. In a perfect world
-#			we would have more time and use larger N and smaller s and m... but so it goes.
-#		
 
 
 
@@ -36,7 +27,7 @@ source('R/functions-WFSims-Autosomal-SexSpec.R')
 
 ##############################################################################################
 ##############################################################################################
-# Run sims until p*_A and p*_X corresponding to invasion probability of 0.9997
+# Run sims until p*_A corresponding to invasion probability of 0.9997
 
 ######################################
 ##	Small population Size (N = 30k)	##
@@ -180,6 +171,3 @@ makeFigReplicateAutoSexSpecInvSimsData4N(nReps = nReps, N = N, h = 1/2,
 										 rf.vals = seq(from = 0, to = 0.5, by = 0.05),
 										 rm.vals = seq(from = 0, to = 0.5, by = 0.05),
 										 fastSim=FALSE, newMutant=c("random","random"))
-
-
-
