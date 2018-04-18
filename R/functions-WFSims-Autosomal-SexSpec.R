@@ -728,7 +728,7 @@ makeFigReplicateAutoSexSpecInvSimsData  <-  function(nReps = 500000, N = 30000, 
 													 s.vals = c(0.05), s.deltas = NULL, 
 													 r.vals = seq(from = 0, to = 0.5, by = 0.025), r.deltas = FALSE, 
 													 s.del.opt = "none", n = 100, u = 1e-5, h.del = 0, noDel = FALSE, 
-													 fastSim = TRUE, newMutant=c("random","random")) {
+													 fastSim = TRUE, newMutant=c("random","random"),output_extension ="") {
 
 	# create empty data frame with same structure as we are going to need
 	data  <-  data.frame(matrix(ncol=9, nrow=0))
@@ -823,7 +823,7 @@ makeFigReplicateAutoSexSpecInvSimsData  <-  function(nReps = 500000, N = 30000, 
 		rType  <-  "_equalR"
 	if(any(rs[1,k] != rs[2,k]))
 		rType  <-  "_sexspR"
-	filename  <-  paste("./output/data/simResults/SexSpecFig", mType, sType, rType, "_N", N, "_h", h, "_n", n, "_u", u, "_sDel_", s.del.opt, "_nReps", nReps, ".csv", sep="")
+	filename  <-  paste("./output/data/simResults/SexSpecFig", mType, sType, rType, "_N", N, "_h", h, "_n", n, "_u", u, "_sDel_", s.del.opt, "_nReps", nReps,output_extension, ".csv", sep="")
 
 	# export data as .csv to ./output/data
 	write.csv(data, file=filename, row.names = FALSE)
