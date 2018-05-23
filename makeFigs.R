@@ -48,6 +48,9 @@ toPdf(Fig4(),
             figPath(name='Fig4.pdf'), width=7, height=7)
 embed_fonts(figPath(name='Fig4.pdf'))
 
+toPdf(propEstSuppFigs(), 
+            figPath(name='ProportionEstablishSuppFig.pdf'), width=18, height=10)
+embed_fonts(figPath(name='ProportionEstablishSuppFig.pdf'))
 
 
 ########################

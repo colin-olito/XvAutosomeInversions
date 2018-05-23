@@ -343,12 +343,757 @@ Fig4  <-  function() {
 
 
 
+###########################################################################################
+#' Deterministic Simulations: Equilibrium frequencies of Autosomal vs. X-linked inversions
+#'  -- Equal selection through each sex (no sex-specific selection for Autosomal model)
+#'  -- Additive fitness effects at SA locus
+#' @title Eq. frequencies of Auto vs. X-linked inversions
+#' @author Colin Olito
+#' @export
+propEstSuppFigs  <-  function() {
+
+    # Import data for plotting
+      aDataN30kH0    <-  read.csv(file = "/Volumes/VERBATIM\ HD/XvAutosomeSuppData/SexSpecFig_sexspM_sexspS_sexspR_N30000_h0_n100_u1e-05_sDel_none_nReps1e+06.csv", header=TRUE)
+      xDataN30kH0    <-  read.csv(file = "/Volumes/VERBATIM\ HD/XvAutosomeSuppData/XlinkedFig_sexspM_sexspecS_N30000_h0_n100_u1e-05_sDel_none_nReps1e+06.csv", header=TRUE)
+      aDataN30kH0.5  <-  read.csv(file = "/Volumes/VERBATIM\ HD/XvAutosomeSuppData/SexSpecFig_sexspM_sexspS_sexspR_N30000_h0.5_n100_u1e-05_sDel_none_nReps1e+06.csv", header=TRUE)
+      xDataN30kH0.5  <-  read.csv(file = "/Volumes/VERBATIM\ HD/XvAutosomeSuppData/XlinkedFig_sexspM_sexspecS_N30000_h0.5_n100_u1e-05_sDel_none_nReps1e+06.csv", header=TRUE)
+      aDataN30kH1    <-  read.csv(file = "/Volumes/VERBATIM\ HD/XvAutosomeSuppData/SexSpecFig_sexspM_sexspS_sexspR_N30000_h1_n100_u1e-05_sDel_none_nReps1e+06.csv", header=TRUE)
+      xDataN30kH1    <-  read.csv(file = "/Volumes/VERBATIM\ HD/XvAutosomeSuppData/XlinkedFig_sexspM_sexspecS_N30000_h1_n100_u1e-05_sDel_none_nReps1e+06.csv", header=TRUE)
+
+      aDataH0    <-  read.csv(file = "/Volumes/VERBATIM\ HD/XvAutosomeSuppData/SexSpecFig_sexspM_sexspS_sexspR_N5e+05_h0_n100_u1e-05_sDel_none_nReps1e+06.csv", header=TRUE)
+      xDataH0    <-  read.csv(file = "/Volumes/VERBATIM\ HD/XvAutosomeSuppData/XlinkedFig_sexspM_sexspecS_N5e+05_h0_n100_u1e-05_sDel_none_nReps1e+06.csv", header=TRUE)
+      aDataH0.5  <-  read.csv(file = "/Volumes/VERBATIM\ HD/XvAutosomeSuppData/SexSpecFig_sexspM_sexspS_sexspR_N5e+05_h0.5_n100_u1e-05_sDel_none_nReps1e+06.csv", header=TRUE)
+#      xDataH0.5  <-  read.csv(file = "/Volumes/VERBATIM\ HD/XvAutosomeSuppData/XlinkedFig_sexspM_sexspecS_N5e+05_h0.5_n100_u1e-05_sDel_none_nReps1e+06.csv", header=TRUE)
+      aDataH1    <-  read.csv(file = "/Volumes/VERBATIM\ HD/XvAutosomeSuppData/SexSpecFig_sexspM_sexspS_sexspR_N5e+05_h1_n100_u1e-05_sDel_none_nReps1e+06.csv", header=TRUE)
+      xDataH1    <-  read.csv(file = "/Volumes/VERBATIM\ HD/XvAutosomeSuppData/XlinkedFig_sexspM_sexspecS_N5e+05_h1_n100_u1e-05_sDel_none_nReps1e+06.csv", header=TRUE)
+
+    # indexes for plotting
+    mfs   <-  unique(aDataH0$mf)
+    mms   <-  unique(aDataH0$mm)
+    sfs   <-  unique(aDataH0$sf)
+    sms   <-  unique(aDataH0$sm)
+    rfs   <-  unique(aDataH0$rf)
+    rms   <-  unique(aDataH0$rm)
+    mfsX  <-  unique(xDataH0$mf)
+    mmsX  <-  unique(xDataH0$mm)
+    sfsX  <-  unique(xDataH0$sf)
+    smsX  <-  unique(xDataH0$sm)
+    rsX   <-  unique(xDataH0$rf)
+
+    # Color scheme
+    COLS  <-  c('grey70',2)
+
+    # Set plot layout
+    layout.mat <- matrix(
+                        c(1,1,2,2,3,3,10,11,11,12,12,13,13,
+                          1,1,2,2,3,3,10,11,11,12,12,13,13,
+                          4,4,5,5,6,6,10,14,14,15,15,16,16,
+                          4,4,5,5,6,6,10,14,14,15,15,16,16,
+                          7,7,8,8,9,9,10,17,17,18,18,19,19,
+                          7,7,8,8,9,9,10,17,17,18,18,19,19
+                          ), 
+                        nrow=6, ncol=13, byrow=TRUE)
+    layout     <- layout(layout.mat,respect=TRUE)
+#    layout.show(layout)
+
+## Row 1: Equal and Sex-Specific Migration Rates
+    # Panel 1: h_j = 0
+    aDat   <-  aDataN30kH0[aDataN30kH0$mf == aDataN30kH0$mm & aDataN30kH0$sf == aDataN30kH0$sm & aDataN30kH0$rf == aDataN30kH0$rm,][-c(12,13),]
+    xDat   <-  xDataN30kH0[xDataN30kH0$mf == xDataN30kH0$mm & xDataN30kH0$sf == xDataN30kH0$sm,]
+    aDat2  <-  aDataN30kH0[aDataN30kH0$mf >  aDataN30kH0$mm & aDataN30kH0$sf == aDataN30kH0$sm & aDataN30kH0$rf == aDataN30kH0$rm,][-c(12,13),]
+    xDat2  <-  xDataN30kH0[xDataN30kH0$mf >  xDataN30kH0$mm & xDataN30kH0$sf == xDataN30kH0$sm,]
+    aDat3  <-  aDataN30kH0[aDataN30kH1$mf <  aDataN30kH0$mm & aDataN30kH0$sf == aDataN30kH0$sm & aDataN30kH0$rf == aDataN30kH0$rm,][-c(12,13),]
+    xDat3  <-  xDataN30kH0[xDataN30kH0$mf <  xDataN30kH0$mm & xDataN30kH0$sf == xDataN30kH0$sm,]
+#mar = c(4,4,0.5,0.5)
+    par(omi=c(0.5, 1, 0.5, 0.5), mar = c(4,4,0.5,0.5), bty='o', xaxt='s', yaxt='s')    
+     plot(NA, axes=FALSE, type='n', main='',xlim = c(0,0.5), ylim = c(0,max(aDataN30kH0$PropEst, xDataN30kH0$PropEst)), ylab='', xlab='', cex.lab=1.2)
+        usr  <-  par('usr')
+        rect(usr[1], usr[3], usr[2], usr[4], col='white', border=NA)
+        plotGrid(lineCol='grey80')
+        box()
+        # Autosomal frequencies
+        abline(h=(2*aDat$mf[1]), lwd=3, lty=2)
+        points(PropEst ~ rf, pch = 21, col=1, bg = 'grey70', data=aDat)
+        points(PropEst ~ rf, pch = 21, col=1, bg = '2', data=xDat)
+        points(PropEst ~ rf, pch = 22, col=1, bg = 'grey70', data=aDat2)
+        points(PropEst ~ rf, pch = 22, col=1, bg = '2', data=xDat2)
+        points(PropEst ~ rf, pch = 23, col=1, bg = 'grey70', data=aDat3)
+        points(PropEst ~ rf, pch = 23, col=1, bg = '2', data=xDat3)
+        # axes
+        axis(1, las=1, labels=NA)
+        axis(2, las=1)
+        # Plot labels etc.
+        proportionalLabel(-0.5,  0.5,   expression(paste(italic(s[f])," = ",italic(s[m]),", ",italic(r[f])," = ",italic(r[m]))), cex=2, adj=c(0.5, 0.5), xpd=NA, srt=90)        
+        proportionalLabel( 0.05,  1.075, expression(paste(bold(A))), cex=1.2, adj=c(0.5, 0.5), xpd=NA)
+        proportionalLabel( 0.5,  1.1,   expression(paste(italic(h[j])," = ",0)), cex=1.5, adj=c(0.5, 0.5), xpd=NA)
+#        proportionalLabel( 0.655, 1.11,  substitute(m,list(m=ms[1])), cex=1.5, adj=c(0.5, 0.5), xpd=NA)
+        proportionalLabel(-0.35,  0.5,   expression(italic(Pi[j])), cex=1.2, adj=c(0.5, 0.5), xpd=NA, srt=90)        
+
+    # Panel 2: h_j = 1/2
+    aDat   <-  aDataN30kH0.5[aDataN30kH0.5$mf == aDataN30kH0.5$mm & aDataN30kH0.5$sf == aDataN30kH0.5$sm & aDataN30kH0.5$rf == aDataN30kH0.5$rm,][-c(12,13),]
+    xDat   <-  xDataN30kH0.5[xDataN30kH0.5$mf == xDataN30kH0.5$mm & xDataN30kH0.5$sf == xDataN30kH0.5$sm,]
+    aDat2  <-  aDataN30kH0.5[aDataN30kH0.5$mf >  aDataN30kH0.5$mm & aDataN30kH0.5$sf == aDataN30kH0.5$sm & aDataN30kH0.5$rf == aDataN30kH0.5$rm,][-c(12,13),]
+    xDat2  <-  xDataN30kH0.5[xDataN30kH0.5$mf >  xDataN30kH0.5$mm & xDataN30kH0.5$sf == xDataN30kH0.5$sm,]
+    aDat3  <-  aDataN30kH0.5[aDataN30kH0.5$mf <  aDataN30kH0.5$mm & aDataN30kH0.5$sf == aDataN30kH0.5$sm & aDataN30kH0.5$rf == aDataN30kH0.5$rm,][-c(12,13),]
+    xDat3  <-  xDataN30kH0.5[xDataN30kH0.5$mf <  xDataN30kH0.5$mm & xDataN30kH0.5$sf == xDataN30kH0.5$sm,]
+
+     plot(NA, axes=FALSE, type='n', main='',xlim = c(0,0.5), ylim = c(0,max(aDataN30kH0.5$PropEst, xDataN30kH0$PropEst)), ylab='', xlab='', cex.lab=1.2)
+        usr  <-  par('usr')
+        rect(usr[1], usr[3], usr[2], usr[4], col='white', border=NA)
+        plotGrid(lineCol='grey80')
+        box()
+        # Autosomal frequencies
+        abline(h=(2*aDat$mf[1]), lwd=3, lty=2)
+        points(PropEst ~ rf, pch = 21, col=1, bg = 'grey70', data=aDat)
+        points(PropEst ~ rf, pch = 21, col=1, bg = '2', data=xDat)
+        points(PropEst ~ rf, pch = 22, col=1, bg = 'grey70', data=aDat2)
+        points(PropEst ~ rf, pch = 22, col=1, bg = '2', data=xDat2)
+        points(PropEst ~ rf, pch = 23, col=1, bg = 'grey70', data=aDat3)
+        points(PropEst ~ rf, pch = 23, col=1, bg = '2', data=xDat3)
+        # axes
+        axis(1, las=1, labels=NA)
+        axis(2, las=1, labels=NA)
+        # Plot labels etc.
+        proportionalLabel( 0.5,  1.4,   expression(paste(italic(N), " = ", 3%*%10^4)), cex=2, adj=c(0.5, 0.5), xpd=NA)
+        proportionalLabel( 0.05,  1.075, expression(paste(bold(B))), cex=1.2, adj=c(0.5, 0.5), xpd=NA)
+        proportionalLabel( 0.5,  1.1,   expression(paste(italic(h[j])," = 1/2")), cex=1.5, adj=c(0.5, 0.5), xpd=NA)
+
+    # Panel 3: h_j = 1
+    aDat   <-  aDataN30kH1[aDataN30kH1$mf == aDataN30kH1$mm & aDataN30kH1$sf == aDataN30kH1$sm & aDataN30kH1$rf == aDataN30kH1$rm,][-c(12,13),]
+    xDat   <-  xDataN30kH1[xDataN30kH1$mf == xDataN30kH1$mm & xDataN30kH1$sf == xDataN30kH1$sm,]
+    aDat2  <-  aDataN30kH1[aDataN30kH1$mf >  aDataN30kH1$mm & aDataN30kH1$sf == aDataN30kH1$sm & aDataN30kH1$rf == aDataN30kH1$rm,][-c(12,13),]
+    xDat2  <-  xDataN30kH1[xDataN30kH1$mf >  xDataN30kH1$mm & xDataN30kH1$sf == xDataN30kH1$sm,]
+    aDat3  <-  aDataN30kH1[aDataN30kH1$mf <  aDataN30kH1$mm & aDataN30kH1$sf == aDataN30kH1$sm & aDataN30kH1$rf == aDataN30kH1$rm,][-c(12,13),]
+    xDat3  <-  xDataN30kH1[xDataN30kH1$mf <  xDataN30kH1$mm & xDataN30kH1$sf == xDataN30kH1$sm,]
+
+     plot(NA, axes=FALSE, type='n', main='',xlim = c(0,0.5), ylim = c(0,max(aDataN30kH1$PropEst, xDataN30kH1$PropEst)), ylab='', xlab='', cex.lab=1.2)
+        usr  <-  par('usr')
+        rect(usr[1], usr[3], usr[2], usr[4], col='white', border=NA)
+        plotGrid(lineCol='grey80')
+        box()
+        # Autosomal frequencies
+        abline(h=(2*aDat$mf[1]), lwd=3, lty=2)
+        points(PropEst ~ rf, pch = 21, col=1, bg = 'grey70', data=aDat)
+        points(PropEst ~ rf, pch = 21, col=1, bg = '2', data=xDat)
+        points(PropEst ~ rf, pch = 22, col=1, bg = 'grey70', data=aDat2)
+        points(PropEst ~ rf, pch = 22, col=1, bg = '2', data=xDat2)
+        points(PropEst ~ rf, pch = 23, col=1, bg = 'grey70', data=aDat3)
+        points(PropEst ~ rf, pch = 23, col=1, bg = '2', data=xDat3)
+        # axes
+        axis(1, las=1, labels=NA)
+        axis(2, las=1, labels=NA)
+        # Plot labels etc.
+        proportionalLabel( 0.5,  1.1,   expression(paste(italic(h[j])," = ",1)), cex=1.5, adj=c(0.5, 0.5), xpd=NA)
+        proportionalLabel( 0.05,  1.075, expression(paste(bold(C))), cex=1.2, adj=c(0.5, 0.5), xpd=NA)
+        # Legend
+        legend(
+              x       =  usr[2],
+              y       =  usr[4]*0.42,
+              legend  =  c(
+                          expression(paste("Autosomal")),
+                          expression(paste("X-linked"))),
+              pch     =  c(21,21),
+              pt.bg   =  c('grey70',2),
+              col     =  c(1),
+              cex     =  1,
+              xjust   =  1,
+              yjust   =  1,
+              bty     =  'n',
+              border  =  NA
+    )
+        legend(
+              x       =  usr[2]*0.95,
+              y       =  usr[4]*0.24,
+              legend  =  c(
+                          expression(paste(italic(m[f])," = ",italic(m[m]))),
+                          expression(paste(italic(m[f])>italic(m[m]))),
+                          expression(paste(italic(m[f])<  italic(m[m])))),
+              pch     =  c(21,22,23),
+              col     =  c(1),
+              cex     =  1,
+              xjust   =  1,
+              yjust   =  1,
+              bty     =  'n',
+              border  =  NA
+    )
+
+
+## Row 2: Equal and Sex-Specific Selection
+    # Panel 4: h_j = 0
+    aDat   <-  aDataN30kH0[aDataN30kH0$sf == aDataN30kH0$sm & aDataN30kH0$mf == aDataN30kH0$mm & aDataN30kH0$rf == aDataN30kH0$rm,][-c(12,13),]
+    xDat   <-  xDataN30kH0[xDataN30kH0$sf == xDataN30kH0$sm & xDataN30kH0$mf == xDataN30kH0$mm,]
+    aDat2  <-  aDataN30kH0[aDataN30kH0$sf >  aDataN30kH0$sm & aDataN30kH0$mf == aDataN30kH0$mm & aDataN30kH0$rf == aDataN30kH0$rm,][-c(12,13),]
+    xDat2  <-  xDataN30kH0[xDataN30kH0$sf >  xDataN30kH0$sm & xDataN30kH0$mf == xDataN30kH0$mm,]
+    aDat3  <-  aDataN30kH0[aDataN30kH0$sf <  aDataN30kH0$sm & aDataN30kH0$mf == aDataN30kH0$mm & aDataN30kH0$rf == aDataN30kH0$rm,][-c(12,13),]
+    xDat3  <-  xDataN30kH0[xDataN30kH0$sf <  xDataN30kH0$sm & xDataN30kH0$mf == xDataN30kH0$mm,]
+
+     plot(NA, axes=FALSE, type='n', main='',xlim = c(0,0.5), ylim = c(0,max(aDataN30kH0$PropEst, xDataN30kH0$PropEst)), ylab='', xlab='', cex.lab=1.2)
+        usr  <-  par('usr')
+        rect(usr[1], usr[3], usr[2], usr[4], col='white', border=NA)
+        plotGrid(lineCol='grey80')
+        box()
+        # Autosomal frequencies
+        abline(h=(2*aDat$mf[1]), lwd=3, lty=2)
+        points(PropEst ~ rf, pch = 21, col=1, bg = 'grey70', data=aDat)
+        points(PropEst ~ rf, pch = 21, col=1, bg = '2', data=xDat)
+        points(PropEst ~ rf, pch = 22, col=1, bg = 'grey70', data=aDat2)
+        points(PropEst ~ rf, pch = 22, col=1, bg = '2', data=xDat2)
+        points(PropEst ~ rf, pch = 23, col=1, bg = 'grey70', data=aDat3)
+        points(PropEst ~ rf, pch = 23, col=1, bg = '2', data=xDat3)
+        # axes
+        axis(1, las=1, labels=NA)
+        axis(2, las=1)
+        # Plot labels etc.
+        proportionalLabel(-0.5,  0.5,   expression(paste(italic(m[f])," = ",italic(m[m]),", ",italic(r[f])," = ",italic(r[m]))), cex=2, adj=c(0.5, 0.5), xpd=NA, srt=90)        
+        proportionalLabel( 0.05,  1.075, expression(paste(bold(D))), cex=1.2, adj=c(0.5, 0.5), xpd=NA)
+        proportionalLabel(-0.35,  0.5,   expression(italic(Pi[j])), cex=1.2, adj=c(0.5, 0.5), xpd=NA, srt=90)        
+
+
+    # Panel 5: h_j = 1/2
+    aDat   <-  aDataN30kH0.5[aDataN30kH0.5$sf == aDataN30kH0.5$sm & aDataN30kH0.5$mf == aDataN30kH0.5$mm & aDataN30kH0.5$rf == aDataN30kH0.5$rm,][-c(12,13),]
+    xDat   <-  xDataN30kH0.5[xDataN30kH0.5$sf == xDataN30kH0.5$sm & xDataN30kH0.5$mf == xDataN30kH0.5$mm,]
+    aDat2  <-  aDataN30kH0.5[aDataN30kH0.5$sf >  aDataN30kH0.5$sm & aDataN30kH0.5$mf == aDataN30kH0.5$mm & aDataN30kH0.5$rf == aDataN30kH0.5$rm,][-c(12,13),]
+    xDat2  <-  xDataN30kH0.5[xDataN30kH0.5$sf >  xDataN30kH0.5$sm & xDataN30kH0.5$mf == xDataN30kH0.5$mm,]
+    aDat3  <-  aDataN30kH0.5[aDataN30kH0.5$sf <  aDataN30kH0.5$sm & aDataN30kH0.5$mf == aDataN30kH0.5$mm & aDataN30kH0.5$rf == aDataN30kH0.5$rm,][-c(12,13),]
+    xDat3  <-  xDataN30kH0.5[xDataN30kH0.5$sf <  xDataN30kH0.5$sm & xDataN30kH0.5$mf == xDataN30kH0.5$mm,]
+
+     plot(NA, axes=FALSE, type='n', main='',xlim = c(0,0.5), ylim = c(0,max(aDataN30kH0.5$PropEst, xDataN30kH0$PropEst)), ylab='', xlab='', cex.lab=1.2)
+        usr  <-  par('usr')
+        rect(usr[1], usr[3], usr[2], usr[4], col='white', border=NA)
+        plotGrid(lineCol='grey80')
+        box()
+        # Autosomal frequencies
+        abline(h=(2*aDat$mf[1]), lwd=3, lty=2)
+        points(PropEst ~ rf, pch = 21, col=1, bg = 'grey70', data=aDat)
+        points(PropEst ~ rf, pch = 21, col=1, bg = '2', data=xDat)
+        points(PropEst ~ rf, pch = 22, col=1, bg = 'grey70', data=aDat2)
+        points(PropEst ~ rf, pch = 22, col=1, bg = '2', data=xDat2)
+        points(PropEst ~ rf, pch = 23, col=1, bg = 'grey70', data=aDat3)
+        points(PropEst ~ rf, pch = 23, col=1, bg = '2', data=xDat3)
+        # axes
+        axis(1, las=1, labels=NA)
+        axis(2, las=1, labels=NA)
+        # Plot labels etc.
+        proportionalLabel( 0.05,  1.075, expression(paste(bold(E))), cex=1.2, adj=c(0.5, 0.5), xpd=NA)
+
+    # Panel 6: h_j = 1
+    aDat   <-  aDataN30kH1[aDataN30kH1$sf == aDataN30kH1$sm & aDataN30kH1$mf == aDataN30kH1$mm & aDataN30kH1$rf == aDataN30kH1$rm,][-c(12,13),]
+    xDat   <-  xDataN30kH1[xDataN30kH1$sf == xDataN30kH1$sm & xDataN30kH1$mf == xDataN30kH1$mm,]
+    aDat2  <-  aDataN30kH1[aDataN30kH1$sf >  aDataN30kH1$sm & aDataN30kH1$mf == aDataN30kH1$mm & aDataN30kH1$rf == aDataN30kH1$rm,][-c(12,13),]
+    xDat2  <-  xDataN30kH1[xDataN30kH1$sf >  xDataN30kH1$sm & xDataN30kH1$mf == xDataN30kH1$mm,]
+    aDat3  <-  aDataN30kH1[aDataN30kH1$sf <  aDataN30kH1$sm & aDataN30kH1$mf == aDataN30kH1$mm & aDataN30kH1$rf == aDataN30kH1$rm,][-c(12,13),]
+    xDat3  <-  xDataN30kH1[xDataN30kH1$sf <  xDataN30kH1$sm & xDataN30kH1$mf == xDataN30kH1$mm,]
+
+     plot(NA, axes=FALSE, type='n', main='',xlim = c(0,0.5), ylim = c(0,max(aDataN30kH1$PropEst, xDataN30kH1$PropEst)), ylab='', xlab='', cex.lab=1.2)
+        usr  <-  par('usr')
+        rect(usr[1], usr[3], usr[2], usr[4], col='white', border=NA)
+        plotGrid(lineCol='grey80')
+        box()
+        # Autosomal frequencies
+        abline(h=(2*aDat$mf[1]), lwd=3, lty=2)
+        points(PropEst ~ rf, pch = 21, col=1, bg = 'grey70', data=aDat)
+        points(PropEst ~ rf, pch = 21, col=1, bg = '2', data=xDat)
+        points(PropEst ~ rf, pch = 22, col=1, bg = 'grey70', data=aDat2)
+        points(PropEst ~ rf, pch = 22, col=1, bg = '2', data=xDat2)
+        points(PropEst ~ rf, pch = 23, col=1, bg = 'grey70', data=aDat3)
+        points(PropEst ~ rf, pch = 23, col=1, bg = '2', data=xDat3)
+        # axes
+        axis(1, las=1, labels=NA)
+        axis(2, las=1, labels=NA)
+        # Plot labels etc.
+        proportionalLabel( 0.05,  1.075, expression(paste(bold(F))), cex=1.2, adj=c(0.5, 0.5), xpd=NA)
+        # Legend
+        legend(
+              x       =  usr[2],
+              y       =  usr[4]*0.42,
+              legend  =  c(
+                          expression(paste("Autosomal")),
+                          expression(paste("X-linked"))),
+              pch     =  c(21,21),
+              pt.bg   =  c('grey70',2),
+              col     =  c(1),
+              cex     =  1,
+              xjust   =  1,
+              yjust   =  1,
+              bty     =  'n',
+              border  =  NA
+    )
+        legend(
+              x       =  usr[2]*0.95,
+              y       =  usr[4]*0.24,
+              legend  =  c(
+                          expression(paste(italic(s[f])," = ",italic(s[m]))),
+                          expression(paste(italic(s[f])>italic(s[m]))),
+                          expression(paste(italic(s[f])<italic(s[m])))),
+              pch     =  c(21,22,23),
+              col     =  c(1),
+              cex     =  1,
+              xjust   =  1,
+              yjust   =  1,
+              bty     =  'n',
+              border  =  NA
+    )
+
+
+## Row 3: Equal and Sex-Specific Recombination
+    # Panel 7: h_j = 0
+    aDat   <-  aDataN30kH0[aDataN30kH0$rf == aDataN30kH0$rm & aDataN30kH0$mf == aDataN30kH0$mm & aDataN30kH0$sf == aDataN30kH0$sm,][-c(12,13),]
+    aDat2  <-  aDataN30kH0[aDataN30kH0$rf >  aDataN30kH0$rm & aDataN30kH0$mf == aDataN30kH0$mm & aDataN30kH0$sf == aDataN30kH0$sm,][-c(12,13),]
+    aDat3  <-  aDataN30kH0[aDataN30kH0$rf <  aDataN30kH0$rm & aDataN30kH0$mf == aDataN30kH0$mm & aDataN30kH0$sf == aDataN30kH0$sm,][-c(12,13),]
+    xDat   <-  xDataN30kH0[xDataN30kH0$sf == xDataN30kH0$sm & xDataN30kH0$mf == xDataN30kH0$mm,]
+
+     plot(NA, axes=FALSE, type='n', main='',xlim = c(0,0.5), ylim = c(0,max(aDataN30kH0$PropEst, xDataN30kH0$PropEst)), ylab='', xlab='', cex.lab=1.2)
+        usr  <-  par('usr')
+        rect(usr[1], usr[3], usr[2], usr[4], col='white', border=NA)
+        plotGrid(lineCol='grey80')
+        box()
+        # Autosomal frequencies
+        abline(h=(2*aDat$mf[1]), lwd=3, lty=2)
+        points(PropEst ~ rf, pch = 21, col=1, bg = 'grey70', data=aDat)
+        points(PropEst ~ rf, pch = 22, col=1, bg = 'grey70', data=aDat2)
+        points(PropEst ~ rm, pch = 23, col=1, bg = 'grey70', data=aDat3)
+        points(PropEst ~ rf, pch = 21, col=1, bg = '2', data=xDat)
+        # axes
+        axis(1, las=1)
+        axis(2, las=1)
+        # Plot labels etc.
+        proportionalLabel(-0.5,  0.5,   expression(paste(italic(m[f])," = ",italic(m[m]),", ",italic(s[f])," = ",italic(s[m]))), cex=2, adj=c(0.5, 0.5), xpd=NA, srt=90)        
+        proportionalLabel( 0.05,  1.075, expression(paste(bold(G))), cex=1.2, adj=c(0.5, 0.5), xpd=NA)
+        proportionalLabel(-0.35,  0.5,   expression(italic(Pi[j])), cex=1.2, adj=c(0.5, 0.5), xpd=NA, srt=90)        
+        proportionalLabel(0.5,  -0.3,   expression(paste("Recombination rate ",italic((r[j])))), cex=1.2, adj=c(0.5, 0.5), xpd=NA)        
+
+
+    # Panel 8: h_j = 1/2
+    aDat   <-  aDataN30kH0.5[aDataN30kH0.5$rf == aDataN30kH0.5$rm & aDataN30kH0.5$mf == aDataN30kH0.5$mm & aDataN30kH0.5$sf == aDataN30kH0.5$sm,][-c(12,13),]
+    aDat2  <-  aDataN30kH0.5[aDataN30kH0.5$rf >  aDataN30kH0.5$rm & aDataN30kH0.5$mf == aDataN30kH0.5$mm & aDataN30kH0.5$sf == aDataN30kH0.5$sm,][-c(12,13),]
+    aDat3  <-  aDataN30kH0.5[aDataN30kH0.5$rf <  aDataN30kH0.5$rm & aDataN30kH0.5$mf == aDataN30kH0.5$mm & aDataN30kH0.5$sf == aDataN30kH0.5$sm,][-c(12,13),]
+    xDat   <-  xDataN30kH0.5[xDataN30kH0.5$sf == xDataN30kH0.5$sm & xDataN30kH0.5$mf == xDataN30kH0.5$mm,]
+
+     plot(NA, axes=FALSE, type='n', main='',xlim = c(0,0.5), ylim = c(0,max(aDataN30kH0.5$PropEst, xDataN30kH0$PropEst)), ylab='', xlab='', cex.lab=1.2)
+        usr  <-  par('usr')
+        rect(usr[1], usr[3], usr[2], usr[4], col='white', border=NA)
+        plotGrid(lineCol='grey80')
+        box()
+        # Autosomal frequencies
+        abline(h=(2*aDat$mf[1]), lwd=3, lty=2)
+        points(PropEst ~ rf, pch = 21, col=1, bg = 'grey70', data=aDat)
+        points(PropEst ~ rf, pch = 21, col=1, bg = '2', data=xDat)
+        points(PropEst ~ rf, pch = 22, col=1, bg = 'grey70', data=aDat2)
+        points(PropEst ~ rf, pch = 22, col=1, bg = '2', data=xDat2)
+        points(PropEst ~ rm, pch = 23, col=1, bg = 'grey70', data=aDat3)
+        points(PropEst ~ rf, pch = 23, col=1, bg = '2', data=xDat3)
+        # axes
+        axis(1, las=1)
+        axis(2, las=1, labels=NA)
+        # Plot labels etc.
+        proportionalLabel( 0.05,  1.075, expression(paste(bold(H))), cex=1.2, adj=c(0.5, 0.5), xpd=NA)
+        proportionalLabel(0.5,  -0.3,   expression(paste("Recombination rate ",italic((r[j])))), cex=1.2, adj=c(0.5, 0.5), xpd=NA)        
+
+    # Panel 9: h_j = 1
+    aDat   <-  aDataN30kH1[aDataN30kH1$rf == aDataN30kH1$rm & aDataN30kH1$mf == aDataN30kH1$mm & aDataN30kH1$sf == aDataN30kH1$sm,][-c(12,13),]
+    aDat2  <-  aDataN30kH1[aDataN30kH1$rf >  aDataN30kH1$rm & aDataN30kH1$mf == aDataN30kH1$mm & aDataN30kH1$sf == aDataN30kH1$sm,][-c(12,13),]
+    aDat3  <-  aDataN30kH1[aDataN30kH1$rf <  aDataN30kH1$rm & aDataN30kH1$mf == aDataN30kH1$mm & aDataN30kH1$sf == aDataN30kH1$sm,][-c(12,13),]
+    xDat   <-  xDataN30kH1[xDataN30kH1$sf == xDataN30kH1$sm & xDataN30kH1$mf == xDataN30kH1$mm,]
+
+     plot(NA, axes=FALSE, type='n', main='',xlim = c(0,0.5), ylim = c(0,max(aDataN30kH1$PropEst, xDataN30kH1$PropEst)), ylab='', xlab='', cex.lab=1.2)
+        usr  <-  par('usr')
+        rect(usr[1], usr[3], usr[2], usr[4], col='white', border=NA)
+        plotGrid(lineCol='grey80')
+        box()
+        # Autosomal frequencies
+        abline(h=(2*aDat$mf[1]), lwd=3, lty=2)
+        points(PropEst ~ rf, pch = 21, col=1, bg = 'grey70', data=aDat)
+        points(PropEst ~ rf, pch = 22, col=1, bg = 'grey70', data=aDat2)
+        points(PropEst ~ rm, pch = 23, col=1, bg = 'grey70', data=aDat3)
+        points(PropEst ~ rf, pch = 21, col=1, bg = '2', data=xDat)
+        # axes
+        axis(1, las=1)
+        axis(2, las=1, labels=NA)
+        # Plot labels etc.
+        proportionalLabel( 0.05,  1.075, expression(paste(bold(I))), cex=1.2, adj=c(0.5, 0.5), xpd=NA)
+        proportionalLabel(0.5,  -0.3,   expression(paste("Recombination rate ",italic((r[j])))), cex=1.2, adj=c(0.5, 0.5), xpd=NA)        
+        # Legend
+        legend(
+              x       =  usr[2],
+              y       =  usr[4]*0.42,
+              legend  =  c(
+                          expression(paste("Autosomal")),
+                          expression(paste("X-linked"))),
+              pch     =  c(21,21),
+              pt.bg   =  c('grey70',2),
+              col     =  c(1),
+              cex     =  1,
+              xjust   =  1,
+              yjust   =  1,
+              bty     =  'n',
+              border  =  NA
+    )
+        legend(
+              x       =  usr[2]*0.95,
+              y       =  usr[4]*0.24,
+              legend  =  c(
+                          expression(paste(italic(r[f])," = ",italic(r[m]))),
+                          expression(paste(italic(r[f])," > ",italic(r[m]))),
+                          expression(paste(italic(r[f])," < ",italic(r[m])))),
+              pch     =  c(21,22,23),
+              col     =  c(1),
+              cex     =  1,
+              xjust   =  1,
+              yjust   =  1,
+              bty     =  'n',
+              border  =  NA
+    )
+
+#########################################
+plot.new()
+#     plot(NA, axes=FALSE, type='n', main='',xlim = c(0,0.5), ylim = c(0,max(aDataN30kH1$PropEst, xDataN30kH1$PropEst)), ylab='', xlab='', cex.lab=1.2, xpd=NA)
+#########################################
+
+## Row 1: Equal and Sex-Specific Migration Rates
+    # Panel 1: h_j = 0
+    aDat   <-  aDataH0[aDataH0$mf == aDataH0$mm & aDataH0$sf == aDataH0$sm & aDataH0$rf == aDataH0$rm,][-c(12,13),]
+    xDat   <-  xDataH0[xDataH0$mf == xDataH0$mm & xDataH0$sf == xDataH0$sm,]
+    aDat2  <-  aDataH0[aDataH0$mf >  aDataH0$mm & aDataH0$sf == aDataH0$sm & aDataH0$rf == aDataH0$rm,][-c(12,13),]
+    xDat2  <-  xDataH0[xDataH0$mf >  xDataH0$mm & xDataH0$sf == xDataH0$sm,]
+    aDat3  <-  aDataH0[aDataH1$mf <  aDataH0$mm & aDataH0$sf == aDataH0$sm & aDataH0$rf == aDataH0$rm,][-c(12,13),]
+    xDat3  <-  xDataH0[xDataH0$mf <  xDataH0$mm & xDataH0$sf == xDataH0$sm,]
+
+     plot(NA, axes=FALSE, type='n', main='',xlim = c(0,0.5), ylim = c(0,max(aDataH0$PropEst, xDataH0$PropEst)), ylab='', xlab='', cex.lab=1.2)
+        usr  <-  par('usr')
+        rect(usr[1], usr[3], usr[2], usr[4], col='white', border=NA)
+        plotGrid(lineCol='grey80')
+        box()
+        # Autosomal frequencies
+        abline(h=(2*aDat$mf[1]), lwd=3, lty=2)
+        points(PropEst ~ rf, pch = 21, col=1, bg = 'grey70', data=aDat)
+        points(PropEst ~ rf, pch = 21, col=1, bg = '2', data=xDat)
+        points(PropEst ~ rf, pch = 22, col=1, bg = 'grey70', data=aDat2)
+        points(PropEst ~ rf, pch = 22, col=1, bg = '2', data=xDat2)
+        points(PropEst ~ rf, pch = 23, col=1, bg = 'grey70', data=aDat3)
+        points(PropEst ~ rf, pch = 23, col=1, bg = '2', data=xDat3)
+        # axes
+        axis(1, las=1, labels=NA)
+        axis(2, las=1)
+        # Plot labels etc.
+        proportionalLabel(-0.5,  0.5,   expression(paste(italic(s[f])," = ",italic(s[m]),", ",italic(r[f])," = ",italic(r[m]))), cex=2, adj=c(0.5, 0.5), xpd=NA, srt=90)        
+        proportionalLabel( 0.05,  1.075, expression(paste(bold(J))), cex=1.2, adj=c(0.5, 0.5), xpd=NA)
+        proportionalLabel( 0.5,  1.1,   expression(paste(italic(h[j])," = ",0)), cex=1.5, adj=c(0.5, 0.5), xpd=NA)
+#        proportionalLabel( 0.655, 1.11,  substitute(m,list(m=ms[1])), cex=1.5, adj=c(0.5, 0.5), xpd=NA)
+        proportionalLabel(-0.35,  0.5,   expression(italic(Pi[j])), cex=1.2, adj=c(0.5, 0.5), xpd=NA, srt=90)        
+
+    # Panel 2: h_j = 1/2
+    aDat   <-  aDataH0.5[aDataH0.5$mf == aDataH0.5$mm & aDataH0.5$sf == aDataH0.5$sm & aDataH0.5$rf == aDataH0.5$rm,][-c(12,13),]
+    xDat   <-  xDataH0[xDataH0$mf == xDataH0$mm & xDataH0$sf == xDataH0$sm,]
+    aDat2  <-  aDataH0.5[aDataH0.5$mf >  aDataH0.5$mm & aDataH0.5$sf == aDataH0.5$sm & aDataH0.5$rf == aDataH0.5$rm,][-c(12,13),]
+    xDat2  <-  xDataH0[xDataH0$mf >  xDataH0$mm & xDataH0$sf == xDataH0$sm,]
+    aDat3  <-  aDataH0.5[aDataH0.5$mf <  aDataH0.5$mm & aDataH0.5$sf == aDataH0.5$sm & aDataH0.5$rf == aDataH0.5$rm,][-c(12,13),]
+    xDat3  <-  xDataH0[xDataH0$mf <  xDataH0$mm & xDataH0$sf == xDataH0$sm,]
+
+     plot(NA, axes=FALSE, type='n', main='',xlim = c(0,0.5), ylim = c(0,max(aDataH0.5$PropEst, xDataH0$PropEst)), ylab='', xlab='', cex.lab=1.2)
+        usr  <-  par('usr')
+        rect(usr[1], usr[3], usr[2], usr[4], col='white', border=NA)
+        plotGrid(lineCol='grey80')
+        box()
+        # Autosomal frequencies
+        abline(h=(2*aDat$mf[1]), lwd=3, lty=2)
+        points(PropEst ~ rf, pch = 21, col=1, bg = 'grey70', data=aDat)
+#        points(PropEst ~ rf, pch = 21, col=1, bg = '2', data=xDat)
+        points(PropEst ~ rf, pch = 22, col=1, bg = 'grey70', data=aDat2)
+#        points(PropEst ~ rf, pch = 22, col=1, bg = '2', data=xDat2)
+        points(PropEst ~ rf, pch = 23, col=1, bg = 'grey70', data=aDat3)
+#        points(PropEst ~ rf, pch = 23, col=1, bg = '2', data=xDat3)
+        # axes
+        axis(1, las=1, labels=NA)
+        axis(2, las=1, labels=NA)
+        # Plot labels etc.
+        proportionalLabel( 0.5,  1.4,   expression(paste(italic(N), " = ", 5%*%10^5)), cex=2, adj=c(0.5, 0.5), xpd=NA)
+        proportionalLabel( 0.05,  1.075, expression(paste(bold(K))), cex=1.2, adj=c(0.5, 0.5), xpd=NA)
+        proportionalLabel( 0.5,  1.1,   expression(paste(italic(h[j])," = 1/2")), cex=1.5, adj=c(0.5, 0.5), xpd=NA)
+
+    # Panel 3: h_j = 1
+    aDat   <-  aDataH1[aDataH1$mf == aDataH1$mm & aDataH1$sf == aDataH1$sm & aDataH1$rf == aDataH1$rm,][-c(12,13),]
+    xDat   <-  xDataH1[xDataH1$mf == xDataH1$mm & xDataH1$sf == xDataH1$sm,]
+    aDat2  <-  aDataH1[aDataH1$mf >  aDataH1$mm & aDataH1$sf == aDataH1$sm & aDataH1$rf == aDataH1$rm,][-c(12,13),]
+    xDat2  <-  xDataH1[xDataH1$mf >  xDataH1$mm & xDataH1$sf == xDataH1$sm,]
+    aDat3  <-  aDataH1[aDataH1$mf <  aDataH1$mm & aDataH1$sf == aDataH1$sm & aDataH1$rf == aDataH1$rm,][-c(12,13),]
+    xDat3  <-  xDataH1[xDataH1$mf <  xDataH1$mm & xDataH1$sf == xDataH1$sm,]
+
+     plot(NA, axes=FALSE, type='n', main='',xlim = c(0,0.5), ylim = c(0,max(aDataH1$PropEst, xDataH1$PropEst)), ylab='', xlab='', cex.lab=1.2)
+        usr  <-  par('usr')
+        rect(usr[1], usr[3], usr[2], usr[4], col='white', border=NA)
+        plotGrid(lineCol='grey80')
+        box()
+        # Autosomal frequencies
+        abline(h=(2*aDat$mf[1]), lwd=3, lty=2)
+        points(PropEst ~ rf, pch = 21, col=1, bg = 'grey70', data=aDat)
+        points(PropEst ~ rf, pch = 21, col=1, bg = '2', data=xDat)
+        points(PropEst ~ rf, pch = 22, col=1, bg = 'grey70', data=aDat2)
+        points(PropEst ~ rf, pch = 22, col=1, bg = '2', data=xDat2)
+        points(PropEst ~ rf, pch = 23, col=1, bg = 'grey70', data=aDat3)
+        points(PropEst ~ rf, pch = 23, col=1, bg = '2', data=xDat3)
+        # axes
+        axis(1, las=1, labels=NA)
+        axis(2, las=1, labels=NA)
+        # Plot labels etc.
+        proportionalLabel( 0.5,  1.1,   expression(paste(italic(h[j])," = ",1)), cex=1.5, adj=c(0.5, 0.5), xpd=NA)
+        proportionalLabel( 0.05,  1.075, expression(paste(bold(L))), cex=1.2, adj=c(0.5, 0.5), xpd=NA)
+        # Legend
+        legend(
+              x       =  usr[2],
+              y       =  usr[4]*0.42,
+              legend  =  c(
+                          expression(paste("Autosomal")),
+                          expression(paste("X-linked"))),
+              pch     =  c(21,21),
+              pt.bg   =  c('grey70',2),
+              col     =  c(1),
+              cex     =  1,
+              xjust   =  1,
+              yjust   =  1,
+              bty     =  'n',
+              border  =  NA
+    )
+        legend(
+              x       =  usr[2]*0.95,
+              y       =  usr[4]*0.24,
+              legend  =  c(
+                          expression(paste(italic(m[f])," = ",italic(m[m]))),
+                          expression(paste(italic(m[f])>italic(m[m]))),
+                          expression(paste(italic(m[f])<  italic(m[m])))),
+              pch     =  c(21,22,23),
+              col     =  c(1),
+              cex     =  1,
+              xjust   =  1,
+              yjust   =  1,
+              bty     =  'n',
+              border  =  NA
+    )
+
+
+## Row 2: Equal and Sex-Specific Selection
+    # Panel 4: h_j = 0
+    aDat   <-  aDataH0[aDataH0$sf == aDataH0$sm & aDataH0$mf == aDataH0$mm & aDataH0$rf == aDataH0$rm,][-c(12,13),]
+    xDat   <-  xDataH0[xDataH0$sf == xDataH0$sm & xDataH0$mf == xDataH0$mm,]
+    aDat2  <-  aDataH0[aDataH0$sf >  aDataH0$sm & aDataH0$mf == aDataH0$mm & aDataH0$rf == aDataH0$rm,][-c(12,13),]
+    xDat2  <-  xDataH0[xDataH0$sf >  xDataH0$sm & xDataH0$mf == xDataH0$mm,]
+    aDat3  <-  aDataH0[aDataH0$sf <  aDataH0$sm & aDataH0$mf == aDataH0$mm & aDataH0$rf == aDataH0$rm,][-c(12,13),]
+    xDat3  <-  xDataH0[xDataH0$sf <  xDataH0$sm & xDataH0$mf == xDataH0$mm,]
+
+     plot(NA, axes=FALSE, type='n', main='',xlim = c(0,0.5), ylim = c(0,max(aDataH0$PropEst, xDataH0$PropEst)), ylab='', xlab='', cex.lab=1.2)
+        usr  <-  par('usr')
+        rect(usr[1], usr[3], usr[2], usr[4], col='white', border=NA)
+        plotGrid(lineCol='grey80')
+        box()
+        # Autosomal frequencies
+        abline(h=(2*aDat$mf[1]), lwd=3, lty=2)
+        points(PropEst ~ rf, pch = 21, col=1, bg = 'grey70', data=aDat)
+        points(PropEst ~ rf, pch = 21, col=1, bg = '2', data=xDat)
+        points(PropEst ~ rf, pch = 22, col=1, bg = 'grey70', data=aDat2)
+        points(PropEst ~ rf, pch = 22, col=1, bg = '2', data=xDat2)
+        points(PropEst ~ rf, pch = 23, col=1, bg = 'grey70', data=aDat3)
+        points(PropEst ~ rf, pch = 23, col=1, bg = '2', data=xDat3)
+        # axes
+        axis(1, las=1, labels=NA)
+        axis(2, las=1)
+        # Plot labels etc.
+        proportionalLabel(-0.5,  0.5,   expression(paste(italic(m[f])," = ",italic(m[m]),", ",italic(r[f])," = ",italic(r[m]))), cex=2, adj=c(0.5, 0.5), xpd=NA, srt=90)        
+        proportionalLabel( 0.05,  1.075, expression(paste(bold(M))), cex=1.2, adj=c(0.5, 0.5), xpd=NA)
+        proportionalLabel(-0.35,  0.5,   expression(italic(Pi[j])), cex=1.2, adj=c(0.5, 0.5), xpd=NA, srt=90)        
+
+    # Panel 5: h_j = 1/2
+    aDat   <-  aDataH0.5[aDataH0.5$sf == aDataH0.5$sm & aDataH0.5$mf == aDataH0.5$mm & aDataH0.5$rf == aDataH0.5$rm,][-c(12,13),]
+    xDat   <-  xDataH0[xDataH0$sf == xDataH0$sm & xDataH0$mf == xDataH0$mm,]
+    aDat2  <-  aDataH0.5[aDataH0.5$sf >  aDataH0.5$sm & aDataH0.5$mf == aDataH0.5$mm & aDataH0.5$rf == aDataH0.5$rm,][-c(12,13),]
+    xDat2  <-  xDataH0[xDataH0$sf >  xDataH0$sm & xDataH0$mf == xDataH0$mm,]
+    aDat3  <-  aDataH0.5[aDataH0.5$sf <  aDataH0.5$sm & aDataH0.5$mf == aDataH0.5$mm & aDataH0.5$rf == aDataH0.5$rm,][-c(12,13),]
+    xDat3  <-  xDataH0[xDataH0$sf <  xDataH0$sm & xDataH0$mf == xDataH0$mm,]
+
+     plot(NA, axes=FALSE, type='n', main='',xlim = c(0,0.5), ylim = c(0,max(aDataH0.5$PropEst, xDataH0$PropEst)), ylab='', xlab='', cex.lab=1.2)
+        usr  <-  par('usr')
+        rect(usr[1], usr[3], usr[2], usr[4], col='white', border=NA)
+        plotGrid(lineCol='grey80')
+        box()
+        # Autosomal frequencies
+        abline(h=(2*aDat$mf[1]), lwd=3, lty=2)
+        points(PropEst ~ rf, pch = 21, col=1, bg = 'grey70', data=aDat)
+#        points(PropEst ~ rf, pch = 21, col=1, bg = '2', data=xDat)
+        points(PropEst ~ rf, pch = 22, col=1, bg = 'grey70', data=aDat2)
+#        points(PropEst ~ rf, pch = 22, col=1, bg = '2', data=xDat2)
+        points(PropEst ~ rf, pch = 23, col=1, bg = 'grey70', data=aDat3)
+#        points(PropEst ~ rf, pch = 23, col=1, bg = '2', data=xDat3)
+        # axes
+        axis(1, las=1, labels=NA)
+        axis(2, las=1, labels=NA)
+        # Plot labels etc.
+        proportionalLabel( 0.05,  1.075, expression(paste(bold(N))), cex=1.2, adj=c(0.5, 0.5), xpd=NA)
+
+    # Panel 6: h_j = 1
+    aDat   <-  aDataH1[aDataH1$sf == aDataH1$sm & aDataH1$mf == aDataH1$mm & aDataH1$rf == aDataH1$rm,][-c(12,13),]
+    xDat   <-  xDataH1[xDataH1$sf == xDataH1$sm & xDataH1$mf == xDataH1$mm,]
+    aDat2  <-  aDataH1[aDataH1$sf >  aDataH1$sm & aDataH1$mf == aDataH1$mm & aDataH1$rf == aDataH1$rm,][-c(12,13),]
+    xDat2  <-  xDataH1[xDataH1$sf >  xDataH1$sm & xDataH1$mf == xDataH1$mm,]
+    aDat3  <-  aDataH1[aDataH1$sf <  aDataH1$sm & aDataH1$mf == aDataH1$mm & aDataH1$rf == aDataH1$rm,][-c(12,13),]
+    xDat3  <-  xDataH1[xDataH1$sf <  xDataH1$sm & xDataH1$mf == xDataH1$mm,]
+
+     plot(NA, axes=FALSE, type='n', main='',xlim = c(0,0.5), ylim = c(0,max(aDataH1$PropEst, xDataH1$PropEst)), ylab='', xlab='', cex.lab=1.2)
+        usr  <-  par('usr')
+        rect(usr[1], usr[3], usr[2], usr[4], col='white', border=NA)
+        plotGrid(lineCol='grey80')
+        box()
+        # Autosomal frequencies
+        abline(h=(2*aDat$mf[1]), lwd=3, lty=2)
+        points(PropEst ~ rf, pch = 21, col=1, bg = 'grey70', data=aDat)
+        points(PropEst ~ rf, pch = 21, col=1, bg = '2', data=xDat)
+        points(PropEst ~ rf, pch = 22, col=1, bg = 'grey70', data=aDat2)
+        points(PropEst ~ rf, pch = 22, col=1, bg = '2', data=xDat2)
+        points(PropEst ~ rf, pch = 23, col=1, bg = 'grey70', data=aDat3)
+        points(PropEst ~ rf, pch = 23, col=1, bg = '2', data=xDat3)
+        # axes
+        axis(1, las=1, labels=NA)
+        axis(2, las=1, labels=NA)
+        # Plot labels etc.
+        proportionalLabel( 0.05,  1.075, expression(paste(bold(O))), cex=1.2, adj=c(0.5, 0.5), xpd=NA)
+        # Legend
+        legend(
+              x       =  usr[2],
+              y       =  usr[4]*0.42,
+              legend  =  c(
+                          expression(paste("Autosomal")),
+                          expression(paste("X-linked"))),
+              pch     =  c(21,21),
+              pt.bg   =  c('grey70',2),
+              col     =  c(1),
+              cex     =  1,
+              xjust   =  1,
+              yjust   =  1,
+              bty     =  'n',
+              border  =  NA
+    )
+        legend(
+              x       =  usr[2]*0.95,
+              y       =  usr[4]*0.24,
+              legend  =  c(
+                          expression(paste(italic(s[f])," = ",italic(s[m]))),
+                          expression(paste(italic(s[f])>italic(s[m]))),
+                          expression(paste(italic(s[f])<italic(s[m])))),
+              pch     =  c(21,22,23),
+              col     =  c(1),
+              cex     =  1,
+              xjust   =  1,
+              yjust   =  1,
+              bty     =  'n',
+              border  =  NA
+    )
 
 
 
+## Row 3: Equal and Sex-Specific Recombination
+    # Panel 4: h_j = 0
+    aDat   <-  aDataH0[aDataH0$rf == aDataH0$rm & aDataH0$mf == aDataH0$mm & aDataH0$sf == aDataH0$sm,][-c(12,13),]
+    aDat2  <-  aDataH0[aDataH0$rf >  aDataH0$rm & aDataH0$mf == aDataH0$mm & aDataH0$sf == aDataH0$sm,][-c(12,13),]
+    aDat3  <-  aDataH0[aDataH0$rf <  aDataH0$rm & aDataH0$mf == aDataH0$mm & aDataH0$sf == aDataH0$sm,][-c(12,13),]
+    xDat   <-  xDataH0[xDataH0$sf == xDataH0$sm & xDataH0$mf == xDataH0$mm,]
+
+     plot(NA, axes=FALSE, type='n', main='',xlim = c(0,0.5), ylim = c(0,max(aDataH0$PropEst, xDataH0$PropEst)), ylab='', xlab='', cex.lab=1.2)
+        usr  <-  par('usr')
+        rect(usr[1], usr[3], usr[2], usr[4], col='white', border=NA)
+        plotGrid(lineCol='grey80')
+        box()
+        # Autosomal frequencies
+        abline(h=(2*aDat$mf[1]), lwd=3, lty=2)
+        points(PropEst ~ rf, pch = 21, col=1, bg = 'grey70', data=aDat)
+        points(PropEst ~ rf, pch = 22, col=1, bg = 'grey70', data=aDat2)
+        points(PropEst ~ rm, pch = 23, col=1, bg = 'grey70', data=aDat3)
+        points(PropEst ~ rf, pch = 21, col=1, bg = '2', data=xDat)
+        # axes
+        axis(1, las=1)
+        axis(2, las=1)
+        # Plot labels etc.
+        proportionalLabel(-0.5,  0.5,   expression(paste(italic(m[f])," = ",italic(m[m]),", ",italic(s[f])," = ",italic(s[m]))), cex=2, adj=c(0.5, 0.5), xpd=NA, srt=90)        
+        proportionalLabel( 0.05,  1.075, expression(paste(bold(P))), cex=1.2, adj=c(0.5, 0.5), xpd=NA)
+        proportionalLabel(-0.35,  0.5,   expression(italic(Pi[j])), cex=1.2, adj=c(0.5, 0.5), xpd=NA, srt=90)        
+        proportionalLabel(0.5,  -0.3,   expression(paste("Recombination rate ",italic((r[j])))), cex=1.2, adj=c(0.5, 0.5), xpd=NA)        
 
 
+    # Panel 5: h_j = 1/2
+    aDat   <-  aDataH0.5[aDataH0.5$rf == aDataH0.5$rm & aDataH0.5$mf == aDataH0.5$mm & aDataH0.5$sf == aDataH0.5$sm,][-c(12,13),]
+    aDat2  <-  aDataH0.5[aDataH0.5$rf >  aDataH0.5$rm & aDataH0.5$mf == aDataH0.5$mm & aDataH0.5$sf == aDataH0.5$sm,][-c(12,13),]
+    aDat3  <-  aDataH0.5[aDataH0.5$rf <  aDataH0.5$rm & aDataH0.5$mf == aDataH0.5$mm & aDataH0.5$sf == aDataH0.5$sm,][-c(12,13),]
+    xDat   <-  xDataH0[xDataH0$sf == xDataH0$sm & xDataH0$mf == xDataH0$mm,]
 
+     plot(NA, axes=FALSE, type='n', main='',xlim = c(0,0.5), ylim = c(0,max(aDataH0.5$PropEst, xDataH0$PropEst)), ylab='', xlab='', cex.lab=1.2)
+        usr  <-  par('usr')
+        rect(usr[1], usr[3], usr[2], usr[4], col='white', border=NA)
+        plotGrid(lineCol='grey80')
+        box()
+        # Autosomal frequencies
+        abline(h=(2*aDat$mf[1]), lwd=3, lty=2)
+        points(PropEst ~ rf, pch = 21, col=1, bg = 'grey70', data=aDat)
+#        points(PropEst ~ rf, pch = 21, col=1, bg = '2', data=xDat)
+        points(PropEst ~ rf, pch = 22, col=1, bg = 'grey70', data=aDat2)
+#        points(PropEst ~ rf, pch = 22, col=1, bg = '2', data=xDat2)
+        points(PropEst ~ rm, pch = 23, col=1, bg = 'grey70', data=aDat3)
+#        points(PropEst ~ rf, pch = 23, col=1, bg = '2', data=xDat3)
+        # axes
+        axis(1, las=1)
+        axis(2, las=1, labels=NA)
+        # Plot labels etc.
+        proportionalLabel( 0.05,  1.075, expression(paste(bold(Q))), cex=1.2, adj=c(0.5, 0.5), xpd=NA)
+        proportionalLabel(0.5,  -0.3,   expression(paste("Recombination rate ",italic((r[j])))), cex=1.2, adj=c(0.5, 0.5), xpd=NA)        
 
+    # Panel 6: h_j = 1
+    aDat   <-  aDataH1[aDataH1$rf == aDataH1$rm & aDataH1$mf == aDataH1$mm & aDataH1$sf == aDataH1$sm,][-c(12,13),]
+    aDat2  <-  aDataH1[aDataH1$rf >  aDataH1$rm & aDataH1$mf == aDataH1$mm & aDataH1$sf == aDataH1$sm,][-c(12,13),]
+    aDat3  <-  aDataH1[aDataH1$rf <  aDataH1$rm & aDataH1$mf == aDataH1$mm & aDataH1$sf == aDataH1$sm,][-c(12,13),]
+    xDat   <-  xDataH1[xDataH1$sf == xDataH1$sm & xDataH1$mf == xDataH1$mm,]
 
+     plot(NA, axes=FALSE, type='n', main='',xlim = c(0,0.5), ylim = c(0,max(aDataH1$PropEst, xDataH1$PropEst)), ylab='', xlab='', cex.lab=1.2)
+        usr  <-  par('usr')
+        rect(usr[1], usr[3], usr[2], usr[4], col='white', border=NA)
+        plotGrid(lineCol='grey80')
+        box()
+        # Autosomal frequencies
+        abline(h=(2*aDat$mf[1]), lwd=3, lty=2)
+        points(PropEst ~ rf, pch = 21, col=1, bg = 'grey70', data=aDat)
+        points(PropEst ~ rf, pch = 22, col=1, bg = 'grey70', data=aDat2)
+        points(PropEst ~ rm, pch = 23, col=1, bg = 'grey70', data=aDat3)
+        points(PropEst ~ rf, pch = 21, col=1, bg = '2', data=xDat)
+        # axes
+        axis(1, las=1)
+        axis(2, las=1, labels=NA)
+        # Plot labels etc.
+        proportionalLabel( 0.05,  1.075, expression(paste(bold(R))), cex=1.2, adj=c(0.5, 0.5), xpd=NA)
+        proportionalLabel(0.5,  -0.3,   expression(paste("Recombination rate ",italic((r[j])))), cex=1.2, adj=c(0.5, 0.5), xpd=NA)        
+        # Legend
+        legend(
+              x       =  usr[2],
+              y       =  usr[4]*0.42,
+              legend  =  c(
+                          expression(paste("Autosomal")),
+                          expression(paste("X-linked"))),
+              pch     =  c(21,21),
+              pt.bg   =  c('grey70',2),
+              col     =  c(1),
+              cex     =  1,
+              xjust   =  1,
+              yjust   =  1,
+              bty     =  'n',
+              border  =  NA
+    )
+        legend(
+              x       =  usr[2]*0.95,
+              y       =  usr[4]*0.24,
+              legend  =  c(
+                          expression(paste(italic(r[f])," = ",italic(r[m]))),
+                          expression(paste(italic(r[f])," > ",italic(r[m]))),
+                          expression(paste(italic(r[f])," < ",italic(r[m])))),
+              pch     =  c(21,22,23),
+              col     =  c(1),
+              cex     =  1,
+              xjust   =  1,
+              yjust   =  1,
+              bty     =  'n',
+              border  =  NA
+    )
 
+} 
