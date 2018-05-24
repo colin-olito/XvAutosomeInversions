@@ -344,10 +344,9 @@ Fig4  <-  function() {
 
 
 ###########################################################################################
-#' Deterministic Simulations: Equilibrium frequencies of Autosomal vs. X-linked inversions
-#'  -- Equal selection through each sex (no sex-specific selection for Autosomal model)
-#'  -- Additive fitness effects at SA locus
-#' @title Eq. frequencies of Auto vs. X-linked inversions
+#' Proportion of Wright-Fisher simulations in which an inversion capturing 2 locally
+#' adaptive alleles successfully establishes in the population
+#' @title Proportion of established inversions
 #' @author Colin Olito
 #' @export
 propEstSuppFigs  <-  function() {
