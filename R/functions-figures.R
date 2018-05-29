@@ -1412,6 +1412,7 @@ finalFreqSuppFig  <-  function() {
         axis(2, las=1)
         # Plot labels etc.
         proportionalLabel( 0.05,  1.075, expression(paste(bold(C))), cex=1.2, adj=c(0.5, 0.5), xpd=NA)
+        proportionalLabel(-0.35,  0.5,   expression(paste("Inversion Frequency at 4", italic(N)," generations")), cex=1.2, adj=c(0.5, 0.5), xpd=NA, srt=90)        
         proportionalLabel(0.5,  -0.25,   expression(paste("Recombination relative ")), cex=1, adj=c(0.5, 0.5), xpd=NA)        
         proportionalLabel(0.5,  -0.35,   expression(paste("to selection ",italic((r[j]/s)))), cex=1, adj=c(0.5, 0.5), xpd=NA)        
 
@@ -1527,7 +1528,7 @@ xlims  <-  c(min(
         # Plot labels etc.
         proportionalLabel( 0.05,  1.075, expression(paste(bold(E))), cex=1.2, adj=c(0.5, 0.5), xpd=NA)
         proportionalLabel(-0.35,  0.5,   expression(paste("Density")), cex=1, adj=c(0.5, 0.5), xpd=NA, srt=90)
-        proportionalLabel(0.5,  -0.25,   expression(paste("Frequency of established inversions ",italic((p[inversion])))), cex=1, adj=c(0.5, 0.5), xpd=NA)        
+        proportionalLabel(0.5,  -0.25,   expression(paste("Frequency of established inversions ",italic((p[inv])))), cex=1, adj=c(0.5, 0.5), xpd=NA)        
         # Legend
         legend(
               x       =  usr[2]*0.985,

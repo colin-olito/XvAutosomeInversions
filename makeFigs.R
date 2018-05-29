@@ -26,6 +26,7 @@ rm(list=ls())
 library(extrafont)
 library(fontcm)
 loadfonts(quiet = TRUE)
+library(data.table)
 
 source('R/functions-figures.R')
 
