@@ -700,7 +700,7 @@ propEstSuppFigs  <-  function() {
         proportionalLabel( 0.05,  1.075, expression(paste(bold(G))), cex=1.2, adj=c(0.5, 0.5), xpd=NA)
         proportionalLabel(-0.35,  0.5,   expression(italic(Pi[j])), cex=1.2, adj=c(0.5, 0.5), xpd=NA, srt=90)        
         proportionalLabel(0.5,  -0.3,   expression(paste("Recombination relative ")), cex=1.2, adj=c(0.5, 0.5), xpd=NA)        
-        proportionalLabel(0.5,  -0.4,   expression(paste("to selection ",italic((r[j]/bar(s))))), cex=1.2, adj=c(0.5, 0.5), xpd=NA)        
+        proportionalLabel(0.5,  -0.4,   expression(paste("to selection ",italic((r/bar(s))))), cex=1.2, adj=c(0.5, 0.5), xpd=NA)        
 
 
     # Panel 8: h_j = 1/2
@@ -730,7 +730,7 @@ propEstSuppFigs  <-  function() {
         # Plot labels etc.
         proportionalLabel( 0.05,  1.075, expression(paste(bold(H))), cex=1.2, adj=c(0.5, 0.5), xpd=NA)
         proportionalLabel(0.5,  -0.3,   expression(paste("Recombination relative ")), cex=1.2, adj=c(0.5, 0.5), xpd=NA)        
-        proportionalLabel(0.5,  -0.4,   expression(paste("to selection ",italic((r[j]/bar(s))))), cex=1.2, adj=c(0.5, 0.5), xpd=NA)        
+        proportionalLabel(0.5,  -0.4,   expression(paste("to selection ",italic((r/bar(s))))), cex=1.2, adj=c(0.5, 0.5), xpd=NA)        
 
     # Panel 9: h_j = 1
     aDat   <-  aDataN30kH1[aDataN30kH1$rf == aDataN30kH1$rm & aDataN30kH1$mf == aDataN30kH1$mm & aDataN30kH1$sf == aDataN30kH1$sm,][-c(12,13),]
@@ -759,7 +759,7 @@ propEstSuppFigs  <-  function() {
         # Plot labels etc.
         proportionalLabel( 0.05,  1.075, expression(paste(bold(I))), cex=1.2, adj=c(0.5, 0.5), xpd=NA)
         proportionalLabel(0.5,  -0.3,   expression(paste("Recombination relative ")), cex=1.2, adj=c(0.5, 0.5), xpd=NA)        
-        proportionalLabel(0.5,  -0.4,   expression(paste("to selection ",italic((r[j]/bar(s))))), cex=1.2, adj=c(0.5, 0.5), xpd=NA)        
+        proportionalLabel(0.5,  -0.4,   expression(paste("to selection ",italic((r/bar(s))))), cex=1.2, adj=c(0.5, 0.5), xpd=NA)        
         # Legend
         legend(
               x       =  usr[2],
@@ -1094,7 +1094,7 @@ sbar  <-  0.005
         proportionalLabel( 0.05,  1.075, expression(paste(bold(P))), cex=1.2, adj=c(0.5, 0.5), xpd=NA)
         proportionalLabel(-0.35,  0.5,   expression(italic(Pi[j])), cex=1.2, adj=c(0.5, 0.5), xpd=NA, srt=90)        
         proportionalLabel(0.5,  -0.3,   expression(paste("Recombination relative ")), cex=1.2, adj=c(0.5, 0.5), xpd=NA)        
-        proportionalLabel(0.5,  -0.4,   expression(paste("to selection ",italic((r[j]/bar(s))))), cex=1.2, adj=c(0.5, 0.5), xpd=NA)        
+        proportionalLabel(0.5,  -0.4,   expression(paste("to selection ",italic((r/bar(s))))), cex=1.2, adj=c(0.5, 0.5), xpd=NA)        
 
 
     # Panel 5: h_j = 1/2
@@ -1123,7 +1123,7 @@ sbar  <-  0.005
         # Plot labels etc.
         proportionalLabel( 0.05,  1.075, expression(paste(bold(Q))), cex=1.2, adj=c(0.5, 0.5), xpd=NA)
         proportionalLabel(0.5,  -0.3,   expression(paste("Recombination relative ")), cex=1.2, adj=c(0.5, 0.5), xpd=NA)        
-        proportionalLabel(0.5,  -0.4,   expression(paste("to selection ",italic((r[j]/bar(s))))), cex=1.2, adj=c(0.5, 0.5), xpd=NA)        
+        proportionalLabel(0.5,  -0.4,   expression(paste("to selection ",italic((r/bar(s))))), cex=1.2, adj=c(0.5, 0.5), xpd=NA)        
 
     # Panel 6: h_j = 1
     aDat   <-  aDataH1[aDataH1$rf == aDataH1$rm & aDataH1$mf == aDataH1$mm & aDataH1$sf == aDataH1$sm,][-c(12,13),]
@@ -1151,7 +1151,7 @@ sbar  <-  0.005
         # Plot labels etc.
         proportionalLabel( 0.05,  1.075, expression(paste(bold(R))), cex=1.2, adj=c(0.5, 0.5), xpd=NA)
         proportionalLabel(0.5,  -0.3,   expression(paste("Recombination relative ")), cex=1.2, adj=c(0.5, 0.5), xpd=NA)        
-        proportionalLabel(0.5,  -0.4,   expression(paste("to selection ",italic((r[j]/bar(s))))), cex=1.2, adj=c(0.5, 0.5), xpd=NA)        
+        proportionalLabel(0.5,  -0.4,   expression(paste("to selection ",italic((r/bar(s))))), cex=1.2, adj=c(0.5, 0.5), xpd=NA)        
         # Legend
         legend(
               x       =  usr[2],
@@ -1201,106 +1201,106 @@ finalFreqSuppFig  <-  function() {
 
     # Import data for plotting
     aDataN30kNone    <-  as.data.frame(fread(file = "/Volumes/VERBATIM\ HD/XvAutosomeSuppData/SexSpecFig4N_equalM_equalS_equalR_N30000_h0.5_n100_u1e-05_sDel_none_nReps5e+05.csv"))
-    aDataN30kStrong  <-  as.data.frame(fread(file = "/Volumes/VERBATIM\ HD/XvAutosomeSuppData/SexSpecFig4N_equalM_equalS_equalR_N30000_h0.5_n100_u1e-05_sDel_strong_nReps5e+05.csv"))
-    aDataN30kLethal  <-  as.data.frame(fread(file = "/Volumes/VERBATIM\ HD/XvAutosomeSuppData/SexSpecFig4N_equalM_equalS_equalR_N30000_h0.5_n100_u1e-05_sDel_lethal_nReps5e+05.csv"))
+#    aDataN30kStrong  <-  as.data.frame(fread(file = "/Volumes/VERBATIM\ HD/XvAutosomeSuppData/SexSpecFig4N_equalM_equalS_equalR_N30000_h0.5_n100_u1e-05_sDel_strong_nReps5e+05.csv"))
+#    aDataN30kLethal  <-  as.data.frame(fread(file = "/Volumes/VERBATIM\ HD/XvAutosomeSuppData/SexSpecFig4N_equalM_equalS_equalR_N30000_h0.5_n100_u1e-05_sDel_lethal_nReps5e+05.csv"))
     xDataN30kNone    <-  as.data.frame(fread(file = "/Volumes/VERBATIM\ HD/XvAutosomeSuppData/XlinkedFig4N_equalM_equalS_N30000_h0.5_n100_u1e-05_sDel_none_nReps5e+05.csv"))
-    xDataN30kStrong  <-  as.data.frame(fread(file = "/Volumes/VERBATIM\ HD/XvAutosomeSuppData/XlinkedFig4N_equalM_equalS_N30000_h0.5_n100_u1e-05_sDel_strong_nReps5e+05.csv"))
-    xDataN30kLethal  <-  as.data.frame(fread(file = "/Volumes/VERBATIM\ HD/XvAutosomeSuppData/XlinkedFig4N_equalM_equalS_N30000_h0.5_n100_u1e-05_sDel_lethal_nReps1e+06.csv"))
+#    xDataN30kStrong  <-  as.data.frame(fread(file = "/Volumes/VERBATIM\ HD/XvAutosomeSuppData/XlinkedFig4N_equalM_equalS_N30000_h0.5_n100_u1e-05_sDel_strong_nReps5e+05.csv"))
+#    xDataN30kLethal  <-  as.data.frame(fread(file = "/Volumes/VERBATIM\ HD/XvAutosomeSuppData/XlinkedFig4N_equalM_equalS_N30000_h0.5_n100_u1e-05_sDel_lethal_nReps1e+06.csv"))
 
     aDataNone    <-  as.data.frame(fread(file = "/Volumes/VERBATIM\ HD/XvAutosomeSuppData/SexSpecFig4N_equalM_equalS_equalR_N5e+05_h0.5_n100_u1e-05_sDel_none_nReps5e+05.csv"))
-    aDataStrong  <-  as.data.frame(fread(file = "/Volumes/VERBATIM\ HD/XvAutosomeSuppData/SexSpecFig4N_equalM_equalS_equalR_N5e+05_h0.5_n100_u1e-05_sDel_strong_nReps5e+05.csv"))
-    aDataLethal  <-  as.data.frame(fread(file = "/Volumes/VERBATIM\ HD/XvAutosomeSuppData/SexSpecFig4N_equalM_equalS_equalR_N5e+05_h0.5_n100_u1e-05_sDel_lethal_nReps5e+05.csv"))
+#    aDataStrong  <-  as.data.frame(fread(file = "/Volumes/VERBATIM\ HD/XvAutosomeSuppData/SexSpecFig4N_equalM_equalS_equalR_N5e+05_h0.5_n100_u1e-05_sDel_strong_nReps5e+05.csv"))
+#    aDataLethal  <-  as.data.frame(fread(file = "/Volumes/VERBATIM\ HD/XvAutosomeSuppData/SexSpecFig4N_equalM_equalS_equalR_N5e+05_h0.5_n100_u1e-05_sDel_lethal_nReps5e+05.csv"))
     xDataNone    <-  as.data.frame(fread(file = "/Volumes/VERBATIM\ HD/XvAutosomeSuppData/XlinkedFig4N_equalM_equalS_N5e+05_h0.5_n100_u1e-05_sDel_none_nReps5e+05.csv"))
-    xDataStrong  <-  as.data.frame(fread(file = "/Volumes/VERBATIM\ HD/XvAutosomeSuppData/XlinkedFig4N_equalM_equalS_N5e+05_h0.5_n100_u1e-05_sDel_strong_nReps5e+05.csv"))
-    xDataLethal  <-  as.data.frame(fread(file = "/Volumes/VERBATIM\ HD/XvAutosomeSuppData/XlinkedFig4N_equalM_equalS_N5e+05_h0.5_n100_u1e-05_sDel_lethal_nReps5e+05.csv"))
+#    xDataStrong  <-  as.data.frame(fread(file = "/Volumes/VERBATIM\ HD/XvAutosomeSuppData/XlinkedFig4N_equalM_equalS_N5e+05_h0.5_n100_u1e-05_sDel_strong_nReps5e+05.csv"))
+#    xDataLethal  <-  as.data.frame(fread(file = "/Volumes/VERBATIM\ HD/XvAutosomeSuppData/XlinkedFig4N_equalM_equalS_N5e+05_h0.5_n100_u1e-05_sDel_lethal_nReps5e+05.csv"))
 
     # Calculate mean frequencies of established inversions
     aInvN30kPrEstNone    <-  ddply(aDataN30kNone, .(rf), summarize,   ProbEst = length(finalInvFreq[finalInvFreq > 0])/length(finalInvFreq))
-    aInvN30kPrEstStrong  <-  ddply(aDataN30kStrong, .(rf), summarize, ProbEst = length(finalInvFreq[finalInvFreq > 0])/length(finalInvFreq))
-    aInvN30kPrEstLethal  <-  ddply(aDataN30kLethal, .(rf), summarize, ProbEst = length(finalInvFreq[finalInvFreq > 0])/length(finalInvFreq))
+#    aInvN30kPrEstStrong  <-  ddply(aDataN30kStrong, .(rf), summarize, ProbEst = length(finalInvFreq[finalInvFreq > 0])/length(finalInvFreq))
+#    aInvN30kPrEstLethal  <-  ddply(aDataN30kLethal, .(rf), summarize, ProbEst = length(finalInvFreq[finalInvFreq > 0])/length(finalInvFreq))
     xInvN30kPrEstNone    <-  ddply(xDataN30kNone, .(rf), summarize,   ProbEst = length(finalInvFreq[finalInvFreq > 0])/length(finalInvFreq))
-    xInvN30kPrEstStrong  <-  ddply(xDataN30kStrong, .(rf), summarize, ProbEst = length(finalInvFreq[finalInvFreq > 0])/length(finalInvFreq))
-    xInvN30kPrEstLethal  <-  ddply(xDataN30kLethal, .(rf), summarize, ProbEst = length(finalInvFreq[finalInvFreq > 0])/length(finalInvFreq))
+#    xInvN30kPrEstStrong  <-  ddply(xDataN30kStrong, .(rf), summarize, ProbEst = length(finalInvFreq[finalInvFreq > 0])/length(finalInvFreq))
+#    xInvN30kPrEstLethal  <-  ddply(xDataN30kLethal, .(rf), summarize, ProbEst = length(finalInvFreq[finalInvFreq > 0])/length(finalInvFreq))
 
     aInvN30kPrEstNone$relR    <-  aInvN30kPrEstNone$rf / 0.05
-    aInvN30kPrEstStrong$relR  <-  aInvN30kPrEstStrong$rf / 0.05
-    aInvN30kPrEstLethal$relR  <-  aInvN30kPrEstLethal$rf / 0.05
+#    aInvN30kPrEstStrong$relR  <-  aInvN30kPrEstStrong$rf / 0.05
+#    aInvN30kPrEstLethal$relR  <-  aInvN30kPrEstLethal$rf / 0.05
     xInvN30kPrEstNone$relR    <-  xInvN30kPrEstNone$rf / 0.05
-    xInvN30kPrEstStrong$relR  <-  xInvN30kPrEstStrong$rf / 0.05
-    xInvN30kPrEstLethal$relR  <-  xInvN30kPrEstLethal$rf / 0.05
+#    xInvN30kPrEstStrong$relR  <-  xInvN30kPrEstStrong$rf / 0.05
+#    xInvN30kPrEstLethal$relR  <-  xInvN30kPrEstLethal$rf / 0.05
 
     aInvPrEstNone    <-  ddply(aDataNone,   .(rf), summarize, ProbEst = length(finalInvFreq[finalInvFreq > 0])/length(finalInvFreq))
-    aInvPrEstStrong  <-  ddply(aDataStrong, .(rf), summarize, ProbEst = length(finalInvFreq[finalInvFreq > 0])/length(finalInvFreq))
-    aInvPrEstLethal  <-  ddply(aDataLethal, .(rf), summarize, ProbEst = length(finalInvFreq[finalInvFreq > 0])/length(finalInvFreq))
+#    aInvPrEstStrong  <-  ddply(aDataStrong, .(rf), summarize, ProbEst = length(finalInvFreq[finalInvFreq > 0])/length(finalInvFreq))
+#    aInvPrEstLethal  <-  ddply(aDataLethal, .(rf), summarize, ProbEst = length(finalInvFreq[finalInvFreq > 0])/length(finalInvFreq))
     xInvPrEstNone    <-  ddply(xDataNone,   .(rf), summarize, ProbEst = length(finalInvFreq[finalInvFreq > 0])/length(finalInvFreq))
-    xInvPrEstStrong  <-  ddply(xDataStrong, .(rf), summarize, ProbEst = length(finalInvFreq[finalInvFreq > 0])/length(finalInvFreq))
-    xInvPrEstLethal  <-  ddply(xDataLethal, .(rf), summarize, ProbEst = length(finalInvFreq[finalInvFreq > 0])/length(finalInvFreq))
+#    xInvPrEstStrong  <-  ddply(xDataStrong, .(rf), summarize, ProbEst = length(finalInvFreq[finalInvFreq > 0])/length(finalInvFreq))
+#    xInvPrEstLethal  <-  ddply(xDataLethal, .(rf), summarize, ProbEst = length(finalInvFreq[finalInvFreq > 0])/length(finalInvFreq))
 
     aInvPrEstNone$relR    <-  aInvPrEstNone$rf / 0.005
-    aInvPrEstStrong$relR  <-  aInvPrEstStrong$rf / 0.005
-    aInvPrEstLethal$relR  <-  aInvPrEstLethal$rf / 0.005
+#    aInvPrEstStrong$relR  <-  aInvPrEstStrong$rf / 0.005
+#    aInvPrEstLethal$relR  <-  aInvPrEstLethal$rf / 0.005
     xInvPrEstNone$relR    <-  xInvPrEstNone$rf / 0.005
-    xInvPrEstStrong$relR  <-  xInvPrEstStrong$rf / 0.005
-    xInvPrEstLethal$relR  <-  xInvPrEstLethal$rf / 0.005
+#    xInvPrEstStrong$relR  <-  xInvPrEstStrong$rf / 0.005
+#    xInvPrEstLethal$relR  <-  xInvPrEstLethal$rf / 0.005
 
     # Calculate mean frequencies of established inversions
     aInvN30kMeanNone    <-  ddply(aDataN30kNone[aDataN30kNone$finalInvFreq > 0,], .(rf), summarize, mean = mean(finalInvFreq), sd = sd(finalInvFreq))
-    aInvN30kMeanStrong  <-  ddply(aDataN30kStrong[aDataN30kStrong$finalInvFreq > 0,], .(rf), summarize, mean = mean(finalInvFreq), sd = sd(finalInvFreq))
-    aInvN30kMeanLethal  <-  ddply(aDataN30kLethal[aDataN30kLethal$finalInvFreq > 0,], .(rf), summarize, mean = mean(finalInvFreq), sd = sd(finalInvFreq))
+#    aInvN30kMeanStrong  <-  ddply(aDataN30kStrong[aDataN30kStrong$finalInvFreq > 0,], .(rf), summarize, mean = mean(finalInvFreq), sd = sd(finalInvFreq))
+#    aInvN30kMeanLethal  <-  ddply(aDataN30kLethal[aDataN30kLethal$finalInvFreq > 0,], .(rf), summarize, mean = mean(finalInvFreq), sd = sd(finalInvFreq))
     xInvN30kMeanNone    <-  ddply(xDataN30kNone[xDataN30kNone$finalInvFreq > 0,], .(rf), summarize, mean = mean(finalInvFreq), sd = sd(finalInvFreq))
-    xInvN30kMeanStrong  <-  ddply(xDataN30kStrong[xDataN30kStrong$finalInvFreq > 0,], .(rf), summarize, mean = mean(finalInvFreq), sd = sd(finalInvFreq))
-    xInvN30kMeanLethal  <-  ddply(xDataN30kLethal[xDataN30kLethal$finalInvFreq > 0,], .(rf), summarize, mean = mean(finalInvFreq), sd = sd(finalInvFreq))
+#    xInvN30kMeanStrong  <-  ddply(xDataN30kStrong[xDataN30kStrong$finalInvFreq > 0,], .(rf), summarize, mean = mean(finalInvFreq), sd = sd(finalInvFreq))
+#    xInvN30kMeanLethal  <-  ddply(xDataN30kLethal[xDataN30kLethal$finalInvFreq > 0,], .(rf), summarize, mean = mean(finalInvFreq), sd = sd(finalInvFreq))
 
     aInvN30kMeanNone$relR    <-  aInvN30kMeanNone$rf / 0.05
-    aInvN30kMeanStrong$relR  <-  aInvN30kMeanStrong$rf / 0.05
-    aInvN30kMeanLethal$relR  <-  aInvN30kMeanLethal$rf / 0.05
+#    aInvN30kMeanStrong$relR  <-  aInvN30kMeanStrong$rf / 0.05
+#    aInvN30kMeanLethal$relR  <-  aInvN30kMeanLethal$rf / 0.05
     xInvN30kMeanNone$relR    <-  xInvN30kMeanNone$rf / 0.05
-    xInvN30kMeanStrong$relR  <-  xInvN30kMeanStrong$rf / 0.05
-    xInvN30kMeanLethal$relR  <-  xInvN30kMeanLethal$rf / 0.05
+#    xInvN30kMeanStrong$relR  <-  xInvN30kMeanStrong$rf / 0.05
+#    xInvN30kMeanLethal$relR  <-  xInvN30kMeanLethal$rf / 0.05
 
     aInvMeanNone    <-  ddply(aDataNone[aDataNone$finalInvFreq > 0,], .(rf), summarize, mean = mean(finalInvFreq), sd = sd(finalInvFreq))
-    aInvMeanStrong  <-  ddply(aDataStrong[aDataStrong$finalInvFreq > 0,], .(rf), summarize, mean = mean(finalInvFreq), sd = sd(finalInvFreq))
-    aInvMeanLethal  <-  ddply(aDataLethal[aDataLethal$finalInvFreq > 0,], .(rf), summarize, mean = mean(finalInvFreq), sd = sd(finalInvFreq))
+#    aInvMeanStrong  <-  ddply(aDataStrong[aDataStrong$finalInvFreq > 0,], .(rf), summarize, mean = mean(finalInvFreq), sd = sd(finalInvFreq))
+#    aInvMeanLethal  <-  ddply(aDataLethal[aDataLethal$finalInvFreq > 0,], .(rf), summarize, mean = mean(finalInvFreq), sd = sd(finalInvFreq))
     xInvMeanNone    <-  ddply(xDataNone[xDataNone$finalInvFreq > 0,], .(rf), summarize, mean = mean(finalInvFreq), sd = sd(finalInvFreq))
-    xInvMeanStrong  <-  ddply(xDataStrong[xDataStrong$finalInvFreq > 0,], .(rf), summarize, mean = mean(finalInvFreq), sd = sd(finalInvFreq))
-    xInvMeanLethal  <-  ddply(xDataLethal[xDataLethal$finalInvFreq > 0,], .(rf), summarize, mean = mean(finalInvFreq), sd = sd(finalInvFreq))
+#    xInvMeanStrong  <-  ddply(xDataStrong[xDataStrong$finalInvFreq > 0,], .(rf), summarize, mean = mean(finalInvFreq), sd = sd(finalInvFreq))
+#    xInvMeanLethal  <-  ddply(xDataLethal[xDataLethal$finalInvFreq > 0,], .(rf), summarize, mean = mean(finalInvFreq), sd = sd(finalInvFreq))
 
     aInvMeanNone$relR    <-  aInvMeanNone$rf / 0.005
-    aInvMeanStrong$relR  <-  aInvMeanStrong$rf / 0.005
-    aInvMeanLethal$relR  <-  aInvMeanLethal$rf / 0.005
+#    aInvMeanStrong$relR  <-  aInvMeanStrong$rf / 0.005
+#    aInvMeanLethal$relR  <-  aInvMeanLethal$rf / 0.005
     xInvMeanNone$relR    <-  xInvMeanNone$rf / 0.005
-    xInvMeanStrong$relR  <-  xInvMeanStrong$rf / 0.005
-    xInvMeanLethal$relR  <-  xInvMeanLethal$rf / 0.005
+#    xInvMeanStrong$relR  <-  xInvMeanStrong$rf / 0.005
+#    xInvMeanLethal$relR  <-  xInvMeanLethal$rf / 0.005
 
     # Calculate densities for established inversions
-    aInvN30kDensNone    <-  density(aDataN30kNone$finalInvFreq[aDataN30kNone$finalInvFreq > 0 & aDataN30kNone$rf == 0.1])
-    aInvN30kDensStrong  <-  density(aDataN30kStrong$finalInvFreq[aDataN30kStrong$finalInvFreq > 0 & aDataN30kStrong$rf == 0.1])
-    aInvN30kDensLethal  <-  density(aDataN30kLethal$finalInvFreq[aDataN30kLethal$finalInvFreq > 0 & aDataN30kLethal$rf == 0.1])
-    xInvN30kDensNone    <-  density(xDataN30kNone$finalInvFreq[xDataN30kNone$finalInvFreq > 0 & xDataN30kNone$rf == 0.1])
-    xInvN30kDensStrong  <-  density(xDataN30kStrong$finalInvFreq[xDataN30kStrong$finalInvFreq > 0 & xDataN30kStrong$rf == 0.1])
-    xInvN30kDensLethal  <-  density(xDataN30kLethal$finalInvFreq[xDataN30kLethal$finalInvFreq > 0 & xDataN30kLethal$rf == 0.1])
+#    aInvN30kDensNone    <-  density(aDataN30kNone$finalInvFreq[aDataN30kNone$finalInvFreq > 0 & aDataN30kNone$rf == 0.1])
+#    aInvN30kDensStrong  <-  density(aDataN30kStrong$finalInvFreq[aDataN30kStrong$finalInvFreq > 0 & aDataN30kStrong$rf == 0.1])
+#    aInvN30kDensLethal  <-  density(aDataN30kLethal$finalInvFreq[aDataN30kLethal$finalInvFreq > 0 & aDataN30kLethal$rf == 0.1])
+#    xInvN30kDensNone    <-  density(xDataN30kNone$finalInvFreq[xDataN30kNone$finalInvFreq > 0 & xDataN30kNone$rf == 0.1])
+#    xInvN30kDensStrong  <-  density(xDataN30kStrong$finalInvFreq[xDataN30kStrong$finalInvFreq > 0 & xDataN30kStrong$rf == 0.1])
+#    xInvN30kDensLethal  <-  density(xDataN30kLethal$finalInvFreq[xDataN30kLethal$finalInvFreq > 0 & xDataN30kLethal$rf == 0.1])
 
-    aInvDensNone    <-  density(aDataNone$finalInvFreq[aDataNone$finalInvFreq > 0 & aDataNone$rf == 0.1])
-    aInvDensStrong  <-  density(aDataStrong$finalInvFreq[aDataStrong$finalInvFreq > 0 & aDataStrong$rf == 0.1])
-    aInvDensLethal  <-  density(aDataLethal$finalInvFreq[aDataLethal$finalInvFreq > 0 & aDataLethal$rf == 0.1])
-    xInvDensNone    <-  density(xDataNone$finalInvFreq[xDataNone$finalInvFreq > 0 & xDataNone$rf == 0.1])
-    xInvDensStrong  <-  density(xDataStrong$finalInvFreq[xDataStrong$finalInvFreq > 0 & xDataStrong$rf == 0.1])
-    xInvDensLethal  <-  density(xDataLethal$finalInvFreq[xDataLethal$finalInvFreq > 0 & xDataLethal$rf == 0.1])
+#    aInvDensNone    <-  density(aDataNone$finalInvFreq[aDataNone$finalInvFreq > 0 & aDataNone$rf == 0.1])
+#    aInvDensStrong  <-  density(aDataStrong$finalInvFreq[aDataStrong$finalInvFreq > 0 & aDataStrong$rf == 0.1])
+#    aInvDensLethal  <-  density(aDataLethal$finalInvFreq[aDataLethal$finalInvFreq > 0 & aDataLethal$rf == 0.1])
+#    xInvDensNone    <-  density(xDataNone$finalInvFreq[xDataNone$finalInvFreq > 0 & xDataNone$rf == 0.1])
+#    xInvDensStrong  <-  density(xDataStrong$finalInvFreq[xDataStrong$finalInvFreq > 0 & xDataStrong$rf == 0.1])
+#    xInvDensLethal  <-  density(xDataLethal$finalInvFreq[xDataLethal$finalInvFreq > 0 & xDataLethal$rf == 0.1])
 
     # Calculate Number of established inversions
-    aInvN30kNInvNone    <-  length(aDataN30kNone$finalInvFreq[aDataN30kNone$finalInvFreq > 0 & aDataN30kNone$rf == 0.1])
-    aInvN30kNInvStrong  <-  length(aDataN30kStrong$finalInvFreq[aDataN30kStrong$finalInvFreq > 0 & aDataN30kStrong$rf == 0.1])
-    aInvN30kNInvLethal  <-  length(aDataN30kLethal$finalInvFreq[aDataN30kLethal$finalInvFreq > 0 & aDataN30kLethal$rf == 0.1])
-    xInvN30kNInvNone    <-  length(xDataN30kNone$finalInvFreq[xDataN30kNone$finalInvFreq > 0 & xDataN30kNone$rf == 0.1])
-    xInvN30kNInvStrong  <-  length(xDataN30kStrong$finalInvFreq[xDataN30kStrong$finalInvFreq > 0 & xDataN30kStrong$rf == 0.1])
-    xInvN30kNInvLethal  <-  length(xDataN30kLethal$finalInvFreq[xDataN30kLethal$finalInvFreq > 0 & xDataN30kLethal$rf == 0.1])
+#    aInvN30kNInvNone    <-  length(aDataN30kNone$finalInvFreq[aDataN30kNone$finalInvFreq > 0 & aDataN30kNone$rf == 0.1])
+#    aInvN30kNInvStrong  <-  length(aDataN30kStrong$finalInvFreq[aDataN30kStrong$finalInvFreq > 0 & aDataN30kStrong$rf == 0.1])
+#    aInvN30kNInvLethal  <-  length(aDataN30kLethal$finalInvFreq[aDataN30kLethal$finalInvFreq > 0 & aDataN30kLethal$rf == 0.1])
+#    xInvN30kNInvNone    <-  length(xDataN30kNone$finalInvFreq[xDataN30kNone$finalInvFreq > 0 & xDataN30kNone$rf == 0.1])
+#    xInvN30kNInvStrong  <-  length(xDataN30kStrong$finalInvFreq[xDataN30kStrong$finalInvFreq > 0 & xDataN30kStrong$rf == 0.1])
+#    xInvN30kNInvLethal  <-  length(xDataN30kLethal$finalInvFreq[xDataN30kLethal$finalInvFreq > 0 & xDataN30kLethal$rf == 0.1])
 
-    aInvNinvNone    <-  length(aDataNone$finalInvFreq[aDataNone$finalInvFreq > 0 & aDataNone$rf == 0.1])
-    aInvNinvStrong  <-  length(aDataStrong$finalInvFreq[aDataStrong$finalInvFreq > 0 & aDataStrong$rf == 0.1])
-    aInvNinvLethal  <-  length(aDataLethal$finalInvFreq[aDataLethal$finalInvFreq > 0 & aDataLethal$rf == 0.1])
-    xInvNinvNone    <-  length(xDataNone$finalInvFreq[xDataNone$finalInvFreq > 0 & xDataNone$rf == 0.1])
-    xInvNinvStrong  <-  length(xDataStrong$finalInvFreq[xDataStrong$finalInvFreq > 0 & xDataStrong$rf == 0.1])
-    xInvNinvLethal  <-  length(xDataLethal$finalInvFreq[xDataLethal$finalInvFreq > 0 & xDataLethal$rf == 0.1])
+#    aInvNinvNone    <-  length(aDataNone$finalInvFreq[aDataNone$finalInvFreq > 0 & aDataNone$rf == 0.1])
+#    aInvNinvStrong  <-  length(aDataStrong$finalInvFreq[aDataStrong$finalInvFreq > 0 & aDataStrong$rf == 0.1])
+#    aInvNinvLethal  <-  length(aDataLethal$finalInvFreq[aDataLethal$finalInvFreq > 0 & aDataLethal$rf == 0.1])
+#    xInvNinvNone    <-  length(xDataNone$finalInvFreq[xDataNone$finalInvFreq > 0 & xDataNone$rf == 0.1])
+#    xInvNinvStrong  <-  length(xDataStrong$finalInvFreq[xDataStrong$finalInvFreq > 0 & xDataStrong$rf == 0.1])
+#    xInvNinvLethal  <-  length(xDataLethal$finalInvFreq[xDataLethal$finalInvFreq > 0 & xDataLethal$rf == 0.1])
 
     # indexes for plotting
     rs   <-  unique(aDataNone$rf)
@@ -1309,13 +1309,14 @@ finalFreqSuppFig  <-  function() {
     COLS  <-  c('grey70',2)
 
     # Set plot layout
-    layout.mat <- matrix(c(1,2,3,4,5,6), nrow=3, ncol=2, byrow=TRUE)
+#    layout.mat <- matrix(c(1,2,3,4,5,6), nrow=3, ncol=2, byrow=TRUE)
+    layout.mat <- matrix(c(1,2,3,4), nrow=2, ncol=2, byrow=TRUE)
     layout     <- layout(layout.mat,respect=TRUE)
 #    layout.show(layout)
 
 ## Row 1: Probability of establishment
     # Panel 1: N = 3 x 10^4
-    par(omi=c(1, 1, 0.5, 0.5), mar = c(5,5,2,0.5), bty='o', xaxt='s', yaxt='s')    
+    par(omi=c(1, 1, 0.5, 0.5), mar = c(2,4,2,0.5), bty='o', xaxt='s', yaxt='s')    
      plot(NA, axes=FALSE, type='n', main='',xlim = c(0,10), ylim = c(0,0.005), ylab='', xlab='', cex.lab=1.2)
         usr  <-  par('usr')
         rect(usr[1], usr[3], usr[2], usr[4], col='white', border=NA)
@@ -1323,21 +1324,21 @@ finalFreqSuppFig  <-  function() {
         box()
         # Mean Equilibrium frequencies
         points(ProbEst ~ relR, pch=21, col=1, bg=COLS[1], data = aInvN30kPrEstNone)
-        points(ProbEst ~ relR, pch=22, col=1, bg=COLS[1], data = aInvN30kPrEstStrong)
-        points(ProbEst ~ relR, pch=23, col=1, bg=COLS[1], data = aInvN30kPrEstLethal)
+#        points(ProbEst ~ relR, pch=22, col=1, bg=COLS[1], data = aInvN30kPrEstStrong)
+#        points(ProbEst ~ relR, pch=23, col=1, bg=COLS[1], data = aInvN30kPrEstLethal)
         points(ProbEst ~ relR, pch=21, col=1, bg=COLS[2], data = xInvN30kPrEstNone)
-        points(ProbEst ~ relR, pch=22, col=1, bg=COLS[2], data = xInvN30kPrEstStrong)
-        points(ProbEst ~ relR, pch=23, col=1, bg=COLS[2], data = xInvN30kPrEstLethal)        
+#        points(ProbEst ~ relR, pch=22, col=1, bg=COLS[2], data = xInvN30kPrEstStrong)
+#        points(ProbEst ~ relR, pch=23, col=1, bg=COLS[2], data = xInvN30kPrEstLethal)        
         abline(h=2*aDataN30kNone$mf[1], lwd=2, lty=2)
         # axes
-        axis(1, las=1)
+        axis(1, las=1, labels=NA)
         axis(2, las=1)
         # Plot labels etc.
         proportionalLabel( 0.5,  1.2,   expression(paste(italic(N), " = ", 3%*%10^4)), cex=1.5, adj=c(0.5, 0.5), xpd=NA)
         proportionalLabel( 0.05,  1.075, expression(paste(bold(A))), cex=1.2, adj=c(0.5, 0.5), xpd=NA)
-        proportionalLabel(-0.35,  0.5,   expression(italic(Pi[j])), cex=1.2, adj=c(0.5, 0.5), xpd=NA, srt=90)        
-        proportionalLabel(0.5,  -0.25,   expression(paste("Recombination relative ")), cex=1, adj=c(0.5, 0.5), xpd=NA)        
-        proportionalLabel(0.5,  -0.35,   expression(paste("to selection ",italic((r[j]/s)))), cex=1, adj=c(0.5, 0.5), xpd=NA)        
+        proportionalLabel(-0.4,  0.5,   expression(italic(Pi[j])), cex=1.2, adj=c(0.5, 0.5), xpd=NA, srt=90)        
+#        proportionalLabel(0.5,  -0.25,   expression(paste("Recombination relative ")), cex=1, adj=c(0.5, 0.5), xpd=NA)        
+#        proportionalLabel(0.5,  -0.35,   expression(paste("to selection ",italic((r/s)))), cex=1, adj=c(0.5, 0.5), xpd=NA)        
 
     # Panel 2: N = 5 x 10^5
      plot(NA, axes=FALSE, type='n', main='',xlim = c(0,100), ylim = c(0,0.0005), ylab='', xlab='', cex.lab=1.2)
@@ -1348,23 +1349,23 @@ finalFreqSuppFig  <-  function() {
         # Mean Equilibrium frequencies
         abline(h=2*xDataNone$mf[1], lwd=2, lty=2)
         points(ProbEst ~ relR, pch=21, col=1, bg=COLS[1], data = aInvPrEstNone)
-        points(ProbEst ~ relR, pch=22, col=1, bg=COLS[1], data = aInvPrEstStrong)
-        points(ProbEst ~ relR, pch=23, col=1, bg=COLS[1], data = aInvPrEstLethal)
+#        points(ProbEst ~ relR, pch=22, col=1, bg=COLS[1], data = aInvPrEstStrong)
+#        points(ProbEst ~ relR, pch=23, col=1, bg=COLS[1], data = aInvPrEstLethal)
         points(ProbEst ~ relR, pch=21, col=1, bg=COLS[2], data = xInvPrEstNone)
-        points(ProbEst ~ relR, pch=22, col=1, bg=COLS[2], data = xInvPrEstStrong)
-        points(ProbEst ~ relR, pch=23, col=1, bg=COLS[2], data = xInvPrEstLethal)        
+#        points(ProbEst ~ relR, pch=22, col=1, bg=COLS[2], data = xInvPrEstStrong)
+#        points(ProbEst ~ relR, pch=23, col=1, bg=COLS[2], data = xInvPrEstLethal)        
         # axes
-        axis(1, las=1)
+        axis(1, las=1, labels=NA)
         axis(2, las=1)
         # Plot labels etc.
         proportionalLabel( 0.5,  1.2,   expression(paste(italic(N), " = ", 5%*%10^5)), cex=1.5, adj=c(0.5, 0.5), xpd=NA)
         proportionalLabel( 0.05,  1.075, expression(paste(bold(B))), cex=1.2, adj=c(0.5, 0.5), xpd=NA)
-        proportionalLabel(0.5,  -0.25,   expression(paste("Recombination relative ")), cex=1, adj=c(0.5, 0.5), xpd=NA)        
-        proportionalLabel(0.5,  -0.35,   expression(paste("to selection ",italic((r[j]/s)))), cex=1, adj=c(0.5, 0.5), xpd=NA)        
+#        proportionalLabel(0.5,  -0.25,   expression(paste("Recombination relative ")), cex=1, adj=c(0.5, 0.5), xpd=NA)        
+#        proportionalLabel(0.5,  -0.35,   expression(paste("to selection ",italic((r/s)))), cex=1, adj=c(0.5, 0.5), xpd=NA)        
         # Legend
         legend(
               x       =  usr[2]*0.99,
-              y       =  usr[4]*0.51,
+              y       =  usr[4]*0.2,
               legend  =  c(
                           expression(paste("Autosomal")),
                           expression(paste("X-linked"))),
@@ -1377,24 +1378,24 @@ finalFreqSuppFig  <-  function() {
               bty     =  'n',
               border  =  NA
     )
-        legend(
-              x       =  usr[2]*0.9425,
-              y       =  usr[4]*0.34,
-              legend  =  c(
-                          expression(paste(italic(s[del]), " = ", 0)),
-                          expression(paste(italic(s[del]), " = ", 2*italic(s))),
-                          expression(paste(italic(s[del]), " = ", 1))),
-              pch     =  c(21,22,23),
-              col     =  c(1),
-              cex     =  1,
-              xjust   =  1,
-              yjust   =  1,
-              bty     =  'n',
-              border  =  NA
-    )
+#        legend(
+#              x       =  usr[2]*0.9425,
+#              y       =  usr[4]*0.34,
+#              legend  =  c(
+#                          expression(paste(italic(s[del]), " = ", 0)),
+#                          expression(paste(italic(s[del]), " = ", 2*italic(s))),
+#                          expression(paste(italic(s[del]), " = ", 1))),
+#              pch     =  c(21,22,23),
+#              col     =  c(1),
+#              cex     =  1,
+#              xjust   =  1,
+#              yjust   =  1,
+#              bty     =  'n',
+#              border  =  NA
+#    )
 
 ## Row 2: Mean final inversion frequency
-    # Panel 1: N = 3 x 10^4
+    # Panel 3: N = 3 x 10^4
      plot(NA, axes=FALSE, type='n', main='',xlim = c(0,10), ylim = c(0.9,1), ylab='', xlab='', cex.lab=1.2)
         usr  <-  par('usr')
         rect(usr[1], usr[3], usr[2], usr[4], col='white', border=NA)
@@ -1402,21 +1403,22 @@ finalFreqSuppFig  <-  function() {
         box()
         # Mean Equilibrium frequencies
         points(mean ~ relR, pch=21, col=1, bg=COLS[1], data = aInvN30kMeanNone)
-        points(mean ~ relR, pch=22, col=1, bg=COLS[1], data = aInvN30kMeanStrong)
-        points(mean ~ relR, pch=23, col=1, bg=COLS[1], data = aInvN30kMeanLethal)
+#        points(mean ~ relR, pch=22, col=1, bg=COLS[1], data = aInvN30kMeanStrong)
+#        points(mean ~ relR, pch=23, col=1, bg=COLS[1], data = aInvN30kMeanLethal)
         points(mean ~ relR, pch=21, col=1, bg=COLS[2], data = xInvN30kMeanNone)
-        points(mean ~ relR, pch=22, col=1, bg=COLS[2], data = xInvN30kMeanStrong)
-        points(mean ~ relR, pch=23, col=1, bg=COLS[2], data = xInvN30kMeanLethal)        
+#        points(mean ~ relR, pch=22, col=1, bg=COLS[2], data = xInvN30kMeanStrong)
+#        points(mean ~ relR, pch=23, col=1, bg=COLS[2], data = xInvN30kMeanLethal)        
         # axes
         axis(1, las=1)
         axis(2, las=1)
         # Plot labels etc.
         proportionalLabel( 0.05,  1.075, expression(paste(bold(C))), cex=1.2, adj=c(0.5, 0.5), xpd=NA)
-        proportionalLabel(-0.35,  0.5,   expression(paste("Inversion Frequency at 4", italic(N)," generations")), cex=1.2, adj=c(0.5, 0.5), xpd=NA, srt=90)        
-        proportionalLabel(0.5,  -0.25,   expression(paste("Recombination relative ")), cex=1, adj=c(0.5, 0.5), xpd=NA)        
-        proportionalLabel(0.5,  -0.35,   expression(paste("to selection ",italic((r[j]/s)))), cex=1, adj=c(0.5, 0.5), xpd=NA)        
+        proportionalLabel(-0.4,  0.5,   expression("Inversion Frequency after"), cex=1.2, adj=c(0.5, 0.5), xpd=NA, srt=90)        
+        proportionalLabel(-0.3,  0.5,   expression(paste("4", italic(N)," generations")), cex=1.2, adj=c(0.5, 0.5), xpd=NA, srt=90)        
+        proportionalLabel(0.5,  -0.3,   expression(paste("Recombination relative ")), cex=1.2, adj=c(0.5, 0.5), xpd=NA)        
+        proportionalLabel(0.5,  -0.4,   expression(paste("to selection ",italic((r/s)))), cex=1.2, adj=c(0.5, 0.5), xpd=NA)        
 
-    # Panel 2: N = 5 x 10^5
+    # Panel 4: N = 5 x 10^5
      plot(NA, axes=FALSE, type='n', main='',xlim = c(0,100), ylim = c(0.9,1), ylab='', xlab='', cex.lab=1.2)
         usr  <-  par('usr')
         rect(usr[1], usr[3], usr[2], usr[4], col='white', border=NA)
@@ -1424,22 +1426,22 @@ finalFreqSuppFig  <-  function() {
         box()
         # Mean Equilibrium frequencies
         points(mean ~ relR, pch=21, col=1, bg=COLS[1], data = aInvMeanNone)
-        points(mean ~ relR, pch=22, col=1, bg=COLS[1], data = aInvMeanStrong)
-        points(mean ~ relR, pch=23, col=1, bg=COLS[1], data = aInvMeanLethal)
+#        points(mean ~ relR, pch=22, col=1, bg=COLS[1], data = aInvMeanStrong)
+#        points(mean ~ relR, pch=23, col=1, bg=COLS[1], data = aInvMeanLethal)
         points(mean ~ relR, pch=21, col=1, bg=COLS[2], data = xInvMeanNone)
-        points(mean ~ relR, pch=22, col=1, bg=COLS[2], data = xInvMeanStrong)
-        points(mean ~ relR, pch=23, col=1, bg=COLS[2], data = xInvMeanLethal)        
+#        points(mean ~ relR, pch=22, col=1, bg=COLS[2], data = xInvMeanStrong)
+#        points(mean ~ relR, pch=23, col=1, bg=COLS[2], data = xInvMeanLethal)        
         # axes
         axis(1, las=1)
         axis(2, las=1, labels=NA)
         # Plot labels etc.
         proportionalLabel( 0.05,  1.075, expression(paste(bold(D))), cex=1.2, adj=c(0.5, 0.5), xpd=NA)
-        proportionalLabel(0.5,  -0.25,   expression(paste("Recombination relative ")), cex=1, adj=c(0.5, 0.5), xpd=NA)        
-        proportionalLabel(0.5,  -0.35,   expression(paste("to selection ",italic((r[j]/s)))), cex=1, adj=c(0.5, 0.5), xpd=NA)        
+        proportionalLabel(0.5,  -0.3,   expression(paste("Recombination relative ")), cex=1.2, adj=c(0.5, 0.5), xpd=NA)        
+        proportionalLabel(0.5,  -0.4,   expression(paste("to selection ",italic((r/s)))), cex=1.2, adj=c(0.5, 0.5), xpd=NA)        
         # Legend
         legend(
               x       =  usr[2]*0.99,
-              y       =  usr[4]*0.945,
+              y       =  usr[4]*0.9175,
               legend  =  c(
                           expression(paste("Autosomal")),
                           expression(paste("X-linked"))),
@@ -1451,149 +1453,149 @@ finalFreqSuppFig  <-  function() {
               bty     =  'n',
               border  =  NA
     )
-        legend(
-              x       =  usr[2]*0.9425,
-              y       =  usr[4]*0.925,
-              legend  =  c(
-                          expression(paste(italic(s[del]), " = ", 0)),
-                          expression(paste(italic(s[del]), " = ", 2*italic(s))),
-                          expression(paste(italic(s[del]), " = ", 1))),
-              pch     =  c(21,22,23),
-              col     =  c(1),
-              cex     =  1,
-              xjust   =  1,
-              yjust   =  1,
-              bty     =  'n',
-              border  =  NA
-    )
+#        legend(
+#              x       =  usr[2]*0.9425,
+#              y       =  usr[4]*0.925,
+#              legend  =  c(
+#                          expression(paste(italic(s[del]), " = ", 0)),
+#                          expression(paste(italic(s[del]), " = ", 2*italic(s))),
+#                          expression(paste(italic(s[del]), " = ", 1))),
+#              pch     =  c(21,22,23),
+#              col     =  c(1),
+#              cex     =  1,
+#              xjust   =  1,
+#              yjust   =  1,
+#              bty     =  'n',
+#              border  =  NA
+#    )
 
-    # Panel 3: N = 3x10^4
-xlims  <-  c(min(
-                 aInvDensNone$x,
-                 aInvDensStrong$x,
-                 aInvDensLethal$x,
-                 xInvDensNone$x,
-                 xInvDensStrong$x,
-                 xInvDensLethal$x,
-                 aInvN30kDensNone$x,
-                 aInvN30kDensStrong$x,
-                 aInvN30kDensLethal$x,
-                 xInvN30kDensNone$x,
-                 xInvN30kDensStrong$x,
-                 xInvN30kDensLethal$x),
-             max(
-                 aInvDensNone$x,
-                 aInvDensStrong$x,
-                 aInvDensLethal$x,
-                 xInvDensNone$x,
-                 xInvDensStrong$x,
-                 xInvDensLethal$x,
-                 aInvN30kDensNone$x,
-                 aInvN30kDensStrong$x,
-                 aInvN30kDensLethal$x,
-                 xInvN30kDensNone$x,
-                 xInvN30kDensStrong$x,
-                 xInvN30kDensLethal$x))
+#    # Panel 3: N = 3x10^4
+#xlims  <-  c(min(
+#                 aInvDensNone$x,
+#                 aInvDensStrong$x,
+#                 aInvDensLethal$x,
+#                 xInvDensNone$x,
+#                 xInvDensStrong$x,
+#                 xInvDensLethal$x,
+#                 aInvN30kDensNone$x,
+#                 aInvN30kDensStrong$x,
+#                 aInvN30kDensLethal$x,
+#                 xInvN30kDensNone$x,
+#                 xInvN30kDensStrong$x,
+#                 xInvN30kDensLethal$x),
+#             max(
+#                 aInvDensNone$x,
+#                 aInvDensStrong$x,
+#                 aInvDensLethal$x,
+#                 xInvDensNone$x,
+#                 xInvDensStrong$x,
+#                 xInvDensLethal$x,
+#                 aInvN30kDensNone$x,
+#                 aInvN30kDensStrong$x,
+#                 aInvN30kDensLethal$x,
+#                 xInvN30kDensNone$x,
+#                 xInvN30kDensStrong$x,
+#                 xInvN30kDensLethal$x))
 
-     plot(NA, axes=FALSE, type='n', main='',
-              ylim=c(min(
-                         aInvDensNone$y,
-                         aInvDensStrong$y,
-                         aInvDensLethal$y,
-                         xInvDensNone$y,
-                         xInvDensStrong$y,
-                         xInvDensLethal$y),
-                     max(
-                         aInvDensNone$y,
-                         aInvDensStrong$y,
-                         aInvDensLethal$y,
-                         xInvDensNone$y,
-                         xInvDensStrong$y,
-                         xInvDensLethal$y)),
-              xlim=xlims, ylab='', xlab='', cex.lab=1.2)
-        usr  <-  par('usr')
-        rect(usr[1], usr[3], usr[2], usr[4], col='white', border=NA)
-        plotGrid(lineCol='grey80')
-        box()
-        # Density plots of final inversion frequencies
-#        lines(aInvN30kDensNone$y   ~ aInvN30kDensNone$x, lwd=2, col=COLS[1])
-        lines(aInvN30kDensStrong$y ~ aInvN30kDensStrong$x, lwd=2, col=COLS[1])
-#        lines(aInvN30kDensLethal$y ~ aInvN30kDensLethal$x, lwd=2, col=COLS[1])
-#        lines(xInvN30kDensNone$y   ~ xInvN30kDensNone$x, lwd=2, col=COLS[2])
-        lines(xInvN30kDensStrong$y ~ xInvN30kDensStrong$x, lwd=2, col=COLS[2])
-#        lines(xInvN30kDensLethal$y ~ xInvN30kDensLethal$x, lwd=2, col=COLS[2])
-        # axes
-        axis(1, las=1)
-        axis(2, las=1)
-        # Plot labels etc.
-        proportionalLabel( 0.05,  1.075, expression(paste(bold(E))), cex=1.2, adj=c(0.5, 0.5), xpd=NA)
-        proportionalLabel(-0.35,  0.5,   expression(paste("Density")), cex=1, adj=c(0.5, 0.5), xpd=NA, srt=90)
-        proportionalLabel(0.5,  -0.25,   expression(paste("Frequency of established inversions ",italic((p[inv])))), cex=1, adj=c(0.5, 0.5), xpd=NA)        
-        # Legend
-        legend(
-              x       =  usr[2]*0.985,
-              y       =  usr[4]*0.98,
-              legend  =  c(
-                          expression(paste("Autosomal")),
-                          expression(paste("X-linked"))),
-#              pch     =  c(21,21),
-              col   =  c(COLS[1],COLS[2]),
-              lwd     =  2,
-              cex     =  1,
-              xjust   =  1,
-              yjust   =  1,
-              bty     =  'n',
-              border  =  NA
-    )
+#     plot(NA, axes=FALSE, type='n', main='',
+#              ylim=c(min(
+#                         aInvDensNone$y,
+#                         aInvDensStrong$y,
+#                         aInvDensLethal$y,
+#                         xInvDensNone$y,
+#                         xInvDensStrong$y,
+#                         xInvDensLethal$y),
+#                     max(
+#                         aInvDensNone$y,
+#                         aInvDensStrong$y,
+#                         aInvDensLethal$y,
+#                         xInvDensNone$y,
+#                         xInvDensStrong$y,
+#                         xInvDensLethal$y)),
+#              xlim=xlims, ylab='', xlab='', cex.lab=1.2)
+#        usr  <-  par('usr')
+#        rect(usr[1], usr[3], usr[2], usr[4], col='white', border=NA)
+#        plotGrid(lineCol='grey80')
+#        box()
+#        # Density plots of final inversion frequencies
+##        lines(aInvN30kDensNone$y   ~ aInvN30kDensNone$x, lwd=2, col=COLS[1])
+#        lines(aInvN30kDensStrong$y ~ aInvN30kDensStrong$x, lwd=2, col=COLS[1])
+##        lines(aInvN30kDensLethal$y ~ aInvN30kDensLethal$x, lwd=2, col=COLS[1])
+##        lines(xInvN30kDensNone$y   ~ xInvN30kDensNone$x, lwd=2, col=COLS[2])
+#        lines(xInvN30kDensStrong$y ~ xInvN30kDensStrong$x, lwd=2, col=COLS[2])
+##        lines(xInvN30kDensLethal$y ~ xInvN30kDensLethal$x, lwd=2, col=COLS[2])
+#        # axes
+#        axis(1, las=1)
+#        axis(2, las=1)
+#        # Plot labels etc.
+#        proportionalLabel( 0.05,  1.075, expression(paste(bold(E))), cex=1.2, adj=c(0.5, 0.5), xpd=NA)
+#        proportionalLabel(-0.35,  0.5,   expression(paste("Density")), cex=1, adj=c(0.5, 0.5), xpd=NA, srt=90)
+#        proportionalLabel(0.5,  -0.25,   expression(paste("Frequency of established inversions ",italic((p[inv])))), cex=1, adj=c(0.5, 0.5), xpd=NA)        
+#        # Legend
+#        legend(
+#              x       =  usr[2]*0.985,
+#              y       =  usr[4]*0.98,
+#              legend  =  c(
+#                          expression(paste("Autosomal")),
+#                          expression(paste("X-linked"))),
+##              pch     =  c(21,21),
+#              col   =  c(COLS[1],COLS[2]),
+#              lwd     =  2,
+#              cex     =  1,
+#              xjust   =  1,
+#              yjust   =  1,
+#              bty     =  'n',
+#              border  =  NA
+#    )
 
 
 
     # Panel 4: N = 5x10^5
-     plot(NA, axes=FALSE, type='n', main='',
-              ylim=c(min(
-                         aInvDensNone$y,
-                         aInvDensStrong$y,
-                         aInvDensLethal$y,
-                         xInvDensNone$y,
-                         xInvDensStrong$y,
-                         xInvDensLethal$y),
-                     max(
-                         aInvDensNone$y,
-                         aInvDensStrong$y,
-                         aInvDensLethal$y,
-                         xInvDensNone$y,
-                         xInvDensStrong$y,
-                         xInvDensLethal$y)),
-              xlim=c(min(
-                         aInvDensNone$x,
-                         aInvDensStrong$x,
-                         aInvDensLethal$x,
-                         xInvDensNone$x,
-                         xInvDensStrong$x,
-                         xInvDensLethal$x),
-                     max(
-                         aInvDensNone$x,
-                         aInvDensStrong$x,
-                         aInvDensLethal$x,
-                         xInvDensNone$x,
-                         xInvDensStrong$x,
-                         xInvDensLethal$x)),
-              ylab='', xlab='', cex.lab=1.2)
-        usr  <-  par('usr')
-        rect(usr[1], usr[3], usr[2], usr[4], col='white', border=NA)
-        plotGrid(lineCol='grey80')
-        box()
-        # Density plots of final inversion frequencies
-#        lines(aInvDensNone$y   ~ aInvDensNone$x, lwd=2, col=COLS[1])
-#        lines(aInvDensStrong$y ~ aInvDensStrong$x, lwd=2, col=COLS[1])
-        lines(aInvDensLethal$y ~ aInvDensLethal$x, lwd=2, col=COLS[1])
-#        lines(xInvDensNone$y   ~ xInvDensNone$x, lwd=2, col=COLS[2])
-#        lines(xInvDensStrong$y ~ xInvDensStrong$x, lwd=2, col=COLS[2])
-        lines(xInvDensLethal$y ~ xInvDensLethal$x, lwd=2, col=COLS[2])
-        # axes
-        axis(1, las=1)
-        axis(2, las=1,labels=NA)
-        # Plot labels etc.
-        proportionalLabel( 0.05,  1.075, expression(paste(bold(F))), cex=1.2, adj=c(0.5, 0.5), xpd=NA)
-        proportionalLabel(0.5,  -0.25,   expression(paste("Frequency of established inversions ",italic((p[inv])))), cex=1, adj=c(0.5, 0.5), xpd=NA)
+#     plot(NA, axes=FALSE, type='n', main='',
+#              ylim=c(min(
+#                         aInvDensNone$y,
+#                         aInvDensStrong$y,
+#                         aInvDensLethal$y,
+#                         xInvDensNone$y,
+#                         xInvDensStrong$y,
+#                         xInvDensLethal$y),
+#                     max(
+#                         aInvDensNone$y,
+#                         aInvDensStrong$y,
+#                         aInvDensLethal$y,
+#                         xInvDensNone$y,
+#                         xInvDensStrong$y,
+#                         xInvDensLethal$y)),
+#              xlim=c(min(
+#                         aInvDensNone$x,
+#                         aInvDensStrong$x,
+#                         aInvDensLethal$x,
+#                         xInvDensNone$x,
+#                         xInvDensStrong$x,
+#                         xInvDensLethal$x),
+#                     max(
+#                         aInvDensNone$x,
+#                         aInvDensStrong$x,
+#                         aInvDensLethal$x,
+#                         xInvDensNone$x,
+#                         xInvDensStrong$x,
+#                         xInvDensLethal$x)),
+#              ylab='', xlab='', cex.lab=1.2)
+#        usr  <-  par('usr')
+#        rect(usr[1], usr[3], usr[2], usr[4], col='white', border=NA)
+#        plotGrid(lineCol='grey80')
+#        box()
+#        # Density plots of final inversion frequencies
+##        lines(aInvDensNone$y   ~ aInvDensNone$x, lwd=2, col=COLS[1])
+##        lines(aInvDensStrong$y ~ aInvDensStrong$x, lwd=2, col=COLS[1])
+#        lines(aInvDensLethal$y ~ aInvDensLethal$x, lwd=2, col=COLS[1])
+##        lines(xInvDensNone$y   ~ xInvDensNone$x, lwd=2, col=COLS[2])
+##        lines(xInvDensStrong$y ~ xInvDensStrong$x, lwd=2, col=COLS[2])
+#        lines(xInvDensLethal$y ~ xInvDensLethal$x, lwd=2, col=COLS[2])
+#        # axes
+#        axis(1, las=1)
+#        axis(2, las=1,labels=NA)
+#        # Plot labels etc.
+#        proportionalLabel( 0.05,  1.075, expression(paste(bold(F))), cex=1.2, adj=c(0.5, 0.5), xpd=NA)
+#        proportionalLabel(0.5,  -0.25,   expression(paste("Frequency of established inversions ",italic((p[inv])))), cex=1, adj=c(0.5, 0.5), xpd=NA)
 }
