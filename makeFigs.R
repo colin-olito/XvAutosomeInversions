@@ -52,6 +52,9 @@ toPdf(propEstSuppFigs(),
             figPath(name='ProportionEstablishSuppFig.pdf'), width=18, height=10)
 embed_fonts(figPath(name='ProportionEstablishSuppFig.pdf'))
 
+toPdf(finalFreqSuppFig(), 
+            figPath(name='FinalInvFreqSuppFig.pdf'), width=7, height=15)
+embed_fonts(figPath(name='FinalInvFreqSuppFig.pdf'))
 
 ########################
 # Supplementary Figures
