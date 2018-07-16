@@ -2,7 +2,7 @@
 
 ## Overview
 
-This is a GitHub repository for the development of a collaborative research project begun at the 2017 ESEB Special Topics Network: *linking local adaptation with the evolution of sex-differences* which is now published under the title "Local adaptation and the evolution of inversions on sex chromosomes and autosomes" (doi: 10.1098/rstb.2017.0423) in a Theme Issue of the Philosophical Transactions of the Royal Society of London B". Here you can find all of the necessary code to reproduce the simulations presented in the published paper and appendices. Other supplementary material for the paper can be downloaded as an online appendix from [rs.figshare.com](https://rs.figshare.com/).
+This is a GitHub repository for the development of a collaborative research project begun at the 2017 ESEB Special Topics Network: *linking local adaptation with the evolution of sex-differences* which is now published under the title "Local adaptation and the evolution of inversions on sex chromosomes and autosomes" (doi: 10.1098/rstb.2017.0423) in a Theme Issue of the Philosophical Transactions of the Royal Society of London B". Here you can find all of the necessary code to reproduce the simulations presented in the published paper and appendices. Other supplementary material for the paper can be downloaded as an online appendix from [rs.figshare.com](https://rs.figshare.com/).[Overview.md]( Overview.md) provides an easy summary of the files in the repository.
 
 
 ## Abstract
