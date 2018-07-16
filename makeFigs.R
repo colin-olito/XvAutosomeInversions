@@ -54,7 +54,7 @@ toPdf(propEstSuppFigs(),
 embed_fonts(figPath(name='ProportionEstablishSuppFig.pdf'))
 
 toPdf(finalFreqSuppFig(), 
-            figPath(name='FinalInvFreqSuppFig.pdf'), width=7, height=15)
+            figPath(name='FinalInvFreqSuppFig.pdf'), width=7, height=7)
 embed_fonts(figPath(name='FinalInvFreqSuppFig.pdf'))
 
 ########################
