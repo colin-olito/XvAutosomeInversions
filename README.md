@@ -19,9 +19,4 @@ Citing information for the resulting paper will be provided when it is made [ava
 
 ## Contact & bug reporting
 
-<<<<<<< HEAD
 Please report any bugs, problems, or issues by opening an issue on the XvAutosomeInversions github [issues page](https://github.com/colin-olito/XvAutosomeInversions/issues). If you would like to report a bug/issue, and do not have a github account (and don't want to get one), please send a brief email detailing the problem you encountered to colin.olito at biol dot lu dot se.
-=======
-Please report any bugs, problems, or issues by opening an issue on the XvAutosomeInversions github [issues page](https://github.com/colin-olito/XvAutosomeInversions/issues). If you would like to report a bug/issue, and do not have a github account (and don't want to get one), please send a brief email detailing the problem you encountered to colin.olito at monash dot edu.
-
->>>>>>> b38583083335ab120ad9563f7826ac80f5539eef
