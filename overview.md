@@ -47,10 +47,13 @@ Simulations ran in the paper: [Run-WFSims-Xlinked.R](Run-WFSims-Xlinked.R)
 
 ## Other files
 
-Run-DetermRecSims-Auto-X-Compare.R
-R/functions-figures.R 
-R/functions-haploid-exact-eq-sims.R
-makeFigs.R
+[Run-DetermRecSims-Auto-X-Compare.R](Run-DetermRecSims-Auto-X-Compare.R)
+
+[R/functions-figures.R](R/functions-figures.R)
+
+[R/functions-haploid-exact-eq-sims.R](R/functions-haploid-exact-eq-sims.R)
+
+[makeFigs.R](R/functions-haploid-exact-eq-sims.R)
 
 
 
